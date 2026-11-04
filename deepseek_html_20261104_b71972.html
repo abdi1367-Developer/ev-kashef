@@ -1,0 +1,1537 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#060a14"/>
+<title>سامانه پایش کنترل‌های امنیتی | کاشف ۴۹۵</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<style>
+:root{
+  --bg:#060a14;--panel:rgba(17,25,42,.86);--panel2:#0e1626;--line:#1e2b45;
+  --txt:#e9f0ff;--muted:#8ba0c4;--accent:#22d3ee;--accent2:#7c3aed;
+  --ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--gray:#64748b;--r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;min-height:100%}
+body{
+  font-family:'Vazirmatn',system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:
+    radial-gradient(1200px 600px at 92% -10%, rgba(124,58,237,.20), transparent 62%),
+    radial-gradient(1000px 520px at -5% 0%, rgba(34,211,238,.13), transparent 62%),
+    var(--bg);
+  color:var(--txt);overflow-x:hidden;font-size:14px;
+}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#1e2b45;border-radius:9px}
+::-webkit-scrollbar-thumb:hover{background:#2b3d61}
+::-webkit-scrollbar-track{background:transparent}
+a{color:var(--accent);text-decoration:none}
+button,input,select,textarea{font-family:inherit;font-size:14px}
+.hidden{display:none!important}
+
+/* ============ LOGIN ============ */
+.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px}
+.bg-anim{position:absolute;inset:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+.b1{width:48vw;height:48vw;min-width:320px;min-height:320px;background:#22d3ee;top:-12%;right:-10%;animation:float 19s ease-in-out infinite}
+.b2{width:42vw;height:42vw;min-width:300px;min-height:300px;background:#7c3aed;bottom:-14%;left:-8%;animation:float 23s ease-in-out infinite reverse}
+.b3{width:34vw;height:34vw;min-width:260px;min-height:260px;background:#f43f5e;top:38%;left:34%;opacity:.30;animation:float 27s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(-7%,9%,0) scale(1.14)}66%{transform:translate3d(9%,-7%,0) scale(.92)}}
+.grid-lines{position:absolute;inset:-60%;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:64px 64px;transform:perspective(700px) rotateX(62deg);animation:gridmove 18s linear infinite;opacity:.55}
+@keyframes gridmove{to{background-position:0 64px,64px 0}}
+.pt{position:absolute;border-radius:50%;background:rgba(34,211,238,.9);box-shadow:0 0 10px rgba(34,211,238,.95);animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0);opacity:0}12%{opacity:1}100%{transform:translateY(-112vh);opacity:0}}
+.login-card{position:relative;z-index:3;width:min(430px,94vw);padding:34px 26px;border-radius:26px;
+  background:rgba(10,16,30,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.13);box-shadow:0 34px 90px rgba(0,0,0,.65);
+  animation:pop .7s cubic-bezier(.2,.9,.3,1.25)}
+@keyframes pop{from{opacity:0;transform:translateY(26px) scale(.95)}to{opacity:1;transform:none}}
+.logo{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:30px;margin:0 auto 16px;
+  background:linear-gradient(140deg,#22d3ee,#7c3aed);box-shadow:0 12px 34px rgba(124,58,237,.5)}
+.login-card h1{font-size:19px;margin:0 0 6px;text-align:center;font-weight:800}
+.login-card .sub{margin:0 0 24px;text-align:center;color:var(--muted);font-size:12.5px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px}
+.field input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+  background:rgba(255,255,255,.045);color:var(--txt);outline:none;transition:.2s}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;
+  border:1px solid var(--line);background:#16203a;color:var(--txt);cursor:pointer;font-weight:600;transition:.18s}
+.btn:hover{background:#1d2a49;border-color:#2c3f66}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,#22d3ee,#7c3aed);border:none;color:#04101e;font-weight:800;
+  box-shadow:0 10px 26px rgba(34,211,238,.28)}
+.btn-primary:hover{filter:brightness(1.08);background:linear-gradient(135deg,#22d3ee,#7c3aed)}
+.btn-full{width:100%;padding:13px}
+.btn-sm{padding:7px 12px;border-radius:10px;font-size:12.5px}
+.btn-danger{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.4);color:#fca5a5}
+.err{color:#fca5a5;font-size:12.5px;text-align:center;margin-top:12px;min-height:16px}
+.hint{text-align:center;color:var(--muted);font-size:11.5px;margin-top:16px;line-height:1.9}
+
+/* ============ APP LAYOUT ============ */
+#app{display:flex;min-height:100dvh;width:100%}
+.sidebar{width:264px;flex:0 0 264px;height:100dvh;position:sticky;top:0;z-index:50;
+  background:linear-gradient(180deg,#0b1120,#070c16);border-left:1px solid var(--line);
+  display:flex;flex-direction:column;padding:18px 13px;gap:8px}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 8px 16px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.brand .ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(140deg,#22d3ee,#7c3aed);box-shadow:0 8px 22px rgba(124,58,237,.45)}
+.brand b{display:block;font-size:13.5px;line-height:1.5}
+.brand span{display:block;font-size:11px;color:var(--muted)}
+.nav{display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1}
+.nav button{display:flex;align-items:center;gap:11px;width:100%;padding:11px 13px;border-radius:12px;
+  border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;font-weight:600;
+  font-size:13.5px;text-align:right;transition:.18s}
+.nav button:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+.nav button.active{background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(124,58,237,.16));
+  color:#fff;border-color:rgba(34,211,238,.32)}
+.nav button .ic{font-size:16px;width:22px;text-align:center}
+.side-foot{border-top:1px solid var(--line);padding-top:12px;margin-top:8px}
+.user-chip{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.045);margin-bottom:8px}
+.user-chip .av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;
+  background:linear-gradient(140deg,#22d3ee,#7c3aed);color:#04101e;flex:0 0 auto}
+.user-chip b{display:block;font-size:12.5px}
+.user-chip span{display:block;font-size:10.5px;color:var(--muted)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:45;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(2px)}
+.overlay.show{opacity:1;pointer-events:auto}
+
+.main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;width:100%}
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:12px 18px;
+  background:rgba(6,10,20,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.topbar h2{margin:0;font-size:16px;font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:#131c30;
+  color:var(--txt);cursor:pointer;display:none;place-items:center;font-size:17px;flex:0 0 auto}
+.top-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.content{flex:1;padding:18px;width:100%;min-width:0}
+
+/* ============ COMPONENTS ============ */
+.grid{display:grid;gap:14px;width:100%}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+.cols2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);min-width:0}
+.card h3{margin:0 0 14px;font-size:13.5px;font-weight:800;color:#cfe0ff;display:flex;align-items:center;gap:8px}
+.card h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.kpi{position:relative;overflow:hidden}
+.kpi .v{font-size:29px;font-weight:900;letter-spacing:-1px;line-height:1.15}
+.kpi .l{color:var(--muted);font-size:12px;margin-top:6px}
+.kpi .glow{position:absolute;width:130px;height:130px;border-radius:50%;top:-46px;left:-40px;filter:blur(28px);opacity:.5}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11.5px;
+  border:1px solid transparent;white-space:nowrap;font-weight:600}
+.st-ok{background:rgba(34,197,94,.14);color:#4ade80;border-color:rgba(34,197,94,.36)}
+.st-warn{background:rgba(245,158,11,.14);color:#fbbf24;border-color:rgba(245,158,11,.36)}
+.st-bad{background:rgba(239,68,68,.14);color:#f87171;border-color:rgba(239,68,68,.36)}
+.st-gray{background:rgba(100,116,139,.18);color:#94a3b8;border-color:rgba(100,116,139,.36)}
+.badge-soft{background:rgba(255,255,255,.055);color:#a9bcdb;border-color:rgba(255,255,255,.09)}
+
+.bar-row{display:grid;grid-template-columns:1fr 48px;gap:10px;align-items:center;margin:9px 0}
+.bar-row .nm{font-size:12.5px;color:#c3d3ee;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-row .pc{font-size:12px;font-weight:800;text-align:left;color:var(--accent)}
+.bar{height:9px;border-radius:99px;background:#16203a;overflow:hidden;margin-top:5px}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#22d3ee,#7c3aed);transition:width .7s cubic-bezier(.2,.9,.3,1)}
+.bar.g>i{background:linear-gradient(90deg,#22c55e,#16a34a)}
+.bar.w>i{background:linear-gradient(90deg,#f59e0b,#f97316)}
+.bar.b>i{background:linear-gradient(90deg,#ef4444,#b91c1c)}
+
+.donut-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:center}
+.donut{width:168px;height:168px;border-radius:50%;position:relative;display:grid;place-items:center;flex:0 0 auto;
+  transition:background .6s}
+.donut::before{content:'';position:absolute;inset:24px;border-radius:50%;background:#0b1120;box-shadow:inset 0 0 22px rgba(0,0,0,.6)}
+.donut .mid{position:relative;z-index:2;text-align:center}
+.donut .mid b{display:block;font-size:26px;font-weight:900;line-height:1}
+.donut .mid span{font-size:11px;color:var(--muted)}
+.legend{display:flex;flex-direction:column;gap:9px;min-width:150px}
+.legend div{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#c3d3ee}
+.legend i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.legend b{margin-right:auto;color:#fff;font-weight:800}
+
+/* controls list */
+.toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+.toolbar input,.toolbar select{padding:10px 12px;border-radius:11px;border:1px solid var(--line);
+  background:#0f1728;color:var(--txt);outline:none;width:100%;transition:.2s}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.13)}
+.list{display:grid;gap:11px}
+.ctrl{background:linear-gradient(180deg,rgba(20,29,49,.92),rgba(13,20,34,.92));border:1px solid var(--line);
+  border-radius:14px;padding:14px;cursor:pointer;transition:.2s;min-width:0}
+.ctrl:hover{border-color:rgba(34,211,238,.5);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.cc-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.cc-no{font-size:11px;color:var(--muted);font-weight:800;background:rgba(255,255,255,.05);
+  padding:2px 8px;border-radius:7px;margin-right:auto}
+.cc-title{font-size:13.5px;line-height:2;font-weight:700;margin-bottom:8px}
+.cc-ev{font-size:12px;line-height:2;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden}
+.cc-foot{margin-top:11px;display:flex;align-items:center;gap:10px}
+.cc-foot .bar{flex:1}
+.pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.pager .info{color:var(--muted);font-size:12.5px}
+
+/* forms in assess */
+.as-item{background:linear-gradient(180deg,rgba(20,29,49,.92),rgba(13,20,34,.92));border:1px solid var(--line);
+  border-radius:14px;padding:15px;margin-bottom:12px}
+.as-item .t{font-size:13.5px;font-weight:700;line-height:1.95;margin-bottom:10px}
+.as-item .t .n{color:var(--accent);font-weight:900;margin-left:6px}
+.as-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:10px}
+.as-grid label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px}
+.as-grid select,.as-grid input[type=number],.as-grid input[type=text]{
+  width:100%;padding:9px 11px;border-radius:10px;border:1px solid var(--line);
+  background:#0f1728;color:var(--txt);outline:none}
+.as-grid select:focus,.as-grid input:focus{border-color:var(--accent)}
+input[type=range]{width:100%;accent-color:#22d3ee;margin-top:8px}
+textarea{width:100%;padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:#0f1728;
+  color:var(--txt);outline:none;resize:vertical;min-height:66px;line-height:1.9}
+textarea:focus{border-color:var(--accent)}
+input[type=file]{width:100%;padding:8px;border-radius:10px;border:1px dashed var(--line);
+  background:rgba(255,255,255,.03);color:var(--muted);font-size:12px;cursor:pointer}
+.as-foot{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.saved{color:#4ade80;font-size:12px;font-weight:700}
+
+/* table */
+.tbl-wrap{overflow-x:auto;width:100%}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid rgba(255,255,255,.055)}
+th{color:var(--muted);font-weight:700;font-size:11.5px;background:rgba(255,255,255,.03);white-space:nowrap}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;
+  background:rgba(2,6,14,.78);backdrop-filter:blur(6px);animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal-box{width:min(820px,100%);max-height:88dvh;overflow:auto;border-radius:20px;border:1px solid var(--line);
+  background:linear-gradient(180deg,#101a2c,#0a1220);padding:22px;box-shadow:0 40px 100px rgba(0,0,0,.75);
+  animation:pop .28s cubic-bezier(.2,.9,.3,1.2)}
+.modal-box h3{margin:0 0 14px;font-size:16px;font-weight:800;line-height:2}
+.kv{margin-bottom:14px}
+.kv .k{font-size:11.5px;color:var(--muted);margin-bottom:5px}
+.kv .v{font-size:13px;line-height:2.1;background:rgba(255,255,255,.035);padding:11px 13px;border-radius:11px;
+  border:1px solid rgba(255,255,255,.05)}
+.close-x{position:sticky;top:0;float:left;background:rgba(239,68,68,.16);color:#fca5a5;border:1px solid rgba(239,68,68,.35);
+  width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:16px}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120px);z-index:400;
+  padding:12px 22px;border-radius:13px;background:#12203a;border:1px solid var(--line);color:#fff;
+  font-size:13px;font-weight:700;box-shadow:0 18px 50px rgba(0,0,0,.6);transition:transform .35s cubic-bezier(.2,.9,.3,1.2)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:rgba(34,197,94,.5);background:#0f2b1c}
+.toast.err{border-color:rgba(239,68,68,.5);background:#2b1114}
+
+.empty{text-align:center;padding:44px 16px;color:var(--muted);font-size:13px;line-height:2}
+.spin{width:26px;height:26px;border:3px solid rgba(255,255,255,.14);border-top-color:#22d3ee;
+  border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:900px){
+  .sidebar{position:fixed;top:0;right:0;height:100dvh;transform:translateX(100%);
+    transition:transform .32s cubic-bezier(.2,.9,.3,1);box-shadow:-24px 0 70px rgba(0,0,0,.7);width:280px;flex-basis:280px}
+  .sidebar.open{transform:translateX(0)}
+  .icon-btn{display:grid}
+  .content{padding:13px}
+  .topbar{padding:10px 13px}
+  .kpi .v{font-size:24px}
+  .card{padding:14px}
+}
+@media(max-width:560px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .cols2{grid-template-columns:1fr}
+  .topbar h2{font-size:14px}
+  .donut{width:140px;height:140px}
+  .donut::before{inset:20px}
+  .modal-box{padding:16px;border-radius:16px}
+  .cc-ev{-webkit-line-clamp:3}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen" class="login-wrap">
+  <div class="bg-anim">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    <div class="grid-lines"></div>
+    <div id="particles"></div>
+  </div>
+  <div class="login-card">
+    <div class="logo">🛡️</div>
+    <h1>سامانه پایش کنترل‌های امنیتی</h1>
+    <p class="sub">مرکز مبادله ارز و طلای ایران — چارچوب کاشف ۴۹۵</p>
+    <form id="loginForm" autocomplete="on">
+      <div class="field">
+        <label for="luser">نام کاربری</label>
+        <input id="luser" name="username" autocomplete="username" placeholder="ice" value="ice" required>
+      </div>
+      <div class="field">
+        <label for="lpass">رمز عبور</label>
+        <input id="lpass" name="password" type="password" autocomplete="current-password" placeholder="••••" value="ice" required>
+      </div>
+      <button class="btn btn-primary btn-full" type="submit" id="loginBtn">ورود به سامانه</button>
+      <div class="err" id="loginErr"></div>
+    </form>
+    <div class="hint">کاربر پیش‌فرض: <b>ice</b> / رمز: <b>ice</b><br>پس از ورود می‌توانید کاربران جدید بسازید.</div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="ic">🛡️</div>
+      <div><b>کاشف ۴۹۵</b><span>پایش کنترل‌های امنیتی</span></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <div class="user-chip">
+        <div class="av" id="avatar">I</div>
+        <div style="min-width:0"><b id="uName">—</b><span id="uRole">—</span></div>
+      </div>
+      <button class="btn btn-sm btn-full" id="logoutBtn">🚪 خروج از حساب</button>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" aria-label="منو">☰</button>
+      <h2 id="pageTitle">داشبورد</h2>
+      <div class="top-actions">
+        <select id="globalPeriod" title="دوره ارزیابی"
+          style="padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1728;color:var(--txt);max-width:190px"></select>
+      </div>
+    </header>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<div id="modalHost"></div>
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+/* =========================================================
+   CONFIG
+========================================================= */
+const SUPABASE_URL = 'https://qtpybadjaczlkzkbbcge.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GUfLjO0eaIx_LYNZgfIKzw_GcUsKjHC';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const BUCKET = 'assessment-files';
+
+/* =========================================================
+   HELPERS
+========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const fa = n => String(n ?? '').replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const PERIODS_STORE = 'kashaf_session';
+
+function toast(msg, type='ok'){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=> t.className = 'toast ' + type, 2600);
+}
+
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function statusClass(s){
+  const n = normalizeStatus(s);
+  if(n === 'پیاده‌سازی') return 'st-ok';
+  if(n === 'در حال پیاده‌سازی') return 'st-warn';
+  if(n === 'غیر قابل احراز') return 'st-gray';
+  return 'st-bad';
+}
+function normalizeStatus(s){
+  s = String(s || '');
+  if(s.includes('عدم')) return 'عدم پیاده‌سازی';
+  if(s.includes('غیر قابل')) return 'غیر قابل احراز';
+  if(s.includes('در حال')) return 'در حال پیاده‌سازی';
+  if(s.includes('پیاده')) return 'پیاده‌سازی';
+  return 'عدم پیاده‌سازی';
+}
+function statusWeight(s){
+  const n = normalizeStatus(s);
+  if(n === 'پیاده‌سازی') return 100;
+  if(n === 'در حال پیاده‌سازی') return 50;
+  return 0;
+}
+
+/* =========================================================
+   STATE
+========================================================= */
+const S = {
+  user: null,
+  controls: [],
+  periods: [],
+  periodId: null,
+  assessments: {},        // map control_id -> assessment (current period)
+  allAssessments: [],     // all periods (for trend)
+  units: [], cats: [], levels: [],
+  view: 'dashboard',
+  page: 1,
+  pageSize: 12,
+  filters: { q:'', unit:'', status:'', cat:'', level:'' },
+  assessUnit: ''
+};
+
+const NAV = [
+  { id:'dashboard', label:'داشبورد مانیتورینگ', icon:'📊' },
+  { id:'controls',  label:'کنترل‌ها',            icon:'🗂️' },
+  { id:'assess',    label:'ارزیابی دوره',        icon:'📝' },
+  { id:'trend',     label:'روند پیشرفت',         icon:'📈' },
+  { id:'periods',   label:'مدیریت دوره‌ها',      icon:'🗓️' },
+  { id:'users',     label:'کاربران سامانه',      icon:'👥' },
+  { id:'import',    label:'ورود داده (اکسل)',    icon:'📥' }
+];
+const TITLES = Object.fromEntries(NAV.map(n => [n.id, n.label]));
+
+/* =========================================================
+   AUTH
+========================================================= */
+async function ensureDefaultUser(){
+  try{
+    const { count, error } = await sb.from('app_users').select('*', { count:'exact', head:true });
+    if(error) return false;
+    if(count === 0){
+      await sb.from('app_users').insert({
+        username:'ice',
+        password_hash: await sha256('ice'),
+        full_name:'مدیر سامانه',
+        role:'admin'
+      });
+      return true;
+    }
+    return true;
+  }catch(e){ return false; }
+}
+
+async function doLogin(username, password){
+  const hash = await sha256(password);
+  let { data, error } = await sb.from('app_users').select('*').eq('username', username).limit(1);
+  if(error) throw new Error('خطا در اتصال به پایگاه داده: ' + error.message);
+
+  if(!data || data.length === 0){
+    // bootstrap fallback
+    if(username === 'ice' && password === 'ice'){
+      await ensureDefaultUser();
+      const r = await sb.from('app_users').select('*').eq('username', username).limit(1);
+      data = r.data;
+    }
+  }
+  if(!data || data.length === 0) throw new Error('نام کاربری یافت نشد.');
+  const u = data[0];
+  if(u.password_hash !== hash) throw new Error('رمز عبور نادرست است.');
+  return u;
+}
+
+function startSession(user){
+  S.user = user;
+  try{ localStorage.setItem(PERIODS_STORE, JSON.stringify({ username:user.username })); }catch(e){}
+  $('#loginScreen').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  $('#uName').textContent = user.full_name || user.username;
+  $('#uRole').textContent = (user.role === 'admin' ? 'مدیر سامانه' : 'کاربر');
+  $('#avatar').textContent = (user.full_name || user.username).trim().charAt(0).toUpperCase();
+  bootApp();
+}
+
+function logout(){
+  S.user = null;
+  try{ localStorage.removeItem(PERIODS_STORE); }catch(e){}
+  $('#app').classList.add('hidden');
+  $('#loginScreen').classList.remove('hidden');
+  $('#content').innerHTML = '';
+}
+
+/* =========================================================
+   PARTICLES (login bg)
+========================================================= */
+(function particles(){
+  const host = document.getElementById('particles');
+  if(!host) return;
+  for(let i=0;i<34;i++){
+    const p = document.createElement('span');
+    p.className = 'pt';
+    const sz = (Math.random()*3+1.5).toFixed(1);
+    p.style.width = sz+'px';
+    p.style.height = sz+'px';
+    p.style.left = (Math.random()*100)+'%';
+    p.style.top = (Math.random()*100 + 20)+'%';
+    p.style.animationDuration = (Math.random()*14 + 11)+'s';
+    p.style.animationDelay = (-Math.random()*22)+'s';
+    p.style.opacity = (Math.random()*.55 + .25);
+    host.appendChild(p);
+  }
+})();
+
+/* =========================================================
+   DATA LAYER
+========================================================= */
+async function loadControls(){
+  const { data, error } = await sb.from('controls').select('*').order('row_no', { ascending:true });
+  if(error) throw error;
+  S.controls = data || [];
+  S.units = [...new Set(S.controls.map(c => c.owner_unit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
+  S.cats  = [...new Set(S.controls.map(c => c.category).filter(Boolean))];
+  S.levels= [...new Set(S.controls.map(c => c.level).filter(Boolean))];
+}
+
+async function loadPeriods(){
+  const { data, error } = await sb.from('periods').select('*').order('created_at', { ascending:true });
+  if(error) throw error;
+  S.periods = data || [];
+  if(S.periods.length && !S.periods.find(p => p.id === S.periodId)){
+    S.periodId = S.periods[0].id;
+  }
+}
+
+async function loadAssessments(){
+  S.assessments = {};
+  if(!S.periodId) return;
+  const { data, error } = await sb.from('assessments').select('*').eq('period_id', S.periodId);
+  if(error){ console.warn(error); return; }
+  (data || []).forEach(a => S.assessments[a.control_id] = a);
+}
+
+async function loadAllAssessments(){
+  const { data, error } = await sb.from('assessments').select('*');
+  if(error){ console.warn(error); S.allAssessments = []; return; }
+  S.allAssessments = data || [];
+}
+
+async function saveAssessment(controlId, payload){
+  if(!S.periodId) throw new Error('ابتدا یک دوره انتخاب کنید.');
+  const existing = S.assessments[controlId];
+  if(existing){
+    const { data, error } = await sb.from('assessments')
+      .update(payload).eq('id', existing.id).select().single();
+    if(error) throw error;
+    S.assessments[controlId] = data;
+  } else {
+    const { data, error } = await sb.from('assessments')
+      .insert({ period_id:S.periodId, control_id:controlId, ...payload })
+      .select().single();
+    if(error) throw error;
+    S.assessments[controlId] = data;
+  }
+}
+
+async function uploadFile(file, controlId){
+  const safe = file.name.replace(/[^\w.\-آ-ی]/g, '_');
+  const path = `${S.periodId}/${controlId}/${Date.now()}_${safe}`;
+  const { error } = await sb.storage.from(BUCKET).upload(path, file, { upsert:true });
+  if(error) throw error;
+  const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+  return { url: data.publicUrl, name: file.name };
+}
+
+/* =========================================================
+   DERIVED VALUES
+========================================================= */
+function controlStatus(c){
+  const a = S.assessments[c.id];
+  return (a && a.status) || c.status || '—';
+}
+function controlProgress(c){
+  const a = S.assessments[c.id];
+  if(a && a.progress !== null && a.progress !== undefined && a.progress !== '') return Number(a.progress);
+  return statusWeight(controlStatus(c));
+}
+function assessmentMapFor(pid){
+  const m = {};
+  S.allAssessments.filter(a => a.period_id === pid).forEach(a => m[a.control_id] = a);
+  return m;
+}
+function progressWithMap(c, map){
+  const a = map[c.id];
+  if(a && a.progress !== null && a.progress !== undefined && a.progress !== '') return Number(a.progress);
+  return statusWeight((a && a.status) || c.status);
+}
+
+/* =========================================================
+   BOOT
+========================================================= */
+async function bootApp(){
+  const content = $('#content');
+  content.innerHTML = `<div class="card"><div class="spin"></div><div class="empty">در حال بارگذاری داده‌ها…</div></div>`;
+  try{
+    await loadPeriods();
+    await loadControls();
+    await loadAssessments();
+    if(!S.periods.length){
+      S.view = 'periods';
+    }
+    renderNav();
+    renderPeriodSelect();
+    render();
+  }catch(err){
+    content.innerHTML = `
+      <div class="card">
+        <h3><span class="dot" style="background:#ef4444;box-shadow:0 0 10px #ef4444"></span> خطا در بارگذاری</h3>
+        <div class="empty" style="text-align:right">
+          ${esc(err.message || err)}<br><br>
+          اگر جداول هنوز ساخته نشده‌اند، ابتدا اسکریپت SQL را در Supabase اجرا کنید.
+        </div>
+      </div>`;
+  }
+}
+
+/* =========================================================
+   NAV / SHELL
+========================================================= */
+function renderNav(){
+  const nav = $('#nav');
+  nav.innerHTML = NAV.map(n =>
+    `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">
+       <span class="ic">${n.icon}</span><span>${n.label}</span>
+     </button>`).join('');
+}
+
+function renderPeriodSelect(){
+  const sel = $('#globalPeriod');
+  if(!S.periods.length){
+    sel.innerHTML = `<option value="">— دوره‌ای ثبت نشده —</option>`;
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  sel.innerHTML = S.periods.map(p =>
+    `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}</option>`).join('');
+}
+
+function render(){
+  $('#pageTitle').textContent = TITLES[S.view] || '';
+  document.querySelectorAll('#nav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.view === S.view));
+
+  const c = $('#content');
+  switch(S.view){
+    case 'dashboard': c.innerHTML = viewDashboard(); break;
+    case 'controls':  c.innerHTML = viewControls();  break;
+    case 'assess':    c.innerHTML = viewAssess();    break;
+    case 'trend':     c.innerHTML = viewTrend();     break;
+    case 'periods':   c.innerHTML = viewPeriods();   break;
+    case 'users':     c.innerHTML = viewUsers();     break;
+    case 'import':    c.innerHTML = viewImport();    break;
+  }
+  bindView();
+  if(S.view === 'trend') ensureTrendData();
+}
+
+/* =========================================================
+   VIEW: DASHBOARD
+========================================================= */
+function viewDashboard(){
+  const total = S.controls.length;
+  const counts = { 'پیاده‌سازی':0, 'در حال پیاده‌سازی':0, 'عدم پیاده‌سازی':0, 'غیر قابل احراز':0 };
+  let sum = 0;
+  S.controls.forEach(c => {
+    counts[normalizeStatus(controlStatus(c))]++;
+    sum += controlProgress(c);
+  });
+  const avg = total ? Math.round(sum / total) : 0;
+
+  // by unit
+  const byUnit = {};
+  S.controls.forEach(c => {
+    const u = c.owner_unit || 'نامشخص';
+    if(!byUnit[u]) byUnit[u] = { n:0, sum:0, ok:0, doing:0, bad:0 };
+    const b = byUnit[u];
+    b.n++; b.sum += controlProgress(c);
+    const ns = normalizeStatus(controlStatus(c));
+    if(ns === 'پیاده‌سازی') b.ok++;
+    else if(ns === 'در حال پیاده‌سازی') b.doing++;
+    else b.bad++;
+  });
+  const unitRows = Object.entries(byUnit)
+    .map(([k,v]) => ({ name:k, n:v.n, ok:v.ok, doing:v.doing, bad:v.bad, pct: v.n ? Math.round(v.sum/v.n) : 0 }))
+    .sort((a,b) => b.pct - a.pct);
+
+  // by level
+  const byLevel = {};
+  S.controls.forEach(c => {
+    const l = c.level || 'نامشخص';
+    if(!byLevel[l]) byLevel[l] = { n:0, sum:0 };
+    byLevel[l].n++; byLevel[l].sum += controlProgress(c);
+  });
+
+  // by category
+  const byCat = {};
+  S.controls.forEach(c => {
+    const k = c.category || 'نامشخص';
+    if(!byCat[k]) byCat[k] = { n:0, sum:0 };
+    byCat[k].n++; byCat[k].sum += controlProgress(c);
+  });
+  const catRows = Object.entries(byCat)
+    .map(([k,v]) => ({ name:k, n:v.n, pct: v.n ? Math.round(v.sum/v.n) : 0 }))
+    .sort((a,b) => b.pct - a.pct);
+
+  // donut
+  const segs = [
+    { label:'پیاده‌سازی شده', val: counts['پیاده‌سازی'],        color:'#22c55e' },
+    { label:'در حال پیاده‌سازی', val: counts['در حال پیاده‌سازی'], color:'#f59e0b' },
+    { label:'عدم پیاده‌سازی',  val: counts['عدم پیاده‌سازی'],   color:'#ef4444' },
+    { label:'غیر قابل احراز',  val: counts['غیر قابل احراز'],   color:'#64748b' }
+  ];
+  let acc = 0;
+  const grad = segs.map(s => {
+    const from = total ? acc/total*360 : 0;
+    acc += s.val;
+    const to = total ? acc/total*360 : 0;
+    return `${s.color} ${from}deg ${to}deg`;
+  }).join(',');
+
+  const periodName = (S.periods.find(p => p.id === S.periodId) || {}).name || 'بدون دوره';
+
+  return `
+  <div class="grid" style="gap:14px">
+
+    <div class="card" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <span class="badge badge-soft">دوره جاری: ${esc(periodName)}</span>
+      <span class="badge badge-soft">تعداد کنترل: ${fa(total)}</span>
+      <span class="badge badge-soft">واحدهای مسئول: ${fa(unitRows.length)}</span>
+      ${total===0 ? `<span class="badge st-bad">داده‌ای وجود ندارد — از تب «ورود داده» اکسل را بارگذاری کنید</span>` : ''}
+    </div>
+
+    <div class="grid kpis">
+      <div class="card kpi">
+        <div class="glow" style="background:#22d3ee"></div>
+        <div class="v">${fa(avg)}٪</div><div class="l">پیشرفت کل (میانگین وزنی)</div>
+        <div class="bar g" style="margin-top:10px"><i style="width:${avg}%"></i></div>
+      </div>
+      <div class="card kpi">
+        <div class="glow" style="background:#22c55e"></div>
+        <div class="v" style="color:#4ade80">${fa(counts['پیاده‌سازی'])}</div><div class="l">پیاده‌سازی شده</div>
+      </div>
+      <div class="card kpi">
+        <div class="glow" style="background:#f59e0b"></div>
+        <div class="v" style="color:#fbbf24">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال پیاده‌سازی</div>
+      </div>
+      <div class="card kpi">
+        <div class="glow" style="background:#ef4444"></div>
+        <div class="v" style="color:#f87171">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div>
+      </div>
+      <div class="card kpi">
+        <div class="glow" style="background:#64748b"></div>
+        <div class="v" style="color:#94a3b8">${fa(counts['غیر قابل احراز'])}</div><div class="l">غیر قابل احراز</div>
+      </div>
+    </div>
+
+    <div class="grid cols2">
+      <div class="card">
+        <h3><span class="dot"></span> توزیع وضعیت کنترل‌ها</h3>
+        <div class="donut-wrap">
+          <div class="donut" style="background:conic-gradient(${grad || '#16203a 0deg 360deg'})">
+            <div class="mid"><b>${fa(total)}</b><span>کنترل</span></div>
+          </div>
+          <div class="legend">
+            ${segs.map(s => `<div><i style="background:${s.color}"></i>${s.label}<b>${fa(s.val)}</b></div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><span class="dot"></span> پیشرفت به تفکیک سطح کنترل</h3>
+        ${Object.entries(byLevel).length ? Object.entries(byLevel).map(([k,v]) => {
+          const pct = v.n ? Math.round(v.sum/v.n) : 0;
+          return `<div class="bar-row"><div>
+              <div class="nm">${esc(k)} <span style="color:#64748b">(${fa(v.n)})</span></div>
+              <div class="bar"><i style="width:${pct}%"></i></div>
+            </div><div class="pc">${fa(pct)}٪</div></div>`;
+        }).join('') : `<div class="empty">داده‌ای نیست</div>`}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span> وضعیت واحدهای مسئول رسیدگی</h3>
+      ${unitRows.length ? `
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>واحد مسئول</th><th>تعداد کنترل</th><th>پیاده‌سازی</th>
+            <th>در حال انجام</th><th>عدم پیاده‌سازی</th><th>پیشرفت</th>
+          </tr></thead>
+          <tbody>
+            ${unitRows.map(u => `<tr>
+              <td style="font-weight:700">${esc(u.name)}</td>
+              <td>${fa(u.n)}</td>
+              <td style="color:#4ade80">${fa(u.ok)}</td>
+              <td style="color:#fbbf24">${fa(u.doing)}</td>
+              <td style="color:#f87171">${fa(u.bad)}</td>
+              <td style="min-width:140px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="bar" style="flex:1"><i style="width:${u.pct}%"></i></div>
+                  <b style="color:#22d3ee;font-size:12px">${fa(u.pct)}٪</b>
+                </div>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>` : `<div class="empty">داده‌ای ثبت نشده است</div>`}
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span> پیشرفت به تفکیک دسته کنترل</h3>
+      ${catRows.length ? catRows.map(c => `
+        <div class="bar-row">
+          <div>
+            <div class="nm">${esc(c.name)} <span style="color:#64748b">(${fa(c.n)})</span></div>
+            <div class="bar"><i style="width:${c.pct}%"></i></div>
+          </div>
+          <div class="pc">${fa(c.pct)}٪</div>
+        </div>`).join('') : `<div class="empty">داده‌ای نیست</div>`}
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: CONTROLS
+========================================================= */
+function filteredControls(){
+  const f = S.filters;
+  return S.controls.filter(c => {
+    if(f.unit && c.owner_unit !== f.unit) return false;
+    if(f.cat && c.category !== f.cat) return false;
+    if(f.level && c.level !== f.level) return false;
+    if(f.status && normalizeStatus(controlStatus(c)) !== f.status) return false;
+    if(f.q){
+      const q = f.q.toLowerCase();
+      const hay = `${c.title||''} ${c.evidence||''} ${c.owner_unit||''} ${c.category||''} ${c.row_no||''}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function viewControls(){
+  const list = filteredControls();
+  const pages = Math.max(1, Math.ceil(list.length / S.pageSize));
+  if(S.page > pages) S.page = pages;
+  const start = (S.page - 1) * S.pageSize;
+  const slice = list.slice(start, start + S.pageSize);
+
+  const opts = (arr, cur) => arr.map(v => `<option value="${esc(v)}" ${v===cur?'selected':''}>${esc(v)}</option>`).join('');
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="toolbar" style="margin-bottom:0">
+      <input id="fQ" placeholder="🔍 جستجو در عنوان / شواهد…" value="${esc(S.filters.q)}">
+      <select id="fUnit"><option value="">همه واحدهای مسئول</option>${opts(S.units, S.filters.unit)}</select>
+      <select id="fStatus">
+        <option value="">همه وضعیت‌ها</option>
+        ${['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز']
+          .map(v=>`<option value="${v}" ${v===S.filters.status?'selected':''}>${v}</option>`).join('')}
+      </select>
+      <select id="fCat"><option value="">همه دسته‌ها</option>${opts(S.cats, S.filters.cat)}</select>
+      <select id="fLevel"><option value="">همه سطوح</option>${opts(S.levels, S.filters.level)}</select>
+      <select id="fSize">
+        ${[12,24,48,96].map(n=>`<option value="${n}" ${n===S.pageSize?'selected':''}>${n} مورد در صفحه</option>`).join('')}
+      </select>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <span class="badge badge-soft">${fa(list.length)} کنترل یافت شد</span>
+    <span class="badge badge-soft">صفحه ${fa(S.page)} از ${fa(pages)}</span>
+    <button class="btn btn-sm" id="clearFilters" style="margin-right:auto">پاک کردن فیلترها</button>
+  </div>
+
+  <div class="list">
+    ${slice.length ? slice.map(c => {
+      const st = controlStatus(c);
+      const pr = controlProgress(c);
+      return `<div class="ctrl" data-open="${c.id}">
+        <div class="cc-head">
+          <span class="badge badge-soft">${esc(c.category || '—')}</span>
+          <span class="badge badge-soft">${esc(c.level || '—')}</span>
+          <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
+          <span class="badge badge-soft">${esc(c.owner_unit || '—')}</span>
+          <span class="cc-no">#${fa(c.row_no ?? '—')}</span>
+        </div>
+        <div class="cc-title">${esc(c.title)}</div>
+        <div class="cc-ev">${esc(c.evidence || 'شواهدی ثبت نشده است.')}</div>
+        <div class="cc-foot">
+          <div class="bar"><i style="width:${pr}%"></i></div>
+          <b style="font-size:12px;color:#22d3ee;min-width:42px;text-align:left">${fa(pr)}٪</b>
+        </div>
+      </div>`;
+    }).join('') : `<div class="card"><div class="empty">کنترلی با این فیلترها یافت نشد.<br>اگر هنوز داده‌ای وارد نکرده‌اید، از تب «ورود داده» اکسل را بارگذاری کنید.</div></div>`}
+  </div>
+
+  ${pages > 1 ? `
+  <div class="pager">
+    <button class="btn btn-sm" data-page="1" ${S.page===1?'disabled':''}>« اول</button>
+    <button class="btn btn-sm" data-page="${S.page-1}" ${S.page===1?'disabled':''}>قبلی</button>
+    <span class="info">${fa(start+1)} تا ${fa(Math.min(start+S.pageSize, list.length))} از ${fa(list.length)}</span>
+    <button class="btn btn-sm" data-page="${S.page+1}" ${S.page===pages?'disabled':''}>بعدی</button>
+    <button class="btn btn-sm" data-page="${pages}" ${S.page===pages?'disabled':''}>آخر »</button>
+  </div>` : ''}
+  `;
+}
+
+/* =========================================================
+   VIEW: ASSESS
+========================================================= */
+function viewAssess(){
+  if(!S.periods.length){
+    return `<div class="card"><div class="empty">ابتدا از تب «مدیریت دوره‌ها» یک دوره ارزیابی ایجاد کنید.</div></div>`;
+  }
+  if(!S.assessUnit) S.assessUnit = S.units[0] || '';
+
+  const list = S.controls.filter(c => (c.owner_unit || '') === S.assessUnit);
+  const opts = S.units.map(u => `<option value="${esc(u)}" ${u===S.assessUnit?'selected':''}>${esc(u)}</option>`).join('');
+
+  const done = list.filter(c => S.assessments[c.id]).length;
+  const avg = list.length ? Math.round(list.reduce((s,c)=>s+controlProgress(c),0)/list.length) : 0;
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="toolbar" style="margin-bottom:0">
+      <select id="asUnit">${opts || '<option value="">واحدی موجود نیست</option>'}</select>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span class="badge badge-soft">${fa(list.length)} کنترل</span>
+        <span class="badge st-ok">${fa(done)} ارزیابی‌شده</span>
+        <span class="badge badge-soft">پیشرفت واحد: <b style="color:#22d3ee">${fa(avg)}٪</b></span>
+      </div>
+    </div>
+  </div>
+
+  ${list.length ? list.map(c => {
+    const a = S.assessments[c.id] || {};
+    const st = a.status || normalizeStatus(c.status);
+    const pr = (a.progress !== null && a.progress !== undefined && a.progress !== '') ? Number(a.progress) : statusWeight(st);
+    return `<div class="as-item" data-cid="${c.id}">
+      <div class="t"><span class="n">#${fa(c.row_no ?? '')}</span>${esc(c.title)}
+        <div style="margin-top:6px">
+          <span class="badge badge-soft">${esc(c.category||'—')}</span>
+          <span class="badge badge-soft">${esc(c.level||'—')}</span>
+          <span class="badge ${statusClass(c.status)}">وضعیت پایه: ${esc(normalizeStatus(c.status))}</span>
+        </div>
+      </div>
+
+      <details style="margin-bottom:10px">
+        <summary style="cursor:pointer;color:#8ba0c4;font-size:12px">مشاهده شواهد اولیه</summary>
+        <div class="kv" style="margin-top:8px"><div class="v" style="font-size:12.5px">${esc(c.evidence || '—')}</div></div>
+      </details>
+
+      <div class="as-grid">
+        <div>
+          <label>وضعیت در این دوره</label>
+          <select class="a-status">
+            ${['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز']
+              .map(v=>`<option value="${v}" ${normalizeStatus(st)===v?'selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label>درصد پیشرفت: <b class="p-val" style="color:#22d3ee">${fa(pr)}٪</b></label>
+          <input type="range" class="a-range" min="0" max="100" step="5" value="${pr}">
+        </div>
+      </div>
+
+      <label style="display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px">اقدامات انجام‌شده در این دوره</label>
+      <textarea class="a-actions" placeholder="مثلاً: خط‌مشی تدوین شد، با پیمانکار هماهنگ شد…">${esc(a.actions || '')}</textarea>
+
+      <div class="as-foot">
+        <input type="file" class="a-file" style="max-width:260px">
+        <button class="btn btn-sm btn-primary a-save">💾 ذخیره</button>
+        ${a.file_url ? `<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 ${esc(a.file_name || 'فایل پیوست')}</a>` : ''}
+        <span class="saved" style="display:none">✔ ذخیره شد</span>
+      </div>
+    </div>`;
+  }).join('') : `<div class="card"><div class="empty">برای این واحد کنترلی ثبت نشده است.</div></div>`}
+  `;
+}
+
+/* =========================================================
+   VIEW: TREND
+========================================================= */
+function viewTrend(){
+  if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای ثبت نشده است.</div></div>`;
+  if(!S.allAssessments.length && !S._trendLoaded){
+    return `<div class="card"><div class="spin"></div><div class="empty">در حال بارگذاری روند…</div></div>`;
+  }
+
+  const unitOpts = ['<option value="__all">همه واحدها</option>']
+    .concat(S.units.map(u => `<option value="${esc(u)}" ${S._trendUnit===u?'selected':''}>${esc(u)}</option>`)).join('');
+
+  const selected = S._trendUnit || '__all';
+  const ctrlFiltered = selected === '__all' ? S.controls : S.controls.filter(c => c.owner_unit === selected);
+
+  // series per period
+  const series = S.periods.map(p => {
+    const map = assessmentMapFor(p.id);
+    const vals = ctrlFiltered.map(c => progressWithMap(c, map));
+    const avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+    return { id:p.id, name:p.name, value:avg, count:vals.length };
+  });
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="toolbar" style="margin-bottom:0">
+      <select id="trendUnit">${unitOpts}</select>
+      <span class="badge badge-soft">${fa(ctrlFiltered.length)} کنترل در دامنه</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <h3><span class="dot"></span> روند پیشرفت دوره‌به‌دوره ${selected==='__all'?'(کل سازمان)':`— ${esc(selected)}`}</h3>
+    ${lineChart(series)}
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <h3><span class="dot"></span> جدول پیشرفت واحدها در دوره‌ها</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>واحد مسئول</th>
+          ${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}
+        </tr></thead>
+        <tbody>
+        ${S.units.map(u => {
+          const cs = S.controls.filter(c => c.owner_unit === u);
+          const cells = S.periods.map(p => {
+            const map = assessmentMapFor(p.id);
+            const vals = cs.map(c => progressWithMap(c, map));
+            const avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+            return `<td><span style="color:${avg>=70?'#4ade80':avg>=40?'#fbbf24':'#f87171'};font-weight:800">${fa(avg)}٪</span></td>`;
+          }).join('');
+          return `<tr><td style="font-weight:700">${esc(u)}</td>${cells}</tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="dot"></span> سابقه اقدامات ثبت‌شده</h3>
+    ${S.periods.slice().reverse().map(p => {
+      const acts = S.allAssessments.filter(a => a.period_id === p.id && (a.actions||'').trim());
+      if(!acts.length) return '';
+      return `<div style="margin-bottom:18px">
+        <div class="badge badge-soft" style="margin-bottom:9px">${esc(p.name)} — ${fa(acts.length)} اقدام</div>
+        ${acts.slice(0,60).map(a => {
+          const c = S.controls.find(x => x.id === a.control_id);
+          return `<div style="background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:11px;margin-bottom:8px">
+            <div style="font-size:12px;color:#a9bcdb;margin-bottom:5px">
+              <b style="color:#22d3ee">#${fa(c?.row_no ?? '')}</b>
+              ${esc(c?.owner_unit || '')} — ${esc((c?.title||'').slice(0,90))}
+            </div>
+            <div style="font-size:12.5px;line-height:2">${esc(a.actions)}</div>
+            <div style="margin-top:7px;display:flex;gap:8px;flex-wrap:wrap">
+              ${a.status?`<span class="badge ${statusClass(a.status)}">${esc(normalizeStatus(a.status))}</span>`:''}
+              ${a.progress!=null?`<span class="badge badge-soft">پیشرفت ${fa(a.progress)}٪</span>`:''}
+              ${a.file_url?`<a class="badge badge-soft" href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 پیوست</a>`:''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }).join('') || `<div class="empty">هنوز اقدامی ثبت نشده است.</div>`}
+  </div>
+  `;
+}
+
+function lineChart(series){
+  if(!series.length) return `<div class="empty">داده‌ای نیست</div>`;
+  const W = 640, H = 240, PAD = 38;
+  const n = series.length;
+  const xs = i => n === 1 ? W/2 : PAD + i * (W - 2*PAD) / (n - 1);
+  const ys = v => H - PAD - (v/100) * (H - 2*PAD);
+
+  const path = series.map((s,i) => `${i?'L':'M'}${xs(i).toFixed(1)},${ys(s.value).toFixed(1)}`).join(' ');
+  const area = `${path} L${xs(n-1).toFixed(1)},${H-PAD} L${xs(0).toFixed(1)},${H-PAD} Z`;
+
+  return `
+  <div style="width:100%;overflow-x:auto">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:340px;height:auto" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="gline" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#22d3ee" stop-opacity=".38"/>
+          <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="stroke" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#7c3aed"/>
+        </linearGradient>
+      </defs>
+      ${[0,25,50,75,100].map(v => `
+        <line x1="${PAD}" y1="${ys(v)}" x2="${W-PAD}" y2="${ys(v)}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+        <text x="${PAD-8}" y="${ys(v)+4}" fill="#5b6b8c" font-size="10" text-anchor="end">${v}%</text>
+      `).join('')}
+      <path d="${area}" fill="url(#gline)"/>
+      <path d="${path}" fill="none" stroke="url(#stroke)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      ${series.map((s,i) => `
+        <circle cx="${xs(i)}" cy="${ys(s.value)}" r="5" fill="#0b1120" stroke="#22d3ee" stroke-width="2.5"/>
+        <text x="${xs(i)}" y="${ys(s.value)-13}" fill="#e9f0ff" font-size="11" font-weight="700" text-anchor="middle">${fa(s.value)}٪</text>
+        <text x="${xs(i)}" y="${H-12}" fill="#8ba0c4" font-size="10" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>
+      `).join('')}
+    </svg>
+  </div>`;
+}
+
+async function ensureTrendData(){
+  S._trendLoaded = false;
+  await loadAllAssessments();
+  S._trendLoaded = true;
+  if(S.view === 'trend'){ $('#content').innerHTML = viewTrend(); bindView(); }
+}
+
+/* =========================================================
+   VIEW: PERIODS
+========================================================= */
+function viewPeriods(){
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <h3><span class="dot"></span> ایجاد دوره ارزیابی جدید</h3>
+    <div class="toolbar" style="margin-bottom:10px">
+      <input id="pName" placeholder="نام دوره (مثلاً: دوره سوم - بهار ۱۴۰۵)">
+      <input id="pStart" type="date" title="تاریخ شروع">
+      <input id="pEnd" type="date" title="تاریخ پایان">
+      <button class="btn btn-primary" id="addPeriod">➕ ایجاد دوره</button>
+    </div>
+    <div style="color:#8ba0c4;font-size:12px;line-height:2">
+      هر دوره یک اسنپ‌شات از وضعیت کنترل‌هاست. برای هر دوره می‌توانید وضعیت، درصد پیشرفت، اقدامات و فایل پیوست ثبت کنید.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="dot"></span> دوره‌های ثبت‌شده (${fa(S.periods.length)})</h3>
+    ${S.periods.length ? `
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>نام دوره</th><th>شروع</th><th>پایان</th><th>تعداد ارزیابی</th><th>عملیات</th></tr></thead>
+        <tbody>
+        ${S.periods.map(p => {
+          const cnt = S.allAssessments.filter(a => a.period_id === p.id).length;
+          return `<tr>
+            <td style="font-weight:700">${esc(p.name)} ${p.id===S.periodId?'<span class="badge st-ok">جاری</span>':''}</td>
+            <td>${esc(p.start_date || '—')}</td>
+            <td>${esc(p.end_date || '—')}</td>
+            <td>${fa(cnt)}</td>
+            <td style="white-space:nowrap">
+              <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
+              <button class="btn btn-sm btn-danger" data-delperiod="${p.id}">حذف</button>
+            </td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+    </div>` : `<div class="empty">هنوز دوره‌ای ایجاد نشده است.</div>`}
+  </div>`;
+}
+
+/* =========================================================
+   VIEW: USERS
+========================================================= */
+function viewUsers(){
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <h3><span class="dot"></span> افزودن کاربر جدید</h3>
+    <div class="toolbar" style="margin-bottom:10px">
+      <input id="nuUser" placeholder="نام کاربری (لاتین)">
+      <input id="nuPass" type="password" placeholder="رمز عبور">
+      <input id="nuName" placeholder="نام و نام خانوادگی">
+      <select id="nuRole">
+        <option value="admin">مدیر سامانه</option>
+        <option value="user">کاربر</option>
+      </select>
+      <button class="btn btn-primary" id="addUser">➕ افزودن</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3><span class="dot"></span> کاربران سامانه</h3>
+    <div id="usersList"><div class="spin"></div></div>
+  </div>`;
+}
+
+async function renderUsersList(){
+  const host = document.getElementById('usersList');
+  if(!host) return;
+  const { data, error } = await sb.from('app_users').select('*').order('created_at', { ascending:true });
+  if(error){ host.innerHTML = `<div class="empty">خطا: ${esc(error.message)}</div>`; return; }
+  host.innerHTML = `
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th><th>عملیات</th></tr></thead>
+        <tbody>
+        ${(data||[]).map(u => `<tr>
+          <td style="font-weight:700">${esc(u.username)}</td>
+          <td>${esc(u.full_name || '—')}</td>
+          <td><span class="badge badge-soft">${u.role === 'admin' ? 'مدیر سامانه' : 'کاربر'}</span></td>
+          <td>${u.username === 'ice'
+            ? `<span style="color:#64748b;font-size:12px">کاربر پیش‌فرض</span>`
+            : `<button class="btn btn-sm btn-danger" data-deluser="${u.id}">حذف</button>`}</td>
+        </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+/* =========================================================
+   VIEW: IMPORT
+========================================================= */
+function viewImport(){
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <h3><span class="dot"></span> بارگذاری فایل اکسل کنترل‌ها</h3>
+    <p style="color:#8ba0c4;font-size:12.5px;line-height:2;margin-top:0">
+      فایل اکسل «گزارش کاشف ۴۹۵ کنترل» را انتخاب کنید. ستون‌های موردنیاز:
+      <b>ردیف</b>، <b>دسته</b>، <b>سطح پیشرفتگی</b>، <b>کنترل</b>، <b>شواهد</b>، <b>وضعیت پیاده‌سازی</b>، <b>واحد مسئول رسیدگی</b>.
+      داده‌های قبلی جدول کنترل‌ها جایگزین می‌شوند.
+    </p>
+    <div class="toolbar">
+      <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
+      <button class="btn btn-primary" id="doImport">📥 بارگذاری در پایگاه داده</button>
+      <button class="btn btn-danger" id="wipeControls">🗑️ حذف کل کنترل‌ها</button>
+    </div>
+    <div id="importLog" style="font-size:12.5px;line-height:2;color:#8ba0c4"></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="dot"></span> وضعیت فعلی داده‌ها</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span class="badge badge-soft">کنترل‌ها: ${fa(S.controls.length)}</span>
+      <span class="badge badge-soft">واحدها: ${fa(S.units.length)}</span>
+      <span class="badge badge-soft">دسته‌ها: ${fa(S.cats.length)}</span>
+      <span class="badge badge-soft">دوره‌ها: ${fa(S.periods.length)}</span>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   BIND EVENTS PER VIEW
+========================================================= */
+function bindView(){
+  const content = $('#content');
+
+  if(S.view === 'controls'){
+    const applyFilters = () => { S.page = 1; content.innerHTML = viewControls(); bindView(); };
+    $('#fQ')?.addEventListener('input', e => { S.filters.q = e.target.value; S.page = 1; content.innerHTML = viewControls(); bindView(); const el = $('#fQ'); el.focus(); el.setSelectionRange(el.value.length, el.value.length); });
+    $('#fUnit')?.addEventListener('change', e => { S.filters.unit = e.target.value; applyFilters(); });
+    $('#fStatus')?.addEventListener('change', e => { S.filters.status = e.target.value; applyFilters(); });
+    $('#fCat')?.addEventListener('change', e => { S.filters.cat = e.target.value; applyFilters(); });
+    $('#fLevel')?.addEventListener('change', e => { S.filters.level = e.target.value; applyFilters(); });
+    $('#fSize')?.addEventListener('change', e => { S.pageSize = Number(e.target.value); S.page = 1; content.innerHTML = viewControls(); bindView(); });
+    $('#clearFilters')?.addEventListener('click', () => {
+      S.filters = { q:'', unit:'', status:'', cat:'', level:'' };
+      S.page = 1; content.innerHTML = viewControls(); bindView();
+    });
+    content.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => {
+      S.page = Number(b.dataset.page); content.innerHTML = viewControls(); bindView();
+      window.scrollTo({ top: 0, behavior:'smooth' });
+    }));
+    content.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', () => openControlModal(el.dataset.open)));
+  }
+
+  if(S.view === 'assess'){
+    $('#asUnit')?.addEventListener('change', e => { S.assessUnit = e.target.value; content.innerHTML = viewAssess(); bindView(); });
+
+    content.querySelectorAll('.as-item').forEach(item => {
+      const cid = item.dataset.cid;
+      const range = item.querySelector('.a-range');
+      const pval = item.querySelector('.p-val');
+      const statusSel = item.querySelector('.a-status');
+
+      range.addEventListener('input', () => { pval.textContent = fa(range.value) + '٪'; });
+      statusSel.addEventListener('change', () => {
+        const w = statusWeight(statusSel.value);
+        range.value = w; pval.textContent = fa(w) + '٪';
+      });
+
+      item.querySelector('.a-save').addEventListener('click', async ev => {
+        const btn = ev.currentTarget;
+        btn.disabled = true; btn.textContent = 'در حال ذخیره…';
+        try{
+          let payload = {
+            status: statusSel.value,
+            progress: Number(range.value),
+            actions: item.querySelector('.a-actions').value.trim(),
+            updated_by: S.user?.username || '',
+            updated_at: new Date().toISOString()
+          };
+          const fileInput = item.querySelector('.a-file');
+          if(fileInput.files && fileInput.files[0]){
+            const up = await uploadFile(fileInput.files[0], cid);
+            payload.file_url = up.url;
+            payload.file_name = up.name;
+          }
+          await saveAssessment(cid, payload);
+          const saved = item.querySelector('.saved');
+          saved.style.display = 'inline';
+          setTimeout(()=> saved.style.display='none', 2000);
+          toast('ارزیابی ذخیره شد ✔', 'ok');
+        }catch(err){
+          toast('خطا: ' + err.message, 'err');
+        }finally{
+          btn.disabled = false; btn.textContent = '💾 ذخیره';
+        }
+      });
+    });
+  }
+
+  if(S.view === 'trend'){
+    $('#trendUnit')?.addEventListener('change', e => {
+      S._trendUnit = e.target.value;
+      content.innerHTML = viewTrend(); bindView();
+    });
+  }
+
+  if(S.view === 'periods'){
+    $('#addPeriod')?.addEventListener('click', async () => {
+      const name = ($('#pName').value || '').trim();
+      if(!name) return toast('نام دوره را وارد کنید', 'err');
+      const { data, error } = await sb.from('periods').insert({
+        name,
+        start_date: $('#pStart').value || null,
+        end_date: $('#pEnd').value || null
+      }).select().single();
+      if(error) return toast('خطا: ' + error.message, 'err');
+      await loadPeriods();
+      S.periodId = data.id;
+      renderPeriodSelect();
+      await loadAssessments();
+      toast('دوره ایجاد شد ✔', 'ok');
+      content.innerHTML = viewPeriods(); bindView();
+    });
+
+    content.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
+      S.periodId = b.dataset.selperiod;
+      renderPeriodSelect();
+      await loadAssessments();
+      toast('دوره انتخاب شد', 'ok');
+      content.innerHTML = viewPeriods(); bindView();
+    }));
+
+    content.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
+      if(!confirm('این دوره و تمام ارزیابی‌های آن حذف شود؟')) return;
+      const { error } = await sb.from('periods').delete().eq('id', b.dataset.delperiod);
+      if(error) return toast('خطا: ' + error.message, 'err');
+      await loadPeriods();
+      if(!S.periods.find(p => p.id === S.periodId)) S.periodId = S.periods[0]?.id || null;
+      renderPeriodSelect();
+      await loadAssessments();
+      toast('دوره حذف شد', 'ok');
+      content.innerHTML = viewPeriods(); bindView();
+    }));
+  }
+
+  if(S.view === 'users'){
+    renderUsersList().then(() => {
+      document.querySelectorAll('[data-deluser]').forEach(b => b.addEventListener('click', async () => {
+        if(!confirm('کاربر حذف شود؟')) return;
+        const { error } = await sb.from('app_users').delete().eq('id', b.dataset.deluser);
+        if(error) return toast('خطا: ' + error.message, 'err');
+        toast('کاربر حذف شد', 'ok');
+        renderUsersList();
+      }));
+    });
+    $('#addUser')?.addEventListener('click', async () => {
+      const u = ($('#nuUser').value || '').trim();
+      const p = ($('#nuPass').value || '').trim();
+      const n = ($('#nuName').value || '').trim();
+      const r = $('#nuRole').value;
+      if(!u || !p) return toast('نام کاربری و رمز عبور الزامی است', 'err');
+      const { error } = await sb.from('app_users').insert({
+        username: u, password_hash: await sha256(p), full_name: n, role: r
+      });
+      if(error) return toast('خطا: ' + error.message, 'err');
+      toast('کاربر اضافه شد ✔', 'ok');
+      $('#nuUser').value = ''; $('#nuPass').value = ''; $('#nuName').value = '';
+      renderUsersList();
+    });
+  }
+
+  if(S.view === 'import'){
+    $('#wipeControls')?.addEventListener('click', async () => {
+      if(!confirm('تمام کنترل‌ها حذف شوند؟ (ارزیابی‌های مرتبط نیز حذف می‌شوند)')) return;
+      const { error } = await sb.from('controls').delete().not('id', 'is', null);
+      if(error) return toast('خطا: ' + error.message, 'err');
+      await loadControls();
+      toast('کنترل‌ها حذف شدند', 'ok');
+      content.innerHTML = viewImport(); bindView();
+    });
+
+    $('#doImport')?.addEventListener('click', async () => {
+      const file = $('#xlsFile').files[0];
+      const log = $('#importLog');
+      if(!file) return toast('ابتدا فایل را انتخاب کنید', 'err');
+      log.innerHTML = 'در حال خواندن فایل…';
+      try{
+        const rows = await parseSheet(file);
+        if(!rows.length) throw new Error('فایل خالی است');
+
+        const mapped = rows.map(r => {
+          const g = (...names) => {
+            for(const n of names){
+              const key = Object.keys(r).find(k => String(k).trim() === n);
+              if(key !== undefined && String(r[key]).trim() !== '') return String(r[key]).trim();
+            }
+            return '';
+          };
+          return {
+            row_no: Number(g('ردیف')) || null,
+            category: g('دسته') || null,
+            level: g('سطح پیشرفتگی') || null,
+            title: g('کنترل') || '',
+            evidence: g('شواهد') || '',
+            status: g('وضعیت پیاده‌سازی') || null,
+            owner_unit: g('واحد مسئول رسیدگی') || null
+          };
+        }).filter(x => x.title);
+
+        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند. سرستون‌های فایل را بررسی کنید.');
+
+        log.innerHTML = `تعداد ${fa(mapped.length)} رکورد شناسایی شد. حذف داده‌های قبلی…`;
+        const del = await sb.from('controls').delete().not('id', 'is', null);
+        if(del.error) throw del.error;
+
+        const CHUNK = 100;
+        for(let i = 0; i < mapped.length; i += CHUNK){
+          const part = mapped.slice(i, i + CHUNK);
+          const { error } = await sb.from('controls').insert(part);
+          if(error) throw error;
+          log.innerHTML = `در حال درج… ${fa(Math.min(i+CHUNK, mapped.length))} از ${fa(mapped.length)}`;
+        }
+
+        await loadControls();
+        log.innerHTML = `<span style="color:#4ade80;font-weight:700">✔ ${fa(mapped.length)} کنترل با موفقیت بارگذاری شد.</span>`;
+        toast('بارگذاری کامل شد ✔', 'ok');
+        render();
+      }catch(err){
+        log.innerHTML = `<span style="color:#f87171">خطا: ${esc(err.message || err)}</span>`;
+        toast('خطا در بارگذاری', 'err');
+      }
+    });
+  }
+}
+
+function parseSheet(file){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = e => {
+      try{
+        const wb = XLSX.read(new Uint8Array(e.target.result), { type:'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false });
+        resolve(rows);
+      }catch(err){ reject(err); }
+    };
+    r.onerror = () => reject(new Error('خواندن فایل ممکن نشد'));
+    r.readAsArrayBuffer(file);
+  });
+}
+
+/* =========================================================
+   MODAL: control detail
+========================================================= */
+function openControlModal(id){
+  const c = S.controls.find(x => x.id === id);
+  if(!c) return;
+  const a = S.assessments[c.id] || {};
+  const st = controlStatus(c);
+  const pr = controlProgress(c);
+  const periodName = (S.periods.find(p => p.id === S.periodId) || {}).name || '—';
+
+  const host = $('#modalHost');
+  host.innerHTML = `
+  <div class="modal" id="modalBg">
+    <div class="modal-box">
+      <button class="close-x" id="closeModal">✕</button>
+      <h3>#${fa(c.row_no ?? '')} — ${esc(c.title)}</h3>
+
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px">
+        <span class="badge badge-soft">${esc(c.category || '—')}</span>
+        <span class="badge badge-soft">سطح: ${esc(c.level || '—')}</span>
+        <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
+        <span class="badge badge-soft">${esc(c.owner_unit || '—')}</span>
+      </div>
+
+      <div class="kv"><div class="k">متن کنترل</div><div class="v">${esc(c.title)}</div></div>
+      <div class="kv"><div class="k">شواهد ارزیابی</div><div class="v">${esc(c.evidence || '—')}</div></div>
+
+      <div class="kv">
+        <div class="k">وضعیت در دوره «${esc(periodName)}»</div>
+        <div class="v" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
+          <div class="bar" style="flex:1;min-width:120px"><i style="width:${pr}%"></i></div>
+          <b style="color:#22d3ee">${fa(pr)}٪</b>
+        </div>
+      </div>
+
+      ${a.actions ? `<div class="kv"><div class="k">اقدامات ثبت‌شده در این دوره</div><div class="v">${esc(a.actions)}</div></div>` : ''}
+      ${a.file_url ? `<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 ${esc(a.file_name || 'دانلود فایل')}</a></div></div>` : ''}
+
+      <button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">✏️ رفتن به فرم ارزیابی این واحد</button>
+    </div>
+  </div>`;
+
+  const close = () => host.innerHTML = '';
+  $('#closeModal').addEventListener('click', close);
+  $('#modalBg').addEventListener('click', e => { if(e.target.id === 'modalBg') close(); });
+  $('#goAssess').addEventListener('click', () => {
+    S.assessUnit = c.owner_unit || '';
+    S.view = 'assess';
+    close();
+    render();
+  });
+}
+
+/* =========================================================
+   GLOBAL EVENTS
+========================================================= */
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('#loginBtn'), err = $('#loginErr');
+  err.textContent = '';
+  btn.disabled = true; btn.textContent = 'در حال بررسی…';
+  try{
+    const u = await doLogin($('#luser').value.trim(), $('#lpass').value);
+    startSession(u);
+  }catch(ex){
+    err.textContent = ex.message || 'ورود ناموفق بود';
+  }finally{
+    btn.disabled = false; btn.textContent = 'ورود به سامانه';
+  }
+});
+
+$('#nav').addEventListener('click', e => {
+  const b = e.target.closest('button[data-view]');
+  if(!b) return;
+  S.view = b.dataset.view;
+  $('#sidebar').classList.remove('open');
+  $('#overlay').classList.remove('show');
+  render();
+});
+
+$('#globalPeriod').addEventListener('change', async e => {
+  S.periodId = e.target.value || null;
+  await loadAssessments();
+  toast('دوره تغییر کرد', 'ok');
+  render();
+});
+
+$('#menuBtn').addEventListener('click', () => {
+  $('#sidebar').classList.add('open');
+  $('#overlay').classList.add('show');
+});
+$('#overlay').addEventListener('click', () => {
+  $('#sidebar').classList.remove('open');
+  $('#overlay').classList.remove('show');
+});
+$('#logoutBtn').addEventListener('click', logout);
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    $('#sidebar').classList.remove('open');
+    $('#overlay').classList.remove('show');
+    $('#modalHost').innerHTML = '';
+  }
+});
+
+/* auto-restore session (optional convenience) */
+(async function restore(){
+  await ensureDefaultUser();
+})();
+</script>
+</body>
+</html>
