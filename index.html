@@ -6,656 +6,175 @@
 <title>کاشف ۴۹۵ | پایش کنترل‌های امنیتی</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
-:root{
-  --white:#ffffff;
-  --bg:#fafafa;
-  --line:#e4e4e7;
-  --line2:#d4d4d8;
-  --txt:#09090b;
-  --txt2:#3f3f46;
-  --muted:#71717a;
-  --dim:#a1a1aa;
-  --faint:#f4f4f5;
-  --black:#18181b;
-}
+:root{--white:#fff;--line:#e4e4e7;--line2:#d4d4d8;--txt:#09090b;--txt2:#3f3f46;--muted:#71717a;--dim:#a1a1aa;--faint:#f4f4f5}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;min-height:100%}
-body{
-  font-family:'Vazirmatn',system-ui,-apple-system,sans-serif;
-  background:var(--white);color:var(--txt);
-  font-size:14px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  font-variant-numeric:tabular-nums;
-  overflow-x:hidden;
-}
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-thumb{background:var(--line2);border-radius:0}
-::-webkit-scrollbar-thumb:hover{background:var(--dim)}
-::-webkit-scrollbar-track{background:transparent}
+body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--white);color:var(--txt);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line2)}
 a{color:var(--txt);text-decoration:none}
 button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
 
-/* ============ LOGIN ============ */
-.login-wrap{
-  position:fixed;inset:0;display:grid;place-items:center;
-  overflow:hidden;z-index:200;padding:16px;
-  background:var(--white);
-}
+/* LOGIN */
+.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px;background:var(--white)}
 .bg-anim{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.bg-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(var(--faint) 1px,transparent 1px),
-    linear-gradient(90deg,var(--faint) 1px,transparent 1px);
-  background-size:48px 48px;
-  opacity:.8;
-}
-.rotor{
-  position:absolute;border:1px solid var(--faint);
-  top:50%;left:50%;pointer-events:none;
-}
-.rotor-a{
-  width:56vmin;height:56vmin;
-  transform:translate(-50%,-50%) rotate(0deg);
-  animation:rot 180s linear infinite;
-}
-.rotor-b{
-  width:34vmin;height:34vmin;
-  border-style:dashed;border-color:var(--line);
-  transform:translate(-50%,-50%) rotate(0deg);
-  animation:rot 240s linear infinite reverse;
-}
-.rotor-c{
-  width:80vmin;height:80vmin;
-  border-color:var(--faint);
-  transform:translate(-50%,-50%) rotate(0deg);
-  animation:rot 320s linear infinite;
-}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px);background-size:48px 48px;opacity:.8}
+.rotor{position:absolute;border:1px solid var(--faint);top:50%;left:50%;pointer-events:none}
+.rotor-a{width:56vmin;height:56vmin;animation:rot 180s linear infinite}
+.rotor-b{width:34vmin;height:34vmin;border-style:dashed;border-color:var(--line);animation:rot 240s linear infinite reverse}
+.rotor-c{width:80vmin;height:80vmin;animation:rot 320s linear infinite}
 @keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg)}}
-
-.login-card{
-  position:relative;z-index:3;
-  width:min(380px,94vw);
-  padding:36px 28px 28px;
-  background:var(--white);
-  border:1px solid var(--txt);
-  box-shadow:none;
-  animation:pop .5s ease;
-}
+.login-card{position:relative;z-index:3;width:min(380px,94vw);padding:36px 28px 28px;background:var(--white);border:1px solid var(--txt);animation:pop .5s ease}
 @keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-
-.kashaf{
-  font-size:11px;font-weight:600;
-  letter-spacing:.32em;
-  color:var(--txt);
-  text-align:center;
-  text-transform:uppercase;
-  margin-bottom:14px;
-}
+.kashaf{font-size:11px;font-weight:600;letter-spacing:.32em;text-align:center;text-transform:uppercase;margin-bottom:14px}
 .kashaf-rule{height:1px;background:var(--txt);margin-bottom:22px}
-.login-card h1{
-  font-size:15px;font-weight:600;
-  margin:0 0 4px;text-align:center;
-  letter-spacing:.02em;
-}
-.login-card .sub{
-  margin:0 0 26px;text-align:center;
-  color:var(--muted);font-size:11.5px;
-  letter-spacing:.02em;
-}
-
+.login-card h1{font-size:15px;font-weight:600;margin:0 0 4px;text-align:center}
+.login-card .sub{margin:0 0 26px;text-align:center;color:var(--muted);font-size:11.5px}
 .field{margin-bottom:14px}
-.field label{
-  display:block;font-size:10px;
-  color:var(--muted);margin-bottom:6px;
-  letter-spacing:.15em;font-weight:500;
-}
-.field input{
-  width:100%;padding:10px 12px;
-  border:1px solid var(--txt);
-  background:var(--white);color:var(--txt);
-  outline:none;font-size:13px;
-  border-radius:0;
-  font-variant-numeric:tabular-nums;
-}
-.field input:focus{background:var(--faint)}
-
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  padding:10px 16px;border:1px solid var(--txt);
-  background:var(--white);color:var(--txt);
-  cursor:pointer;font-weight:500;font-size:12.5px;
-  transition:background .12s,color .12s;
-  border-radius:0;
-  letter-spacing:.02em;
-}
+.field label{display:block;font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:.15em;font-weight:500}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:13px;border-radius:0;font-variant-numeric:tabular-nums}
+.field input:focus,.field select:focus,.field textarea:focus{background:var(--faint)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;font-weight:500;font-size:12.5px;transition:.12s;border-radius:0}
 .btn:hover{background:var(--faint)}
-.btn:active{background:var(--line)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-primary{background:var(--txt);color:var(--white);border-color:var(--txt)}
 .btn-primary:hover{background:var(--txt2);border-color:var(--txt2)}
 .btn-full{width:100%;padding:12px}
 .btn-sm{padding:6px 10px;font-size:11.5px}
-.btn-danger{background:var(--white);color:var(--txt);border-color:var(--txt)}
-
-.err{color:var(--txt);font-size:11.5px;text-align:center;margin-top:10px;min-height:14px;letter-spacing:.02em;font-weight:500}
-.diag{
-  margin:0 0 16px;padding:9px 11px;
-  border:1px solid var(--line);
-  background:var(--faint);
-  font-size:10.5px;line-height:1.7;
-  color:var(--muted);
-  letter-spacing:.02em;
-}
+.err{color:var(--txt);font-size:11.5px;text-align:center;margin-top:10px;min-height:14px;font-weight:500}
+.diag{margin:0 0 16px;padding:9px 11px;border:1px solid var(--line);background:var(--faint);font-size:10.5px;line-height:1.7;color:var(--muted)}
 .diag.ok{background:var(--white);border-color:var(--txt)}
 .diag.err{background:var(--white);border-color:var(--txt);border-style:dashed}
 .diag.warn{background:var(--white);border-color:var(--line2)}
 .diag b{color:var(--txt);font-weight:600}
-.diag code{background:var(--white);padding:1px 4px;font-family:'Vazirmatn',monospace;font-size:10px;border:1px solid var(--line)}
-
-.hint{
-  text-align:center;color:var(--dim);
-  font-size:10.5px;margin-top:16px;
-  letter-spacing:.06em;
-  padding-top:16px;
-  border-top:1px solid var(--line);
-}
+.diag code{background:var(--white);padding:1px 4px;font-size:10px;border:1px solid var(--line)}
+.hint{text-align:center;color:var(--dim);font-size:10.5px;margin-top:16px;letter-spacing:.06em;padding-top:16px;border-top:1px solid var(--line)}
 .hint b{color:var(--txt);font-weight:600}
-
-.mode-toggle{
-  display:flex;gap:0;margin-top:12px;
-  border:1px solid var(--txt);
-}
-.mode-toggle button{
-  flex:1;padding:8px 6px;font-size:10.5px;
-  background:var(--white);color:var(--txt);
-  border:none;cursor:pointer;
-  letter-spacing:.05em;font-weight:500;
-}
+.mode-toggle{display:flex;margin-top:12px;border:1px solid var(--txt)}
+.mode-toggle button{flex:1;padding:8px 6px;font-size:10.5px;background:var(--white);color:var(--txt);border:none;cursor:pointer;letter-spacing:.05em;font-weight:500}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
 
-/* ============ APP ============ */
-#app{display:flex;min-height:100dvh;width:100%;background:var(--white)}
-
-.sidebar{
-  width:220px;flex:0 0 220px;
-  height:100dvh;position:sticky;top:0;z-index:50;
-  background:var(--white);
-  border-left:1px solid var(--txt);
-  display:flex;flex-direction:column;
-  padding:22px 14px;
-  overflow:hidden;
-}
-.brand{
-  padding:0 6px 18px;
-  border-bottom:1px solid var(--txt);
-  margin-bottom:18px;
-  flex-shrink:0;
-}
-.brand b{
-  display:block;font-size:13px;
-  font-weight:600;color:var(--txt);
-  letter-spacing:.16em;
-  margin-bottom:4px;
-}
-.brand span{
-  display:block;font-size:10px;
-  color:var(--muted);letter-spacing:.06em;
-}
+/* APP - sidebar fixed, main scrolls */
+#app{display:block;min-height:100dvh}
+.sidebar{position:fixed;top:0;right:0;width:220px;height:100dvh;z-index:50;background:var(--white);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
+.brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
+.brand b{display:block;font-size:13px;font-weight:600;letter-spacing:.16em;margin-bottom:4px}
+.brand span{display:block;font-size:10px;color:var(--muted);letter-spacing:.06em}
 .nav{display:flex;flex-direction:column;gap:0;flex:1;min-height:0;overflow:hidden}
-.nav button{
-  display:flex;align-items:center;
-  width:100%;padding:9px 10px;
-  border:none;background:transparent;
-  color:var(--muted);
-  cursor:pointer;font-weight:500;
-  font-size:12px;text-align:right;
-  transition:background .12s,color .12s;
-  border-radius:0;
-  flex-shrink:0;
-  letter-spacing:.02em;
-  border-right:2px solid transparent;
-  padding-right:8px;
-}
+.nav button{display:flex;align-items:center;width:100%;padding:9px 10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-weight:500;font-size:12px;text-align:right;transition:.12s;border-right:2px solid transparent;padding-right:8px;flex-shrink:0}
 .nav button:hover{color:var(--txt);background:var(--faint)}
-.nav button.active{
-  color:var(--txt);
-  font-weight:600;
-  border-right:2px solid var(--txt);
-  background:var(--faint);
-}
-
-.side-foot{
-  border-top:1px solid var(--txt);
-  padding-top:14px;margin-top:14px;
-  flex-shrink:0;
-}
-.user-chip{
-  display:flex;align-items:center;gap:9px;
-  padding:8px 4px;margin-bottom:10px;
-}
-.user-chip .av{
-  width:26px;height:26px;
-  border:1px solid var(--txt);
-  display:grid;place-items:center;
-  font-weight:600;font-size:10px;
-  color:var(--txt);flex:0 0 auto;
-  letter-spacing:.02em;
-}
-.user-chip b{
-  display:block;font-size:11.5px;
-  color:var(--txt);font-weight:600;
-  line-height:1.25;letter-spacing:.02em;
-}
-.user-chip span{
-  display:block;font-size:9.5px;
-  color:var(--muted);margin-top:2px;
-  letter-spacing:.06em;
-}
-.mode-line{
-  display:flex;align-items:center;gap:6px;
-  padding:6px 4px;margin-bottom:8px;
-  font-size:9.5px;color:var(--muted);
-  letter-spacing:.14em;font-weight:500;
-}
-.mode-line::before{
-  content:'';width:6px;height:6px;
-  background:var(--txt);flex:0 0 auto;
-}
+.nav button.active{color:var(--txt);font-weight:600;border-right-color:var(--txt);background:var(--faint)}
+.side-foot{border-top:1px solid var(--txt);padding-top:14px;margin-top:14px;flex-shrink:0}
+.user-chip{display:flex;align-items:center;gap:9px;padding:8px 4px;margin-bottom:10px}
+.user-chip .av{width:26px;height:26px;border:1px solid var(--txt);display:grid;place-items:center;font-weight:600;font-size:10px;flex:0 0 auto}
+.user-chip b{display:block;font-size:11.5px;font-weight:600;line-height:1.25}
+.user-chip span{display:block;font-size:9.5px;color:var(--muted);margin-top:2px;letter-spacing:.06em}
+.mode-line{display:flex;align-items:center;gap:6px;padding:6px 4px;margin-bottom:8px;font-size:9.5px;color:var(--muted);letter-spacing:.14em;font-weight:500}
+.mode-line::before{content:'';width:6px;height:6px;background:var(--txt);flex:0 0 auto}
 .mode-line.local::before{background:var(--dim)}
-.side-foot .btn{
-  padding:7px;font-size:11px;
-  letter-spacing:.08em;font-weight:500;
-}
+.side-foot .btn{padding:7px;font-size:11px;letter-spacing:.08em}
 
-.overlay{
-  position:fixed;inset:0;background:rgba(9,9,11,.32);
-  z-index:45;opacity:0;pointer-events:none;
-  transition:opacity .2s;
-}
-.overlay.show{opacity:1;pointer-events:auto}
-
-.main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;width:100%}
-.topbar{
-  position:sticky;top:0;z-index:30;
-  display:flex;align-items:center;gap:12px;
-  padding:16px 24px;
-  background:var(--white);
-  border-bottom:1px solid var(--txt);
-}
-.topbar h2{
-  margin:0;font-size:13px;
-  font-weight:600;flex:1;min-width:0;
-  overflow:hidden;text-overflow:ellipsis;
-  white-space:nowrap;
-  letter-spacing:.06em;
-  color:var(--txt);
-}
-.icon-btn{
-  width:34px;height:34px;
-  border:1px solid var(--txt);
-  background:var(--white);color:var(--txt);
-  cursor:pointer;display:none;place-items:center;
-  font-size:15px;flex:0 0 auto;
-  border-radius:0;
-}
+.main{margin-right:220px;min-height:100dvh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--txt)}
+.topbar h2{margin:0;font-size:13px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.06em}
+.icon-btn{width:34px;height:34px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;display:none;place-items:center;font-size:15px;flex:0 0 auto}
 .icon-btn:hover{background:var(--faint)}
 .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.top-actions select{
-  padding:8px 11px;
-  border:1px solid var(--txt);
-  background:var(--white);color:var(--txt);
-  outline:none;font-size:11.5px;
-  border-radius:0;letter-spacing:.02em;
-  max-width:200px;
-  font-variant-numeric:tabular-nums;
-}
+.top-actions select{padding:8px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:200px;font-variant-numeric:tabular-nums}
 .content{flex:1;padding:24px;width:100%;min-width:0}
+.overlay{position:fixed;inset:0;background:rgba(9,9,11,.32);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.show{opacity:1;pointer-events:auto}
 
-/* ============ COMPONENTS ============ */
+/* COMPONENTS */
 .grid{display:grid;gap:16px;width:100%}
 .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-
-.card{
-  background:var(--white);
-  border:1px solid var(--txt);
-  padding:20px;min-width:0;
-  border-radius:0;
-}
-.card h3{
-  margin:0 0 16px;font-size:10.5px;
-  font-weight:600;color:var(--muted);
-  display:flex;align-items:center;gap:8px;
-  letter-spacing:.16em;
-  padding-bottom:12px;
-  border-bottom:1px solid var(--line);
-}
-.card h3 .dot{
-  width:5px;height:5px;background:var(--txt);flex:0 0 auto;
-}
-
-.kpi .v{
-  font-size:32px;font-weight:600;
-  line-height:1;color:var(--txt);
-  letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;
-}
-.kpi .l{
-  color:var(--muted);font-size:10px;
-  margin-top:8px;letter-spacing:.14em;
-  font-weight:500;
-}
-
-.badge{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:2px 8px;font-size:10px;
-  white-space:nowrap;font-weight:500;
-  letter-spacing:.06em;
-  border-radius:0;
-  border:1px solid transparent;
-}
+.card{background:var(--white);border:1px solid var(--txt);padding:20px;min-width:0}
+.card h3{margin:0 0 16px;font-size:10.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:8px;letter-spacing:.16em;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.card h3 .dot{width:5px;height:5px;background:var(--txt);flex:0 0 auto}
+.kpi .v{font-size:32px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.kpi .l{color:var(--muted);font-size:10px;margin-top:8px;letter-spacing:.14em;font-weight:500}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-size:10px;white-space:nowrap;font-weight:500;letter-spacing:.06em;border:1px solid transparent}
 .st-ok{background:var(--txt);color:var(--white);border-color:var(--txt)}
 .st-warn{background:var(--white);color:var(--txt);border-color:var(--txt)}
 .st-bad{background:var(--white);color:var(--muted);border-color:var(--line2);border-style:dashed}
 .st-gray{background:transparent;color:var(--dim);border-color:var(--line)}
 .badge-soft{background:var(--faint);color:var(--muted);border-color:var(--line)}
-
 .bar-row{display:grid;grid-template-columns:1fr 42px;gap:12px;align-items:center;margin:10px 0}
-.bar-row .nm{
-  font-size:11.5px;color:var(--txt);font-weight:500;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  letter-spacing:.02em;
-}
-.bar-row .pc{
-  font-size:11px;font-weight:600;text-align:left;
-  color:var(--txt);
-  font-variant-numeric:tabular-nums;
-}
-.bar{
-  height:4px;background:var(--faint);
-  overflow:hidden;margin-top:6px;border-radius:0;
-}
-.bar>i{
-  display:block;height:100%;background:var(--txt);
-  transition:width .6s cubic-bezier(.2,.9,.3,1);
-}
-
+.bar-row .nm{font-size:11.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-row .pc{font-size:11px;font-weight:600;text-align:left}
+.bar{height:4px;background:var(--faint);overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:var(--txt);transition:width .6s cubic-bezier(.2,.9,.3,1)}
 .donut-wrap{display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center}
-.donut{
-  width:150px;height:150px;border-radius:50%;
-  position:relative;display:grid;place-items:center;flex:0 0 auto;
-}
-.donut::before{
-  content:'';position:absolute;inset:22px;
-  border-radius:50%;background:var(--white);
-}
+.donut{width:150px;height:150px;border-radius:50%;position:relative;display:grid;place-items:center;flex:0 0 auto}
+.donut::before{content:'';position:absolute;inset:22px;border-radius:50%;background:var(--white)}
 .donut .mid{position:relative;z-index:2;text-align:center}
-.donut .mid b{
-  display:block;font-size:26px;font-weight:600;
-  line-height:1;color:var(--txt);
-  letter-spacing:-.03em;
-  font-variant-numeric:tabular-nums;
-}
-.donut .mid span{
-  font-size:9.5px;color:var(--muted);
-  margin-top:4px;letter-spacing:.14em;
-  display:block;font-weight:500;
-}
+.donut .mid b{display:block;font-size:26px;font-weight:600;line-height:1;letter-spacing:-.03em}
+.donut .mid span{font-size:9.5px;color:var(--muted);margin-top:4px;letter-spacing:.14em;display:block;font-weight:500}
 .legend{display:flex;flex-direction:column;gap:10px;min-width:160px}
-.legend div{
-  display:flex;align-items:center;gap:10px;
-  font-size:11px;color:var(--txt);
-  letter-spacing:.02em;
-}
-.legend i{
-  width:8px;height:8px;flex:0 0 auto;
-  border-radius:0;
-  border:1px solid var(--txt);
-}
-.legend b{
-  margin-right:auto;color:var(--txt);
-  font-weight:600;font-variant-numeric:tabular-nums;
-}
-
-.toolbar{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:8px;margin-bottom:14px;
-}
-.toolbar input,.toolbar select{
-  padding:9px 11px;
-  border:1px solid var(--txt);
-  background:var(--white);color:var(--txt);
-  outline:none;width:100%;font-size:11.5px;
-  border-radius:0;letter-spacing:.02em;
-  font-variant-numeric:tabular-nums;
-}
+.legend div{display:flex;align-items:center;gap:10px;font-size:11px}
+.legend i{width:8px;height:8px;flex:0 0 auto;border:1px solid var(--txt)}
+.legend b{margin-right:auto;font-weight:600}
+.toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+.toolbar input,.toolbar select{padding:9px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;width:100%;font-size:11.5px;font-variant-numeric:tabular-nums}
 .toolbar input:focus,.toolbar select:focus{background:var(--faint)}
-.toolbar input::placeholder{color:var(--dim);letter-spacing:.02em}
-
+.toolbar input::placeholder{color:var(--dim)}
 .list{display:grid;gap:10px}
-.ctrl{
-  background:var(--white);
-  border:1px solid var(--line2);
-  padding:14px 16px;
-  cursor:pointer;transition:border-color .12s;min-width:0;
-  border-radius:0;
-}
+.ctrl{background:var(--white);border:1px solid var(--line2);padding:14px 16px;cursor:pointer;transition:border-color .12s;min-width:0;position:relative}
 .ctrl:hover{border-color:var(--txt)}
-.cc-head{
-  display:flex;align-items:center;gap:6px;
-  flex-wrap:wrap;margin-bottom:10px;
-}
-.cc-no{
-  font-size:10px;color:var(--muted);
-  font-weight:500;margin-right:auto;
-  letter-spacing:.08em;
-  font-variant-numeric:tabular-nums;
-}
-.cc-title{
-  font-size:12.5px;line-height:1.85;
-  font-weight:500;margin-bottom:8px;
-  color:var(--txt);letter-spacing:.01em;
-}
-.cc-ev{
-  font-size:11px;line-height:1.85;
-  color:var(--muted);
-  display:-webkit-box;-webkit-line-clamp:2;
-  -webkit-box-orient:vertical;overflow:hidden;
-  letter-spacing:.01em;
-}
-.cc-foot{
-  margin-top:12px;display:flex;align-items:center;gap:12px;
-}
+.cc-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding-left:30px}
+.cc-no{font-size:10px;color:var(--muted);font-weight:500;margin-right:auto;letter-spacing:.08em}
+.cc-title{font-size:12.5px;line-height:1.85;font-weight:500;margin-bottom:8px}
+.cc-ev{font-size:11px;line-height:1.85;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cc-foot{margin-top:12px;display:flex;align-items:center;gap:12px}
 .cc-foot .bar{flex:1;margin:0}
-.cc-foot b{
-  font-size:10.5px;color:var(--txt);
-  min-width:38px;text-align:left;
-  font-weight:600;
-  font-variant-numeric:tabular-nums;
-}
+.cc-foot b{font-size:10.5px;min-width:38px;text-align:left;font-weight:600}
+.del-btn{position:absolute;top:12px;left:12px;width:22px;height:22px;border:1px solid var(--line2);background:var(--white);cursor:pointer;font-size:12px;line-height:1;color:var(--muted);display:grid;place-items:center}
+.del-btn:hover{background:var(--faint);border-color:var(--txt);color:var(--txt)}
+.pager{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;flex-wrap:wrap}
+.pager .info{color:var(--muted);font-size:10.5px;padding:0 8px;letter-spacing:.06em}
 
-.pager{
-  display:flex;align-items:center;justify-content:center;
-  gap:8px;margin-top:20px;flex-wrap:wrap;
-}
-.pager .info{
-  color:var(--muted);font-size:10.5px;
-  padding:0 8px;letter-spacing:.06em;
-  font-variant-numeric:tabular-nums;
-}
-
-.as-item{
-  background:var(--white);
-  border:1px solid var(--line2);
-  padding:16px;margin-bottom:10px;
-  border-radius:0;
-}
-.as-item .t{
-  font-size:12.5px;font-weight:500;
-  line-height:1.9;margin-bottom:12px;
-  color:var(--txt);letter-spacing:.01em;
-}
-.as-item .t .n{
-  color:var(--muted);font-weight:600;
-  margin-left:6px;font-size:11px;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:.06em;
-}
-.as-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:10px;margin-bottom:10px;
-}
-.as-grid label{
-  display:block;font-size:10px;
-  color:var(--muted);margin-bottom:5px;
-  font-weight:500;letter-spacing:.12em;
-}
-.as-grid select,.as-grid input{
-  width:100%;padding:8px 10px;
-  border:1px solid var(--txt);
-  background:var(--white);color:var(--txt);
-  outline:none;font-size:11.5px;
-  border-radius:0;letter-spacing:.02em;
-  font-variant-numeric:tabular-nums;
-}
+.as-item{background:var(--white);border:1px solid var(--line2);padding:16px;margin-bottom:10px}
+.as-item .t{font-size:12.5px;font-weight:500;line-height:1.9;margin-bottom:12px}
+.as-item .t .n{color:var(--muted);font-weight:600;margin-left:6px;font-size:11px;letter-spacing:.06em}
+.as-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px}
+.as-grid label{display:block;font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:500;letter-spacing:.12em}
+.as-grid select,.as-grid input{width:100%;padding:8px 10px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;font-variant-numeric:tabular-nums}
 .as-grid select:focus,.as-grid input:focus{background:var(--faint)}
-input[type=range]{
-  width:100%;accent-color:var(--txt);
-  margin-top:8px;border-radius:0;
-}
-textarea{
-  width:100%;padding:10px 12px;
-  border:1px solid var(--txt);
-  background:var(--white);color:var(--txt);
-  outline:none;resize:vertical;
-  min-height:66px;line-height:1.8;
-  font-size:11.5px;border-radius:0;
-  letter-spacing:.01em;
-}
+.prog-row{display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center}
+input[type=range]{width:100%;accent-color:var(--txt);margin-top:8px}
+textarea{width:100%;padding:10px 12px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;resize:vertical;min-height:66px;line-height:1.8;font-size:11.5px}
 textarea:focus{background:var(--faint)}
-input[type=file]{
-  width:100%;padding:7px;
-  border:1px dashed var(--line2);
-  background:var(--white);color:var(--muted);
-  font-size:10.5px;cursor:pointer;
-  border-radius:0;letter-spacing:.02em;
-}
-.as-foot{
-  display:flex;align-items:center;gap:10px;
-  margin-top:12px;flex-wrap:wrap;
-}
-.saved{
-  color:var(--txt);font-size:10.5px;
-  font-weight:600;letter-spacing:.12em;
-}
-
+input[type=file]{width:100%;padding:7px;border:1px dashed var(--line2);background:var(--white);color:var(--muted);font-size:10.5px;cursor:pointer}
+.as-foot{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.saved{color:var(--txt);font-size:10.5px;font-weight:600;letter-spacing:.12em}
 .tbl-wrap{overflow-x:auto;width:100%}
-table{
-  width:100%;border-collapse:collapse;
-  font-size:11.5px;min-width:520px;
-}
-th,td{
-  padding:10px 12px;text-align:right;
-  border-bottom:1px solid var(--line);
-  letter-spacing:.02em;
-}
-th{
-  color:var(--muted);font-weight:600;
-  font-size:9.5px;background:var(--faint);
-  white-space:nowrap;letter-spacing:.14em;
-  border-bottom:1px solid var(--txt);
-}
+table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:520px}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:9.5px;background:var(--faint);white-space:nowrap;letter-spacing:.14em;border-bottom:1px solid var(--txt)}
 tbody tr:hover{background:var(--faint)}
 tbody td{font-variant-numeric:tabular-nums}
-
-.modal{
-  position:fixed;inset:0;z-index:300;
-  display:grid;place-items:center;padding:16px;
-  background:rgba(9,9,11,.4);
-  animation:fade .18s;
-}
+.modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .18s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.modal-box{
-  width:min(760px,100%);max-height:88dvh;overflow:auto;
-  border:1px solid var(--txt);
-  background:var(--white);
-  padding:24px;
-  border-radius:0;
-  animation:pop .2s ease;
-}
-.modal-box h3{
-  margin:0 0 16px;font-size:13px;
-  font-weight:600;line-height:1.9;
-  color:var(--txt);letter-spacing:.01em;
-  padding-bottom:12px;
-  border-bottom:1px solid var(--line);
-}
+.modal-box{width:min(760px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease}
+.modal-box h3{margin:0 0 16px;font-size:13px;font-weight:600;line-height:1.9;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .kv{margin-bottom:14px}
-.kv .k{
-  font-size:9.5px;color:var(--muted);
-  margin-bottom:6px;font-weight:600;
-  letter-spacing:.14em;
-}
-.kv .v{
-  font-size:12px;line-height:1.95;
-  background:var(--faint);
-  padding:11px 13px;
-  border:1px solid var(--line);
-  border-radius:0;letter-spacing:.01em;
-}
-.close-x{
-  position:sticky;top:0;float:left;
-  background:var(--white);color:var(--txt);
-  border:1px solid var(--txt);
-  width:28px;height:28px;
-  cursor:pointer;font-size:14px;
-  border-radius:0;line-height:1;
-}
+.kv .k{font-size:9.5px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.14em}
+.kv .v{font-size:12px;line-height:1.95;background:var(--faint);padding:11px 13px;border:1px solid var(--line)}
+.close-x{position:sticky;top:0;float:left;background:var(--white);color:var(--txt);border:1px solid var(--txt);width:28px;height:28px;cursor:pointer;font-size:14px;line-height:1}
 .close-x:hover{background:var(--faint)}
-
-.toast{
-  position:fixed;bottom:22px;left:50%;
-  transform:translateX(-50%) translateY(100px);
-  z-index:400;padding:10px 20px;
-  background:var(--txt);color:var(--white);
-  font-size:11px;font-weight:500;
-  letter-spacing:.08em;
-  border-radius:0;
-  transition:transform .3s cubic-bezier(.2,.9,.3,1.15);
-}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);z-index:400;padding:10px 20px;background:var(--txt);color:var(--white);font-size:11px;font-weight:500;letter-spacing:.08em;transition:transform .3s cubic-bezier(.2,.9,.3,1.15)}
 .toast.show{transform:translateX(-50%) translateY(0)}
-
-.empty{
-  text-align:center;padding:48px 16px;
-  color:var(--muted);font-size:11.5px;
-  line-height:1.9;letter-spacing:.04em;
-}
-.spin{
-  width:22px;height:22px;
-  border:1.5px solid var(--line);
-  border-top-color:var(--txt);
-  border-radius:50%;
-  animation:sp .8s linear infinite;
-  margin:0 auto 12px;
-}
+.empty{text-align:center;padding:48px 16px;color:var(--muted);font-size:11.5px;line-height:1.9;letter-spacing:.04em}
+.spin{width:22px;height:22px;border:1.5px solid var(--line);border-top-color:var(--txt);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* ============ RESPONSIVE ============ */
+/* RESPONSIVE */
 @media(max-width:900px){
-  .sidebar{
-    position:fixed;top:0;right:0;
-    height:100dvh;
-    transform:translateX(100%);
-    transition:transform .26s cubic-bezier(.2,.9,.3,1);
-    width:240px;flex-basis:240px;
-    z-index:55;
-  }
+  .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
   .sidebar.open{transform:translateX(0)}
+  .main{margin-right:0}
   .icon-btn{display:grid}
   .content{padding:16px}
   .topbar{padding:12px 16px}
@@ -681,7 +200,7 @@ tbody td{font-variant-numeric:tabular-nums}
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
+<!-- LOGIN -->
 <div id="loginScreen" class="login-wrap">
   <div class="bg-anim">
     <div class="bg-grid"></div>
@@ -694,48 +213,34 @@ tbody td{font-variant-numeric:tabular-nums}
     <div class="kashaf-rule"></div>
     <h1>ورود به سامانه</h1>
     <p class="sub">پایش کنترل‌های امنیت اطلاعات</p>
-
     <div id="connBox" class="diag">
       <div><b>وضعیت اتصال:</b> <span id="connTxt">در حال بررسی…</span></div>
     </div>
-
     <form id="loginForm">
-      <div class="field">
-        <label>نام کاربری</label>
-        <input id="luser" value="ice" required autocomplete="username">
-      </div>
-      <div class="field">
-        <label>رمز عبور</label>
-        <input id="lpass" type="password" value="ice" required autocomplete="current-password">
-      </div>
+      <div class="field"><label>نام کاربری</label>
+        <input id="luser" value="ice" required autocomplete="username"></div>
+      <div class="field"><label>رمز عبور</label>
+        <input id="lpass" type="password" value="ice" required autocomplete="current-password"></div>
       <button class="btn btn-primary btn-full" type="submit" id="loginBtn">ورود</button>
       <div class="err" id="loginErr"></div>
     </form>
-
     <div class="mode-toggle">
       <button id="retestBtn">تست اتصال</button>
       <button id="localModeBtn">حالت محلی</button>
     </div>
-
     <div class="hint">کاربر پیش‌فرض: <b>ice</b> / رمز: <b>ice</b></div>
   </div>
 </div>
 
-<!-- ============ APP ============ -->
+<!-- APP -->
 <div id="app" class="hidden">
   <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <b>KASHAF 495</b>
-      <span>پایش کنترل‌های امنیت</span>
-    </div>
+    <div class="brand"><b>KASHAF 495</b><span>پایش کنترل‌های امنیت</span></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <div class="user-chip">
         <div class="av" id="avatar">I</div>
-        <div style="min-width:0">
-          <b id="uName">—</b>
-          <span id="uRole">—</span>
-        </div>
+        <div style="min-width:0"><b id="uName">—</b><span id="uRole">—</span></div>
       </div>
       <div id="modeIndicator"></div>
       <button class="btn btn-full" id="logoutBtn">خروج از حساب</button>
@@ -746,9 +251,7 @@ tbody td{font-variant-numeric:tabular-nums}
     <header class="topbar">
       <button class="icon-btn" id="menuBtn">≡</button>
       <h2 id="pageTitle">داشبورد</h2>
-      <div class="top-actions">
-        <select id="globalPeriod"></select>
-      </div>
+      <div class="top-actions"><select id="globalPeriod"></select></div>
     </header>
     <div class="content" id="content"></div>
   </main>
@@ -760,6 +263,9 @@ tbody td{font-variant-numeric:tabular-nums}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
+/* =========================================================
+   CONFIG
+========================================================= */
 const SUPABASE_URL = 'https://qtpybadjaczlkzkbbcge.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GUfLjO0eaIx_LYNZgfIKzw_GcUsKjHC';
 const BUCKET = 'assessment-files';
@@ -767,8 +273,9 @@ const BUCKET = 'assessment-files';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const fa = n => String(n ?? '').replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const toLatin = s => String(s||'').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
-function toast(msg, type='ok'){
+function toast(msg){
   const t = $('#toast'); t.textContent = msg; t.className = 'toast show';
   clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='toast', 2400);
 }
@@ -776,28 +283,90 @@ async function sha256(str){
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
+
+/* =========================================================
+   JALALI
+========================================================= */
+function g2j(gy, gm, gd){
+  const gdm = [0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy = (gy <= 1600) ? 0 : 979;
+  gy -= (gy <= 1600) ? 621 : 1600;
+  const gy2 = (gm > 2) ? (gy + 1) : gy;
+  let days = (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) - 80 + gd + gdm[gm - 1];
+  jy += 33 * Math.floor(days / 12053); days %= 12053;
+  jy += 4 * Math.floor(days / 1461); days %= 1461;
+  if (days > 365) { jy += Math.floor((days - 1) / 365); days = (days - 1) % 365; }
+  const jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+  const jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+  return [jy, jm, jd];
+}
+function j2g(jy, jm, jd){
+  let gy = (jy <= 979) ? 621 : 1600;
+  jy -= (jy <= 979) ? 0 : 979;
+  let days = (365 * jy) + (Math.floor(jy / 33) * 8) + Math.floor(((jy % 33) + 3) / 4) + 78 + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
+  gy += 400 * Math.floor(days / 146097); days %= 146097;
+  if (days >= 36525) { days--; gy += 100 * Math.floor(days / 36524); days %= 36524; if (days >= 365) days++; }
+  gy += 4 * Math.floor(days / 1461); days %= 1461;
+  if (days >= 366) { gy += Math.floor((days - 1) / 365); days = (days - 1) % 365; }
+  let gd = days + 1;
+  const sa = [0,31,((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0)) ? 29 : 28,31,30,31,30,31,31,30,31,30,31];
+  let gm; for (gm = 1; gm <= 12; gm++) { if (gd <= sa[gm]) break; gd -= sa[gm]; }
+  return [gy, gm, gd];
+}
+function todayJalali(){
+  const n = new Date();
+  const [y,m,d] = g2j(n.getFullYear(), n.getMonth()+1, n.getDate());
+  return `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
+}
+function parseJalali(s){
+  const m = toLatin(String(s||'').trim()).match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if(!m) return null;
+  const y = +m[1], mo = +m[2], d = +m[3];
+  if(y<1300||y>1500||mo<1||mo>12||d<1||d>31) return null;
+  const [gy,gm,gd] = j2g(y,mo,d);
+  const [jy2,jm2,jd2] = g2j(gy,gm,gd);
+  if(jy2!==y||jm2!==mo||jd2!==d) return null;
+  return `${y}/${String(mo).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
+}
+function displayDate(s){ return s ? fa(toLatin(s)) : '—'; }
+
+/* =========================================================
+   STATUS
+========================================================= */
+const STATUS_OPTS = ['عدم پیاده‌سازی','در حال پیاده‌سازی','پیاده‌سازی کامل'];
 function normalizeStatus(s){
-  s = String(s||'');
-  if(s.includes('عدم')) return 'عدم پیاده‌سازی';
+  s = String(s||'').trim();
+  if(!s) return 'عدم پیاده‌سازی';
   if(s.includes('غیر قابل')) return 'غیر قابل احراز';
+  if(s.includes('عدم')) return 'عدم پیاده‌سازی';
   if(s.includes('در حال')) return 'در حال پیاده‌سازی';
-  if(s.includes('پیاده')) return 'پیاده‌سازی';
+  if(s.includes('کامل')) return 'پیاده‌سازی کامل';
+  if(s.includes('پیاده')) return 'پیاده‌سازی کامل';
   return 'عدم پیاده‌سازی';
 }
 function statusWeight(s){
   const n = normalizeStatus(s);
-  if(n === 'پیاده‌سازی') return 100;
-  if(n === 'در حال پیاده‌سازی') return 50;
+  if(n==='پیاده‌سازی کامل') return 100;
+  if(n==='در حال پیاده‌سازی') return 50;
   return 0;
+}
+function statusFromProgress(p){
+  p = Number(p)||0;
+  if(p<=0) return 'عدم پیاده‌سازی';
+  if(p>=100) return 'پیاده‌سازی کامل';
+  return 'در حال پیاده‌سازی';
 }
 function statusClass(s){
   const n = normalizeStatus(s);
-  if(n === 'پیاده‌سازی') return 'st-ok';
-  if(n === 'در حال پیاده‌سازی') return 'st-warn';
-  if(n === 'غیر قابل احراز') return 'st-gray';
+  if(n==='پیاده‌سازی کامل') return 'st-ok';
+  if(n==='در حال پیاده‌سازی') return 'st-warn';
+  if(n==='غیر قابل احراز') return 'st-gray';
   return 'st-bad';
 }
 
+/* =========================================================
+   MODE / SUPABASE / LOCAL
+========================================================= */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'supabase';
 let sb = null;
@@ -812,14 +381,14 @@ function setMode(m){
 function updateModeIndicator(){
   const el = $('#modeIndicator');
   if(!el) return;
-  el.innerHTML = MODE === 'local'
+  el.innerHTML = MODE==='local'
     ? `<div class="mode-line local">LOCAL</div>`
     : `<div class="mode-line">SUPABASE</div>`;
 }
 function updateConnBox(){
   const box = $('#connBox');
   if(!box) return;
-  if(MODE === 'local'){
+  if(MODE==='local'){
     box.className = 'diag warn';
     box.innerHTML = `<div><b>حالت محلی فعال</b><br>داده‌ها در مرورگر ذخیره می‌شوند.</div>`;
   } else {
@@ -827,9 +396,8 @@ function updateConnBox(){
     testConnection();
   }
 }
-
 const LS = {
-  read(k){ try { return JSON.parse(localStorage.getItem('kashaf_'+k) || 'null'); } catch(e){ return null; } },
+  read(k){ try { return JSON.parse(localStorage.getItem('kashaf_'+k)||'null'); } catch(e){ return null; } },
   write(k,v){ localStorage.setItem('kashaf_'+k, JSON.stringify(v)); }
 };
 function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -856,9 +424,21 @@ const LocalDB = {
   async delUser(id){ const t = this.tables(); t.users = t.users.filter(u=>u.id!==id); this.save(t); },
   async listUsers(){ return this.tables().users; },
   async listControls(){ return this.tables().controls; },
+  async addControl(row){
+    const t = this.tables();
+    const maxRow = t.controls.reduce((m,c) => Math.max(m, Number(c.row_no)||0), 0);
+    t.controls.push({ id: uuid(), row_no: maxRow+1, ...row });
+    this.save(t);
+  },
+  async delControl(id){
+    const t = this.tables();
+    t.controls = t.controls.filter(c => c.id !== id);
+    t.assessments = t.assessments.filter(a => a.control_id !== id);
+    this.save(t);
+  },
   async setControls(rows){
     const t = this.tables();
-    t.controls = rows.map(r => ({ id: uuid(), ...r }));
+    t.controls = rows.map((r,i) => ({ id: uuid(), row_no: i+1, ...r }));
     const ids = new Set(t.controls.map(c=>c.id));
     t.assessments = t.assessments.filter(a => ids.has(a.control_id));
     this.save(t);
@@ -882,42 +462,39 @@ const LocalDB = {
 };
 
 async function testConnection(){
-  const box = $('#connBox');
-  const txt = document.getElementById('connTxt');
-  if(!box || !txt || MODE === 'local') return;
-  txt.textContent = 'در حال بررسی…';
-  box.className = 'diag';
+  const box = $('#connBox'); const txt = document.getElementById('connTxt');
+  if(!box||!txt||MODE==='local') return;
+  txt.textContent = 'در حال بررسی…'; box.className = 'diag';
   if(!sb){ txt.textContent = 'کتابخانه بارگذاری نشد.'; box.className = 'diag err'; return; }
-  const controller = new AbortController();
-  const timer = setTimeout(()=> controller.abort(), 9000);
+  const ctrl = new AbortController(); const timer = setTimeout(()=>ctrl.abort(), 9000);
   try{
     const res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?select=id&limit=1`, {
-      method: 'GET',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` },
-      signal: controller.signal
+      method:'GET', headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}` }, signal:ctrl.signal
     });
     clearTimeout(timer);
     if(res.ok){ txt.textContent = 'متصل — پایگاه داده در دسترس است.'; box.className = 'diag ok'; return true; }
-    let body = ''; try{ body = await res.text(); }catch(e){}
-    if(res.status === 404 || (body && body.includes('does not exist'))){
-      txt.textContent = 'اتصال برقرار شد ولی جداول ساخته نشده‌اند. اسکریپت SQL را اجرا کنید.';
+    let body=''; try{ body = await res.text(); }catch(e){}
+    if(res.status===404 || (body && body.includes('does not exist'))){
+      txt.textContent = 'اتصال برقرار شد ولی جداول ساخته نشده‌اند.';
       box.className = 'diag warn';
     } else {
       txt.textContent = `پاسخ سرور: ${res.status}`; box.className = 'diag warn';
     }
   }catch(err){
     clearTimeout(timer);
-    const msg = String(err && err.message || err);
+    const msg = String(err&&err.message||err);
     if(msg.includes('abort') || msg.includes('Failed to fetch') || msg.includes('NetworkError')){
       txt.textContent = 'اتصال برقرار نشد. پروژه Paused است یا شبکه مسدود است.';
       box.className = 'diag err';
     } else {
-      txt.textContent = 'خطا: ' + msg;
-      box.className = 'diag err';
+      txt.textContent = 'خطا: '+msg; box.className = 'diag err';
     }
   }
 }
 
+/* =========================================================
+   STATE
+========================================================= */
 const S = {
   user:null, controls:[], periods:[], periodId:null,
   assessments:{}, allAssessments:[], units:[], cats:[], levels:[],
@@ -926,19 +503,25 @@ const S = {
   assessUnit:'', _trendLoaded:false
 };
 const NAV = [
-  { id:'dashboard', label:'داشبورد' },
-  { id:'controls',  label:'کنترل‌ها' },
-  { id:'assess',    label:'ارزیابی دوره' },
-  { id:'trend',     label:'روند پیشرفت' },
-  { id:'periods',   label:'مدیریت دوره‌ها' },
-  { id:'users',     label:'کاربران' },
-  { id:'import',    label:'ورود داده' }
+  {id:'dashboard', label:'داشبورد'},
+  {id:'controls',  label:'کنترل‌ها'},
+  {id:'assess',    label:'ارزیابی دوره'},
+  {id:'trend',     label:'روند پیشرفت'},
+  {id:'periods',   label:'مدیریت دوره‌ها'},
+  {id:'users',     label:'کاربران'},
+  {id:'import',    label:'ورود داده'}
 ];
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
 
+function periodIndex(){ return S.periods.findIndex(p => p.id === S.periodId); }
+function isFirstPeriod(){ return periodIndex() === 0; }
+
+/* =========================================================
+   AUTH
+========================================================= */
 async function doLogin(username, password){
   const hash = await sha256(password);
-  if(MODE === 'local'){
+  if(MODE==='local'){
     const u = await LocalDB.findUser(username);
     if(!u) throw new Error('کاربر یافت نشد.');
     if(u.password_hash && u.password_hash !== hash) throw new Error('رمز نادرست است.');
@@ -946,31 +529,28 @@ async function doLogin(username, password){
   }
   let { data, error } = await sb.from('app_users').select('*').eq('username', username).limit(1);
   if(error){
-    if(String(error.message).includes('does not exist'))
-      throw new Error('جدول app_users وجود ندارد.');
-    if(String(error.message).includes('Failed to fetch'))
-      throw new Error('اتصال به Supabase برقرار نشد.');
-    throw new Error('خطا در اتصال: ' + error.message);
+    if(String(error.message).includes('does not exist')) throw new Error('جدول app_users وجود ندارد.');
+    if(String(error.message).includes('Failed to fetch')) throw new Error('اتصال به Supabase برقرار نشد.');
+    throw new Error('خطا در اتصال: '+error.message);
   }
-  if(!data || !data.length){
-    if(username === 'ice'){
+  if(!data||!data.length){
+    if(username==='ice'){
       const { data:d2, error:e2 } = await sb.from('app_users').insert({
         username:'ice', password_hash: await sha256('ice'), full_name:'مدیر سامانه', role:'admin'
       }).select().single();
-      if(e2) throw new Error('ساخت کاربر پیش‌فرض ناموفق: ' + e2.message);
+      if(e2) throw new Error('ساخت کاربر پیش‌فرض ناموفق: '+e2.message);
       data = [d2];
     } else throw new Error('کاربر یافت نشد.');
   }
   if(data[0].password_hash !== hash) throw new Error('رمز عبور نادرست است.');
   return data[0];
 }
-
 function startSession(user){
   S.user = user;
   $('#loginScreen').classList.add('hidden');
   $('#app').classList.remove('hidden');
   $('#uName').textContent = user.full_name || user.username;
-  $('#uRole').textContent = user.role === 'admin' ? 'MANAGER' : 'USER';
+  $('#uRole').textContent = user.role==='admin' ? 'MANAGER' : 'USER';
   $('#avatar').textContent = (user.full_name || user.username).trim().charAt(0).toUpperCase();
   updateModeIndicator();
   bootApp();
@@ -983,28 +563,52 @@ function logout(){
   updateConnBox();
 }
 
+/* =========================================================
+   API LAYER
+========================================================= */
 async function apiListControls(){
-  if(MODE === 'local') return LocalDB.listControls();
+  if(MODE==='local') return LocalDB.listControls();
   const { data, error } = await sb.from('controls').select('*').order('row_no',{ascending:true});
-  if(error) throw new Error('خطا در خواندن کنترل‌ها: ' + error.message);
-  return data || [];
+  if(error) throw new Error('خطا در خواندن کنترل‌ها: '+error.message);
+  return data||[];
+}
+async function apiAddControl(row){
+  if(MODE==='local') return LocalDB.addControl(row);
+  const { error } = await sb.from('controls').insert(row);
+  if(error) throw new Error('خطا در افزودن: '+error.message);
+}
+async function apiDelControl(id){
+  if(MODE==='local') return LocalDB.delControl(id);
+  const { error } = await sb.from('controls').delete().eq('id', id);
+  if(error) throw new Error('خطا در حذف: '+error.message);
 }
 async function apiListPeriods(){
-  if(MODE === 'local') return LocalDB.listPeriods();
+  if(MODE==='local') return LocalDB.listPeriods();
   const { data, error } = await sb.from('periods').select('*').order('created_at',{ascending:true});
-  if(error) throw new Error('خطا در خواندن دوره‌ها: ' + error.message);
-  return data || [];
+  if(error) throw new Error('خطا در خواندن دوره‌ها: '+error.message);
+  return data||[];
+}
+async function apiAddPeriod(p){
+  if(MODE==='local') return LocalDB.addPeriod(p);
+  const { data, error } = await sb.from('periods').insert(p).select().single();
+  if(error) throw new Error('خطا: '+error.message);
+  return data;
+}
+async function apiDelPeriod(id){
+  if(MODE==='local') return LocalDB.delPeriod(id);
+  const { error } = await sb.from('periods').delete().eq('id', id);
+  if(error) throw new Error('خطا: '+error.message);
 }
 async function apiListAssessments(pid){
-  if(MODE === 'local') return LocalDB.listAssessments(pid);
+  if(MODE==='local') return LocalDB.listAssessments(pid);
   let q = sb.from('assessments').select('*');
   if(pid) q = q.eq('period_id', pid);
   const { data, error } = await q;
-  if(error) throw new Error('خطا در خواندن ارزیابی‌ها: ' + error.message);
-  return data || [];
+  if(error) throw new Error('خطا در خواندن ارزیابی‌ها: '+error.message);
+  return data||[];
 }
 async function apiSaveAssessment(controlId, payload){
-  if(MODE === 'local'){
+  if(MODE==='local'){
     return LocalDB.upsertAssessment({ period_id:S.periodId, control_id:controlId, ...payload });
   }
   const existing = S.assessments[controlId];
@@ -1018,7 +622,7 @@ async function apiSaveAssessment(controlId, payload){
   return data;
 }
 async function apiUpload(file, controlId){
-  if(MODE === 'local'){
+  if(MODE==='local'){
     return new Promise((res, rej) => {
       const r = new FileReader();
       r.onload = () => res({ url:r.result, name:file.name });
@@ -1029,11 +633,14 @@ async function apiUpload(file, controlId){
   const safe = file.name.replace(/[^\w.\-آ-ی]/g, '_');
   const path = `${S.periodId}/${controlId}/${Date.now()}_${safe}`;
   const { error } = await sb.storage.from(BUCKET).upload(path, file, { upsert:true });
-  if(error) throw new Error('آپلود فایل ناموفق: ' + error.message);
+  if(error) throw new Error('آپلود فایل ناموفق: '+error.message);
   const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
   return { url: data.publicUrl, name: file.name };
 }
 
+/* =========================================================
+   LOADERS
+========================================================= */
 async function loadControls(){
   S.controls = await apiListControls();
   S.units = [...new Set(S.controls.map(c=>c.owner_unit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
@@ -1056,9 +663,12 @@ async function loadAllAssessments(){
   S.allAssessments = await apiListAssessments(null);
 }
 
+/* =========================================================
+   DERIVED
+========================================================= */
 function controlStatus(c){
   const a = S.assessments[c.id];
-  return (a && a.status) || c.status || '—';
+  return normalizeStatus((a && a.status) || c.status || 'عدم پیاده‌سازی');
 }
 function controlProgress(c){
   const a = S.assessments[c.id];
@@ -1076,6 +686,9 @@ function progressWithMap(c, map){
   return statusWeight((a && a.status) || c.status);
 }
 
+/* =========================================================
+   BOOT
+========================================================= */
 async function bootApp(){
   const content = $('#content');
   content.innerHTML = `<div class="card"><div class="spin"></div><div class="empty">در حال بارگذاری…</div></div>`;
@@ -1086,13 +699,10 @@ async function bootApp(){
     if(!S.periods.length) S.view = 'periods';
     renderNav(); renderPeriodSelect(); render();
   }catch(err){
-    content.innerHTML = `<div class="card">
-      <h3><span class="dot" style="background:var(--txt)"></span> خطا در بارگذاری</h3>
-      <div class="empty" style="text-align:right">${esc(err.message || err)}</div>
-    </div>`;
+    content.innerHTML = `<div class="card"><h3><span class="dot"></span> خطا در بارگذاری</h3>
+      <div class="empty" style="text-align:right">${esc(err.message || err)}</div></div>`;
   }
 }
-
 function renderNav(){
   $('#nav').innerHTML = NAV.map(n =>
     `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">${n.label}</button>`).join('');
@@ -1101,8 +711,8 @@ function renderPeriodSelect(){
   const sel = $('#globalPeriod');
   if(!S.periods.length){ sel.innerHTML = `<option value="">— بدون دوره —</option>`; sel.disabled = true; return; }
   sel.disabled = false;
-  sel.innerHTML = S.periods.map(p =>
-    `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}</option>`).join('');
+  sel.innerHTML = S.periods.map((p,i) =>
+    `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}${i===0?' (پایه)':''}</option>`).join('');
 }
 function render(){
   $('#pageTitle').textContent = TITLES[S.view] || '';
@@ -1121,9 +731,12 @@ function render(){
   if(S.view==='trend') ensureTrendData();
 }
 
+/* =========================================================
+   DASHBOARD
+========================================================= */
 function viewDashboard(){
   const total = S.controls.length;
-  const counts = {'پیاده‌سازی':0,'در حال پیاده‌سازی':0,'عدم پیاده‌سازی':0,'غیر قابل احراز':0};
+  const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی کامل':0,'غیر قابل احراز':0};
   let sum = 0;
   S.controls.forEach(c => { counts[normalizeStatus(controlStatus(c))]++; sum += controlProgress(c); });
   const avg = total ? Math.round(sum/total) : 0;
@@ -1134,7 +747,7 @@ function viewDashboard(){
     if(!byUnit[u]) byUnit[u] = { n:0, sum:0, ok:0, doing:0, bad:0 };
     byUnit[u].n++; byUnit[u].sum += controlProgress(c);
     const ns = normalizeStatus(controlStatus(c));
-    if(ns==='پیاده‌سازی') byUnit[u].ok++;
+    if(ns==='پیاده‌سازی کامل') byUnit[u].ok++;
     else if(ns==='در حال پیاده‌سازی') byUnit[u].doing++;
     else byUnit[u].bad++;
   });
@@ -1148,7 +761,6 @@ function viewDashboard(){
     if(!byLevel[l]) byLevel[l] = { n:0, sum:0 };
     byLevel[l].n++; byLevel[l].sum += controlProgress(c);
   });
-
   const byCat = {};
   S.controls.forEach(c => {
     const k = c.category || 'نامشخص';
@@ -1160,7 +772,7 @@ function viewDashboard(){
   })).sort((a,b)=>b.pct-a.pct);
 
   const segs = [
-    {label:'پیاده‌سازی', val:counts['پیاده‌سازی'], color:'#18181b'},
+    {label:'پیاده‌سازی کامل', val:counts['پیاده‌سازی کامل'], color:'#18181b'},
     {label:'در حال', val:counts['در حال پیاده‌سازی'], color:'#71717a'},
     {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'#d4d4d8'},
     {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'#f4f4f5'}
@@ -1173,10 +785,11 @@ function viewDashboard(){
   }).join(',');
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
+  const idx = periodIndex();
 
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
-      <span class="badge badge-soft">دوره: ${esc(periodName)}</span>
+      <span class="badge badge-soft">دوره: ${esc(periodName)}${idx===0?' (پایه)':''}</span>
       <span class="badge badge-soft">کنترل: ${fa(total)}</span>
       <span class="badge badge-soft">واحد: ${fa(unitRows.length)}</span>
       <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'LOCAL':'SUPABASE'}</span>
@@ -1185,7 +798,7 @@ function viewDashboard(){
     <div class="grid kpis">
       <div class="card kpi"><div class="v">${fa(avg)}٪</div><div class="l">پیشرفت کل</div>
         <div class="bar" style="margin-top:12px"><i style="width:${avg}%"></i></div></div>
-      <div class="card kpi"><div class="v">${fa(counts['پیاده‌سازی'])}</div><div class="l">پیاده‌سازی شده</div></div>
+      <div class="card kpi"><div class="v">${fa(counts['پیاده‌سازی کامل'])}</div><div class="l">پیاده‌سازی کامل</div></div>
       <div class="card kpi"><div class="v">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال انجام</div></div>
       <div class="card kpi"><div class="v">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div></div>
     </div>
@@ -1216,7 +829,7 @@ function viewDashboard(){
     <div class="card">
       <h3><span class="dot"></span> وضعیت واحدها</h3>
       ${unitRows.length ? `<div class="tbl-wrap"><table>
-        <thead><tr><th>واحد</th><th>کل</th><th>پیاده</th><th>در حال</th><th>عدم</th><th>پیشرفت</th></tr></thead>
+        <thead><tr><th>واحد</th><th>کل</th><th>کامل</th><th>در حال</th><th>عدم</th><th>پیشرفت</th></tr></thead>
         <tbody>${unitRows.map(u=>`<tr>
           <td style="font-weight:600">${esc(u.name)}</td>
           <td>${fa(u.n)}</td>
@@ -1240,6 +853,9 @@ function viewDashboard(){
   </div>`;
 }
 
+/* =========================================================
+   CONTROLS LIST + add/delete
+========================================================= */
 function filteredControls(){
   const f = S.filters;
   return S.controls.filter(c => {
@@ -1265,31 +881,32 @@ function viewControls(){
 
   return `
   <div class="card" style="margin-bottom:16px;padding:16px 20px">
-    <div class="toolbar" style="margin-bottom:0">
+    <div class="toolbar" style="margin-bottom:8px">
       <input id="fQ" placeholder="جستجو…" value="${esc(S.filters.q)}">
       <select id="fUnit"><option value="">همه واحدها</option>${opts(S.units,S.filters.unit)}</select>
       <select id="fStatus"><option value="">همه وضعیت‌ها</option>
-        ${['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز']
-          .map(v=>`<option value="${v}" ${v===S.filters.status?'selected':''}>${v}</option>`).join('')}
+        ${STATUS_OPTS.map(v=>`<option value="${v}" ${v===S.filters.status?'selected':''}>${v}</option>`).join('')}
       </select>
       <select id="fCat"><option value="">همه دسته‌ها</option>${opts(S.cats,S.filters.cat)}</select>
       <select id="fLevel"><option value="">همه سطوح</option>${opts(S.levels,S.filters.level)}</select>
       <select id="fSize">${[12,24,48,96].map(n=>`<option value="${n}" ${n===S.pageSize?'selected':''}>${n} / صفحه</option>`).join('')}</select>
     </div>
-  </div>
-  <div class="card" style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 20px">
-    <span class="badge badge-soft">${fa(list.length)} کنترل</span>
-    <span class="badge badge-soft">صفحه ${fa(S.page)} / ${fa(pages)}</span>
-    <button class="btn btn-sm" id="clearFilters" style="margin-right:auto">پاک کردن</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span class="badge badge-soft">${fa(list.length)} کنترل</span>
+      <span class="badge badge-soft">صفحه ${fa(S.page)} / ${fa(pages)}</span>
+      <button class="btn btn-sm" id="clearFilters">پاک کردن فیلترها</button>
+      <button class="btn btn-sm btn-primary" id="addControlBtn" style="margin-right:auto">+ افزودن کنترل</button>
+    </div>
   </div>
   <div class="list">
     ${slice.length ? slice.map(c=>{
       const st = controlStatus(c), pr = controlProgress(c);
       return `<div class="ctrl" data-open="${c.id}">
+        <button class="del-btn" data-del="${c.id}" title="حذف">×</button>
         <div class="cc-head">
           <span class="badge badge-soft">${esc(c.category||'—')}</span>
           <span class="badge badge-soft">${esc(c.level||'—')}</span>
-          <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
+          <span class="badge ${statusClass(st)}">${esc(st)}</span>
           <span class="badge badge-soft">${esc(c.owner_unit||'—')}</span>
           <span class="cc-no">#${fa(c.row_no??'—')}</span>
         </div>
@@ -1298,7 +915,7 @@ function viewControls(){
         <div class="cc-foot"><div class="bar"><i style="width:${pr}%"></i></div>
           <b>${fa(pr)}٪</b></div>
       </div>`;
-    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.<br>از تب «ورود داده» اکسل را بارگذاری کنید.</div></div>`}
+    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.<br>از تب «ورود داده» اکسل را بارگذاری کنید یا از دکمه «افزودن کنترل» استفاده کنید.</div></div>`}
   </div>
   ${pages>1?`<div class="pager">
     <button class="btn btn-sm" data-page="1" ${S.page===1?'disabled':''}>«</button>
@@ -1310,6 +927,9 @@ function viewControls(){
   `;
 }
 
+/* =========================================================
+   ASSESS
+========================================================= */
 function viewAssess(){
   if(!S.periods.length) return `<div class="card"><div class="empty">ابتدا از تب «مدیریت دوره‌ها» یک دوره بسازید.</div></div>`;
   if(!S.assessUnit) S.assessUnit = S.units[0] || '';
@@ -1317,6 +937,9 @@ function viewAssess(){
   const opts = S.units.map(u=>`<option value="${esc(u)}" ${u===S.assessUnit?'selected':''}>${esc(u)}</option>`).join('');
   const done = list.filter(c=>S.assessments[c.id]).length;
   const avg = list.length ? Math.round(list.reduce((s,c)=>s+controlProgress(c),0)/list.length) : 0;
+  const first = isFirstPeriod();
+  const idx = periodIndex();
+  const firstPeriodName = S.periods[0]?.name || '';
 
   return `
   <div class="card" style="margin-bottom:16px;padding:16px 20px">
@@ -1326,34 +949,72 @@ function viewAssess(){
         <span class="badge badge-soft">${fa(list.length)} کنترل</span>
         <span class="badge st-ok">${fa(done)} ارزیابی</span>
         <span class="badge badge-soft">پیشرفت: ${fa(avg)}٪</span>
+        ${first
+          ? `<span class="badge st-warn">دوره پایه — ثبت وضعیت (فقط یک‌بار)</span>`
+          : `<span class="badge badge-soft">دوره ${fa(idx+1)} — ثبت درصد پیشرفت</span>`}
       </div>
     </div>
+    ${first ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;letter-spacing:.02em;border-top:1px solid var(--line);padding-top:10px">
+      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است. در دوره‌های بعدی صرفاً درصد پیشرفت ثبت می‌شود و وضعیت به‌صورت خودکار از درصد استنتاج می‌گردد.
+    </div>` : ''}
   </div>
   ${list.length ? list.map(c=>{
     const a = S.assessments[c.id] || {};
-    const st = a.status || normalizeStatus(c.status);
-    const pr = (a.progress!==null && a.progress!==undefined && a.progress!=='') ? Number(a.progress) : statusWeight(st);
-    return `<div class="as-item" data-cid="${c.id}">
+    const baseStatus = normalizeStatus(c.status);
+    const savedStatus = a.status ? normalizeStatus(a.status) : baseStatus;
+    const pr = (a.progress!==null && a.progress!==undefined && a.progress!=='') ? Number(a.progress) : statusWeight(savedStatus);
+
+    if(first){
+      return `<div class="as-item" data-cid="${c.id}" data-first="1">
+        <div class="t"><span class="n">#${fa(c.row_no??'')}</span>${esc(c.title)}
+          <div style="margin-top:8px">
+            <span class="badge badge-soft">${esc(c.category||'—')}</span>
+            <span class="badge badge-soft">${esc(c.level||'—')}</span>
+            <span class="badge ${statusClass(c.status)}">وضعیت اولیه فایل: ${esc(baseStatus)}</span>
+          </div>
+        </div>
+        <details style="margin-bottom:12px"><summary style="cursor:pointer;color:var(--muted);font-size:10.5px;letter-spacing:.12em">شواهد</summary>
+          <div class="kv" style="margin-top:8px"><div class="v" style="font-size:11.5px">${esc(c.evidence||'—')}</div></div>
+        </details>
+        <div class="as-grid">
+          <div><label>وضعیت پیاده‌سازی</label>
+            <select class="a-status">${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
+            </select></div>
+        </div>
+        <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات / یادداشت این دوره</label>
+        <textarea class="a-actions" placeholder="اقدامات انجام‌شده را ثبت کنید…">${esc(a.actions||'')}</textarea>
+        <div class="as-foot">
+          <input type="file" class="a-file" style="max-width:220px">
+          <button class="btn btn-sm btn-primary a-save">ذخیره</button>
+          ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
+          <span class="saved" style="display:none">ذخیره شد</span>
+        </div>
+      </div>`;
+    }
+    return `<div class="as-item" data-cid="${c.id}" data-first="0">
       <div class="t"><span class="n">#${fa(c.row_no??'')}</span>${esc(c.title)}
         <div style="margin-top:8px">
           <span class="badge badge-soft">${esc(c.category||'—')}</span>
           <span class="badge badge-soft">${esc(c.level||'—')}</span>
-          <span class="badge ${statusClass(c.status)}">پایه: ${esc(normalizeStatus(c.status))}</span>
+          <span class="badge ${statusClass(baseStatus)}">پایه: ${esc(baseStatus)}</span>
         </div>
       </div>
       <details style="margin-bottom:12px"><summary style="cursor:pointer;color:var(--muted);font-size:10.5px;letter-spacing:.12em">شواهد</summary>
         <div class="kv" style="margin-top:8px"><div class="v" style="font-size:11.5px">${esc(c.evidence||'—')}</div></div>
       </details>
       <div class="as-grid">
-        <div><label>وضعیت دوره</label>
-          <select class="a-status">${['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز']
-            .map(v=>`<option value="${v}" ${normalizeStatus(st)===v?'selected':''}>${v}</option>`).join('')}
+        <div><label>درصد پیشرفت (۰ تا ۱۰۰)</label>
+          <div class="prog-row">
+            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}">
+            <input type="number" class="a-num" min="0" max="100" value="${pr}">
+          </div>
+        </div>
+        <div><label>وضعیت (از درصد استنتاج می‌شود)</label>
+          <select class="a-status" disabled>${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
           </select></div>
-        <div><label>درصد پیشرفت — <span class="p-val" style="color:var(--txt)">${fa(pr)}٪</span></label>
-          <input type="range" class="a-range" min="0" max="100" step="5" value="${pr}"></div>
       </div>
       <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات این دوره</label>
-      <textarea class="a-actions" placeholder="اقدامات انجام‌شده را ثبت کنید…">${esc(a.actions||'')}</textarea>
+      <textarea class="a-actions" placeholder="اقدامات انجام‌شده در این دوره…">${esc(a.actions||'')}</textarea>
       <div class="as-foot">
         <input type="file" class="a-file" style="max-width:220px">
         <button class="btn btn-sm btn-primary a-save">ذخیره</button>
@@ -1365,6 +1026,9 @@ function viewAssess(){
   `;
 }
 
+/* =========================================================
+   TREND
+========================================================= */
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
@@ -1417,7 +1081,7 @@ function viewTrend(){
             <div style="font-size:10.5px;color:var(--muted);margin-bottom:6px;letter-spacing:.06em">
               #${fa(c?.row_no??'')} — ${esc(c?.owner_unit||'')} — ${esc((c?.title||'').slice(0,80))}
             </div>
-            <div style="font-size:11.5px;line-height:1.9;color:var(--txt)">${esc(a.actions)}</div>
+            <div style="font-size:11.5px;line-height:1.9">${esc(a.actions)}</div>
             <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
               ${a.status?`<span class="badge ${statusClass(a.status)}">${esc(normalizeStatus(a.status))}</span>`:''}
               ${a.progress!=null?`<span class="badge badge-soft">${fa(a.progress)}٪</span>`:''}
@@ -1452,27 +1116,35 @@ async function ensureTrendData(){
   if(S.view==='trend'){ $('#content').innerHTML = viewTrend(); bindView(); }
 }
 
+/* =========================================================
+   PERIODS
+========================================================= */
 function viewPeriods(){
   return `
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> ایجاد دوره</h3>
+    <h3><span class="dot"></span> ایجاد دوره جدید</h3>
     <div class="toolbar" style="margin-bottom:0">
       <input id="pName" placeholder="نام دوره (مثلاً: بهار ۱۴۰۵)">
-      <input id="pStart" type="date" title="شروع">
-      <input id="pEnd" type="date" title="پایان">
+      <input id="pStart" placeholder="شروع ۱۴۰۵/۰۱/۰۱">
+      <input id="pEnd" placeholder="پایان ۱۴۰۵/۰۳/۳۱">
       <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
+      <button class="btn" id="fillToday">پر کردن با امروز</button>
+    </div>
+    <div style="font-size:10.5px;color:var(--muted);margin-top:10px;line-height:1.8">
+      تاریخ‌ها شمسی و به صورت <b style="color:var(--txt)">YYYY/MM/DD</b>. اولین دوره‌ای که می‌سازید، دوره <b style="color:var(--txt)">پایه</b> است (ثبت وضعیت) — در دوره‌های بعد فقط درصد پیشرفت ثبت می‌شود.
     </div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
     ${S.periods.length ? `<div class="tbl-wrap"><table>
-      <thead><tr><th>نام</th><th>شروع</th><th>پایان</th><th>ارزیابی</th><th>عملیات</th></tr></thead>
-      <tbody>${S.periods.map(p=>{
+      <thead><tr><th>#</th><th>نام</th><th>شروع</th><th>پایان</th><th>ارزیابی</th><th>عملیات</th></tr></thead>
+      <tbody>${S.periods.map((p,i)=>{
         const cnt = S.allAssessments.filter(a=>a.period_id===p.id).length;
         return `<tr>
-          <td style="font-weight:600">${esc(p.name)} ${p.id===S.periodId?'<span class="badge st-ok">جاری</span>':''}</td>
-          <td>${esc(p.start_date||'—')}</td>
-          <td>${esc(p.end_date||'—')}</td>
+          <td>${fa(i+1)}</td>
+          <td style="font-weight:600">${esc(p.name)} ${p.id===S.periodId?'<span class="badge st-ok">جاری</span>':''}${i===0?' <span class="badge badge-soft">پایه</span>':''}</td>
+          <td>${displayDate(p.start_date)}</td>
+          <td>${displayDate(p.end_date)}</td>
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
@@ -1482,6 +1154,10 @@ function viewPeriods(){
     </table></div>` : '<div class="empty">دوره‌ای نیست.</div>'}
   </div>`;
 }
+
+/* =========================================================
+   USERS
+========================================================= */
 function viewUsers(){
   return `
   <div class="card" style="margin-bottom:16px">
@@ -1516,19 +1192,26 @@ async function renderUsersList(){
     host.innerHTML = `<div class="empty">خطا: ${esc(err.message)}</div>`;
   }
 }
+
+/* =========================================================
+   IMPORT
+========================================================= */
 function viewImport(){
   return `
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> بارگذاری اکسل کنترل‌ها</h3>
-    <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px;letter-spacing:.02em">
-      ستون‌ها: <b style="color:var(--txt)">ردیف</b>، <b style="color:var(--txt)">دسته</b>، <b style="color:var(--txt)">سطح پیشرفتگی</b>، <b style="color:var(--txt)">کنترل</b>، <b style="color:var(--txt)">شواهد</b>، <b style="color:var(--txt)">وضعیت پیاده‌سازی</b>، <b style="color:var(--txt)">واحد مسئول رسیدگی</b>.
+    <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
+      ستون‌های مورد نیاز (به همین ترتیب):<br>
+      <b style="color:var(--txt)">دسته</b> — <b style="color:var(--txt)">سطح پیشرفتگی</b> — <b style="color:var(--txt)">کنترل</b> — <b style="color:var(--txt)">شواهد</b> — <b style="color:var(--txt)">وضعیت پیاده‌سازی</b> — <b style="color:var(--txt)">واحد مسئول رسیدگی</b>
+      <br>ستون «ردیف» لازم نیست — شماره‌ها به‌صورت خودکار (۱، ۲، ۳ …) اختصاص می‌یابند.
     </p>
     <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
-      <button class="btn btn-primary" id="doImport">بارگذاری</button>
-      <button class="btn" id="wipeControls">حذف کنترل‌ها</button>
+      <button class="btn btn-primary" id="doImport">بارگذاری اکسل</button>
+      <button class="btn" id="wipeControls">حذف همه</button>
+      <button class="btn" id="addCtrlFromImport">+ افزودن دستی</button>
     </div>
-    <div id="importLog" style="font-size:11px;line-height:1.9;color:var(--muted);letter-spacing:.02em"></div>
+    <div id="importLog" style="font-size:11px;line-height:1.9;color:var(--muted)"></div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> وضعیت داده‌ها</h3>
@@ -1540,6 +1223,9 @@ function viewImport(){
   </div>`;
 }
 
+/* =========================================================
+   BIND VIEW
+========================================================= */
 function bindView(){
   const c = $('#content');
   if(S.view==='controls'){
@@ -1551,28 +1237,68 @@ function bindView(){
     $('#fLevel')?.addEventListener('change', e => { S.filters.level = e.target.value; S.page = 1; rebind(); });
     $('#fSize')?.addEventListener('change', e => { S.pageSize = Number(e.target.value); S.page = 1; rebind(); });
     $('#clearFilters')?.addEventListener('click', () => { S.filters = {q:'',unit:'',status:'',cat:'',level:''}; S.page = 1; rebind(); });
+    $('#addControlBtn')?.addEventListener('click', () => openAddControlModal());
     c.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => { S.page = Number(b.dataset.page); rebind(); window.scrollTo({top:0,behavior:'smooth'}); }));
-    c.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', () => openControlModal(el.dataset.open)));
+    c.querySelectorAll('[data-open]').forEach(el => {
+      el.addEventListener('click', (ev) => {
+        if(ev.target.closest('[data-del]')) return;
+        openControlModal(el.dataset.open);
+      });
+    });
+    c.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async ev => {
+      ev.stopPropagation();
+      if(!confirm('این کنترل و ارزیابی‌هایش حذف شود؟')) return;
+      try{
+        await apiDelControl(b.dataset.del);
+        await loadControls();
+        await loadAssessments();
+        toast('حذف شد');
+        render();
+      }catch(err){ toast('خطا: '+err.message); }
+    }));
   }
   if(S.view==='assess'){
     $('#asUnit')?.addEventListener('change', e => { S.assessUnit = e.target.value; c.innerHTML = viewAssess(); bindView(); });
     c.querySelectorAll('.as-item').forEach(item => {
       const cid = item.dataset.cid;
+      const isFirst = item.dataset.first === '1';
       const range = item.querySelector('.a-range');
-      const pval = item.querySelector('.p-val');
+      const num = item.querySelector('.a-num');
       const statusSel = item.querySelector('.a-status');
-      range.addEventListener('input', () => { pval.textContent = fa(range.value)+'٪'; });
-      statusSel.addEventListener('change', () => { const w = statusWeight(statusSel.value); range.value = w; pval.textContent = fa(w)+'٪'; });
+
+      if(!isFirst && range && num && statusSel){
+        const sync = v => {
+          v = Math.max(0, Math.min(100, Math.round(Number(v)||0)));
+          range.value = v; num.value = v;
+          statusSel.value = statusFromProgress(v);
+        };
+        range.addEventListener('input', () => sync(range.value));
+        num.addEventListener('input', () => sync(num.value));
+      }
+
       item.querySelector('.a-save').addEventListener('click', async ev => {
         const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'ذخیره…';
         try{
-          const payload = {
-            status: statusSel.value,
-            progress: Number(range.value),
-            actions: item.querySelector('.a-actions').value.trim(),
-            updated_by: S.user?.username || '',
-            updated_at: new Date().toISOString()
-          };
+          let payload;
+          if(isFirst){
+            const st = statusSel.value;
+            payload = {
+              status: st,
+              progress: statusWeight(st),
+              actions: item.querySelector('.a-actions').value.trim(),
+              updated_by: S.user?.username || '',
+              updated_at: new Date().toISOString()
+            };
+          } else {
+            const pr = Math.max(0, Math.min(100, Math.round(Number(num.value)||0)));
+            payload = {
+              status: statusFromProgress(pr),
+              progress: pr,
+              actions: item.querySelector('.a-actions').value.trim(),
+              updated_by: S.user?.username || '',
+              updated_at: new Date().toISOString()
+            };
+          }
           const fi = item.querySelector('.a-file');
           if(fi.files && fi.files[0]){
             const up = await apiUpload(fi.files[0], cid);
@@ -1591,17 +1317,27 @@ function bindView(){
     $('#trendUnit')?.addEventListener('change', e => { S._trendUnit = e.target.value; c.innerHTML = viewTrend(); bindView(); });
   }
   if(S.view==='periods'){
+    $('#fillToday')?.addEventListener('click', () => {
+      const t = todayJalali();
+      if($('#pStart')) $('#pStart').value = t;
+      if($('#pEnd')) $('#pEnd').value = t;
+    });
     $('#addPeriod')?.addEventListener('click', async () => {
       const name = ($('#pName').value||'').trim();
       if(!name) return toast('نام دوره را وارد کنید');
+      const sRaw = ($('#pStart').value||'').trim();
+      const eRaw = ($('#pEnd').value||'').trim();
+      let startJ = null, endJ = null;
+      if(sRaw){
+        startJ = parseJalali(sRaw);
+        if(!startJ) return toast('تاریخ شروع نامعتبر است (نمونه: ۱۴۰۵/۰۱/۰۱)');
+      }
+      if(eRaw){
+        endJ = parseJalali(eRaw);
+        if(!endJ) return toast('تاریخ پایان نامعتبر است');
+      }
       try{
-        let row;
-        if(MODE==='local'){
-          row = await LocalDB.addPeriod({ name, start_date:$('#pStart').value||null, end_date:$('#pEnd').value||null });
-        } else {
-          const { data, error } = await sb.from('periods').insert({ name, start_date:$('#pStart').value||null, end_date:$('#pEnd').value||null }).select().single();
-          if(error) throw error; row = data;
-        }
+        const row = await apiAddPeriod({ name, start_date: startJ, end_date: endJ });
         await loadPeriods();
         S.periodId = row.id;
         renderPeriodSelect(); await loadAssessments();
@@ -1616,9 +1352,9 @@ function bindView(){
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
       try{
-        if(MODE==='local') await LocalDB.delPeriod(b.dataset.delperiod);
-        else { const { error } = await sb.from('periods').delete().eq('id', b.dataset.delperiod); if(error) throw error; }
-        await loadPeriods(); if(!S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[0]?.id || null;
+        await apiDelPeriod(b.dataset.delperiod);
+        await loadPeriods();
+        if(!S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[0]?.id || null;
         renderPeriodSelect(); await loadAssessments();
         toast('حذف شد'); c.innerHTML = viewPeriods(); bindView();
       }catch(err){ toast('خطا: '+err.message); }
@@ -1636,7 +1372,10 @@ function bindView(){
       }));
     });
     $('#addUser')?.addEventListener('click', async () => {
-      const u = ($('#nuUser').value||'').trim(), p = ($('#nuPass').value||'').trim(), n = ($('#nuName').value||'').trim(), r = $('#nuRole').value;
+      const u = ($('#nuUser').value||'').trim();
+      const p = ($('#nuPass').value||'').trim();
+      const n = ($('#nuName').value||'').trim();
+      const r = $('#nuRole').value;
       if(!u || !p) return toast('نام کاربری و رمز الزامی است');
       try{
         const hash = await sha256(p);
@@ -1654,6 +1393,7 @@ function bindView(){
     });
   }
   if(S.view==='import'){
+    $('#addCtrlFromImport')?.addEventListener('click', () => openAddControlModal());
     $('#wipeControls')?.addEventListener('click', async () => {
       if(!confirm('همه کنترل‌ها و ارزیابی‌های مرتبط حذف شوند؟')) return;
       try{
@@ -1678,17 +1418,16 @@ function bindView(){
             return '';
           };
           return {
-            row_no: Number(g('ردیف'))||null,
             category: g('دسته')||null,
             level: g('سطح پیشرفتگی')||null,
             title: g('کنترل')||'',
             evidence: g('شواهد')||'',
-            status: g('وضعیت پیاده‌سازی')||null,
+            status: normalizeStatus(g('وضعیت پیاده‌سازی')||''),
             owner_unit: g('واحد مسئول رسیدگی')||null
           };
         }).filter(x=>x.title);
-        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند.');
-        log.textContent = `${fa(mapped.length)} رکورد. بارگذاری…`;
+        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند. سرستون‌های فایل را بررسی کنید.');
+        log.textContent = `${fa(mapped.length)} رکورد. حذف داده قبلی…`;
         if(MODE==='local'){
           await LocalDB.setControls(mapped);
         } else {
@@ -1696,7 +1435,7 @@ function bindView(){
           if(del.error) throw del.error;
           const CH = 100;
           for(let i = 0; i < mapped.length; i += CH){
-            const part = mapped.slice(i, i+CH);
+            const part = mapped.slice(i, i+CH).map((r,idx) => ({ row_no: i+idx+1, ...r }));
             const { error } = await sb.from('controls').insert(part);
             if(error) throw error;
             log.textContent = `${fa(Math.min(i+CH, mapped.length))} از ${fa(mapped.length)}`;
@@ -1727,6 +1466,68 @@ function parseSheet(file){
   });
 }
 
+/* =========================================================
+   ADD CONTROL MODAL
+========================================================= */
+function openAddControlModal(){
+  $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
+    <button class="close-x" id="closeModal">×</button>
+    <h3>افزودن کنترل جدید</h3>
+    <div class="field"><label>دسته</label>
+      <input id="mCat" placeholder="مثلاً: امنیت شبکه"></div>
+    <div class="field"><label>سطح پیشرفتگی</label>
+      <select id="mLevel">
+        <option value="پایه">پایه</option>
+        <option value="مقدماتی">مقدماتی</option>
+        <option value="پیشرفته">پیشرفته</option>
+      </select></div>
+    <div class="field"><label>متن کنترل</label>
+      <textarea id="mTitle" placeholder="متن کنترل…"></textarea></div>
+    <div class="field"><label>شواهد</label>
+      <textarea id="mEvidence" placeholder="شواهد ارزیابی…"></textarea></div>
+    <div class="field"><label>وضعیت پیاده‌سازی (اولیه)</label>
+      <select id="mStatus">${STATUS_OPTS.map(v=>`<option value="${v}">${v}</option>`).join('')}</select></div>
+    <div class="field"><label>واحد مسئول رسیدگی</label>
+      <input id="mUnit" placeholder="مثلاً: واحد مدیریت زیرساخت و شبکه"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="mSave">افزودن</button>
+      <button class="btn" id="mCancel">انصراف</button>
+    </div>
+  </div></div>`;
+  const close = () => $('#modalHost').innerHTML='';
+  $('#closeModal').addEventListener('click', close);
+  $('#mCancel').addEventListener('click', close);
+  $('#modalBg').addEventListener('click', e => { if(e.target.id==='modalBg') close(); });
+  $('#mSave').addEventListener('click', async () => {
+    const title = $('#mTitle').value.trim();
+    if(!title) return toast('متن کنترل الزامی است');
+    try{
+      const row = {
+        category: $('#mCat').value.trim() || null,
+        level: $('#mLevel').value || null,
+        title,
+        evidence: $('#mEvidence').value.trim() || '',
+        status: normalizeStatus($('#mStatus').value),
+        owner_unit: $('#mUnit').value.trim() || null
+      };
+      if(MODE==='local'){
+        await LocalDB.addControl(row);
+      } else {
+        const maxRow = S.controls.reduce((m,c)=>Math.max(m, Number(c.row_no)||0), 0);
+        const { error } = await sb.from('controls').insert({ row_no: maxRow+1, ...row });
+        if(error) throw error;
+      }
+      await loadControls();
+      toast('کنترل اضافه شد');
+      close();
+      render();
+    }catch(err){ toast('خطا: '+err.message); }
+  });
+}
+
+/* =========================================================
+   CONTROL MODAL
+========================================================= */
 function openControlModal(id){
   const c = S.controls.find(x=>x.id===id); if(!c) return;
   const a = S.assessments[c.id] || {};
@@ -1738,14 +1539,14 @@ function openControlModal(id){
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
       <span class="badge badge-soft">${esc(c.category||'—')}</span>
       <span class="badge badge-soft">سطح: ${esc(c.level||'—')}</span>
-      <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
+      <span class="badge ${statusClass(st)}">${esc(st)}</span>
       <span class="badge badge-soft">${esc(c.owner_unit||'—')}</span>
     </div>
     <div class="kv"><div class="k">متن کنترل</div><div class="v">${esc(c.title)}</div></div>
     <div class="kv"><div class="k">شواهد ارزیابی</div><div class="v">${esc(c.evidence||'—')}</div></div>
     <div class="kv"><div class="k">وضعیت دوره «${esc(periodName)}»</div>
       <div class="v" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
+        <span class="badge ${statusClass(st)}">${esc(st)}</span>
         <div class="bar" style="flex:1;min-width:120px;margin:0"><i style="width:${pr}%"></i></div>
         <b>${fa(pr)}٪</b>
       </div></div>
@@ -1753,12 +1554,15 @@ function openControlModal(id){
     ${a.file_url?`<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">${esc(a.file_name||'دانلود فایل')}</a></div></div>`:''}
     <button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">فرم ارزیابی این واحد</button>
   </div></div>`;
-  const close = () => $('#modalHost').innerHTML = '';
+  const close = () => $('#modalHost').innerHTML='';
   $('#closeModal').addEventListener('click', close);
   $('#modalBg').addEventListener('click', e => { if(e.target.id==='modalBg') close(); });
   $('#goAssess').addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
 }
 
+/* =========================================================
+   GLOBAL EVENTS
+========================================================= */
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('#loginBtn'), err = $('#loginErr');
@@ -1769,13 +1573,11 @@ $('#loginForm').addEventListener('submit', async e => {
   }catch(ex){ err.textContent = ex.message || 'ورود ناموفق'; }
   finally{ btn.disabled = false; btn.textContent = 'ورود'; }
 });
-
 $('#retestBtn').addEventListener('click', async () => {
   if(MODE==='local'){ setMode('supabase'); } else { await testConnection(); }
 });
 $('#localModeBtn').addEventListener('click', () => {
-  setMode('local');
-  toast('حالت محلی فعال شد');
+  setMode('local'); toast('حالت محلی فعال شد');
 });
 $('#nav').addEventListener('click', e => {
   const b = e.target.closest('button[data-view]'); if(!b) return;
