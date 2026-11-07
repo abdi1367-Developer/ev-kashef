@@ -3,341 +3,675 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>سامانه پایش کنترل‌های امنیتی | کاشف ۴۹۵</title>
+<title>کاشف ۴۹۵ | پایش کنترل‌های امنیتی</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
 :root{
-  --bg:#f8fafc;
-  --card:#ffffff;
-  --line:#e5e9f0;
-  --line2:#d4dce8;
-  --txt:#111827;
-  --muted:#6b7280;
-  --muted2:#9ca3af;
-  --accent:#2563eb;
-  --accent2:#1d4ed8;
-  --accent-bg:#eff6ff;
-  --accent-border:#dbeafe;
-  --ok:#16a34a;--ok-bg:#f0fdf4;--ok-border:#bbf7d0;
-  --warn:#d97706;--warn-bg:#fffbeb;--warn-border:#fde68a;
-  --bad:#dc2626;--bad-bg:#fef2f2;--bad-border:#fecaca;
-  --gray:#64748b;--gray-bg:#f1f5f9;--gray-border:#e2e8f0;
-  --r:12px;
+  --white:#ffffff;
+  --bg:#fafafa;
+  --line:#e4e4e7;
+  --line2:#d4d4d8;
+  --txt:#09090b;
+  --txt2:#3f3f46;
+  --muted:#71717a;
+  --dim:#a1a1aa;
+  --faint:#f4f4f5;
+  --black:#18181b;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;min-height:100%}
 body{
   font-family:'Vazirmatn',system-ui,-apple-system,sans-serif;
-  background:var(--bg);color:var(--txt);
-  font-size:14px;overflow-x:hidden;
+  background:var(--white);color:var(--txt);
+  font-size:14px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;
+  overflow-x:hidden;
 }
 ::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
-::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:0}
+::-webkit-scrollbar-thumb:hover{background:var(--dim)}
 ::-webkit-scrollbar-track{background:transparent}
-a{color:var(--accent);text-decoration:none}
+a{color:var(--txt);text-decoration:none}
 button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
 
 /* ============ LOGIN ============ */
-.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px;background:#f8fafc}
-.bg-anim{position:absolute;inset:0;overflow:hidden}
-.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
-.b1{width:44vw;height:44vw;min-width:300px;min-height:300px;background:#bfdbfe;top:-10%;right:-8%;animation:float 19s ease-in-out infinite}
-.b2{width:38vw;height:38vw;min-width:280px;min-height:280px;background:#c7d2fe;bottom:-12%;left:-8%;animation:float 23s ease-in-out infinite reverse}
-.b3{width:30vw;height:30vw;min-width:240px;min-height:240px;background:#ddd6fe;top:42%;left:38%;opacity:.4;animation:float 27s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(-7%,9%,0) scale(1.1)}66%{transform:translate3d(9%,-7%,0) scale(.95)}}
+.login-wrap{
+  position:fixed;inset:0;display:grid;place-items:center;
+  overflow:hidden;z-index:200;padding:16px;
+  background:var(--white);
+}
+.bg-anim{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--faint) 1px,transparent 1px),
+    linear-gradient(90deg,var(--faint) 1px,transparent 1px);
+  background-size:48px 48px;
+  opacity:.8;
+}
+.rotor{
+  position:absolute;border:1px solid var(--faint);
+  top:50%;left:50%;pointer-events:none;
+}
+.rotor-a{
+  width:56vmin;height:56vmin;
+  transform:translate(-50%,-50%) rotate(0deg);
+  animation:rot 180s linear infinite;
+}
+.rotor-b{
+  width:34vmin;height:34vmin;
+  border-style:dashed;border-color:var(--line);
+  transform:translate(-50%,-50%) rotate(0deg);
+  animation:rot 240s linear infinite reverse;
+}
+.rotor-c{
+  width:80vmin;height:80vmin;
+  border-color:var(--faint);
+  transform:translate(-50%,-50%) rotate(0deg);
+  animation:rot 320s linear infinite;
+}
+@keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg)}}
 
 .login-card{
-  position:relative;z-index:3;width:min(400px,94vw);
-  padding:32px 26px;border-radius:16px;
-  background:#fff;border:1px solid var(--line);
-  box-shadow:0 20px 60px -20px rgba(15,23,42,.12),0 4px 12px -4px rgba(15,23,42,.04);
+  position:relative;z-index:3;
+  width:min(380px,94vw);
+  padding:36px 28px 28px;
+  background:var(--white);
+  border:1px solid var(--txt);
+  box-shadow:none;
+  animation:pop .5s ease;
 }
-.logo{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;margin:0 auto 16px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
-.login-card h1{font-size:17px;margin:0 0 6px;text-align:center;font-weight:700;color:var(--txt)}
-.login-card .sub{margin:0 0 22px;text-align:center;color:var(--muted);font-size:12px}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.kashaf{
+  font-size:11px;font-weight:600;
+  letter-spacing:.32em;
+  color:var(--txt);
+  text-align:center;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.kashaf-rule{height:1px;background:var(--txt);margin-bottom:22px}
+.login-card h1{
+  font-size:15px;font-weight:600;
+  margin:0 0 4px;text-align:center;
+  letter-spacing:.02em;
+}
+.login-card .sub{
+  margin:0 0 26px;text-align:center;
+  color:var(--muted);font-size:11.5px;
+  letter-spacing:.02em;
+}
+
+.field{margin-bottom:14px}
+.field label{
+  display:block;font-size:10px;
+  color:var(--muted);margin-bottom:6px;
+  letter-spacing:.15em;font-weight:500;
+}
 .field input{
-  width:100%;padding:11px 13px;border-radius:8px;
-  border:1px solid var(--line2);background:#fff;color:var(--txt);
-  outline:none;transition:.15s;font-size:13.5px;
+  width:100%;padding:10px 12px;
+  border:1px solid var(--txt);
+  background:var(--white);color:var(--txt);
+  outline:none;font-size:13px;
+  border-radius:0;
+  font-variant-numeric:tabular-nums;
 }
-.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.field input:focus{background:var(--faint)}
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  padding:10px 16px;border-radius:8px;border:1px solid var(--line2);
-  background:#fff;color:var(--txt);cursor:pointer;font-weight:600;
-  transition:.15s;font-size:13px;
+  padding:10px 16px;border:1px solid var(--txt);
+  background:var(--white);color:var(--txt);
+  cursor:pointer;font-weight:500;font-size:12.5px;
+  transition:background .12s,color .12s;
+  border-radius:0;
+  letter-spacing:.02em;
 }
-.btn:hover{background:#f8fafc;border-color:#94a3b8}
-.btn:active{transform:scale(.98)}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent2);border-color:var(--accent2)}
-.btn-full{width:100%;padding:11px}
-.btn-sm{padding:6px 11px;border-radius:7px;font-size:12px}
-.btn-danger{background:#fff;border-color:var(--bad-border);color:var(--bad)}
-.btn-danger:hover{background:var(--bad-bg);border-color:var(--bad)}
+.btn:hover{background:var(--faint)}
+.btn:active{background:var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--txt);color:var(--white);border-color:var(--txt)}
+.btn-primary:hover{background:var(--txt2);border-color:var(--txt2)}
+.btn-full{width:100%;padding:12px}
+.btn-sm{padding:6px 10px;font-size:11.5px}
+.btn-danger{background:var(--white);color:var(--txt);border-color:var(--txt)}
 
-.err{color:var(--bad);font-size:12px;text-align:center;margin-top:10px;min-height:16px;line-height:1.7}
-.diag{margin:14px 0;padding:10px 12px;border-radius:8px;font-size:11.5px;line-height:1.8;border:1px solid var(--line);background:#f8fafc;color:var(--muted)}
-.diag.ok{background:var(--ok-bg);border-color:var(--ok-border);color:#166534}
-.diag.err{background:var(--bad-bg);border-color:var(--bad-border);color:#991b1b}
-.diag.warn{background:var(--warn-bg);border-color:var(--warn-border);color:#92400e}
-.diag b{color:var(--txt);font-weight:700}
-.diag code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px;font-size:10.5px;font-family:monospace;color:#1e40af}
-.hint{text-align:center;color:var(--muted);font-size:11px;margin-top:12px;line-height:1.8}
+.err{color:var(--txt);font-size:11.5px;text-align:center;margin-top:10px;min-height:14px;letter-spacing:.02em;font-weight:500}
+.diag{
+  margin:0 0 16px;padding:9px 11px;
+  border:1px solid var(--line);
+  background:var(--faint);
+  font-size:10.5px;line-height:1.7;
+  color:var(--muted);
+  letter-spacing:.02em;
+}
+.diag.ok{background:var(--white);border-color:var(--txt)}
+.diag.err{background:var(--white);border-color:var(--txt);border-style:dashed}
+.diag.warn{background:var(--white);border-color:var(--line2)}
+.diag b{color:var(--txt);font-weight:600}
+.diag code{background:var(--white);padding:1px 4px;font-family:'Vazirmatn',monospace;font-size:10px;border:1px solid var(--line)}
 
-/* ============ APP LAYOUT ============ */
-#app{display:flex;min-height:100dvh;width:100%}
+.hint{
+  text-align:center;color:var(--dim);
+  font-size:10.5px;margin-top:16px;
+  letter-spacing:.06em;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+}
+.hint b{color:var(--txt);font-weight:600}
+
+.mode-toggle{
+  display:flex;gap:0;margin-top:12px;
+  border:1px solid var(--txt);
+}
+.mode-toggle button{
+  flex:1;padding:8px 6px;font-size:10.5px;
+  background:var(--white);color:var(--txt);
+  border:none;cursor:pointer;
+  letter-spacing:.05em;font-weight:500;
+}
+.mode-toggle button:first-child{border-left:1px solid var(--txt)}
+.mode-toggle button:hover{background:var(--faint)}
+
+/* ============ APP ============ */
+#app{display:flex;min-height:100dvh;width:100%;background:var(--white)}
+
 .sidebar{
-  width:236px;flex:0 0 236px;
+  width:220px;flex:0 0 220px;
   height:100dvh;position:sticky;top:0;z-index:50;
-  background:#fff;border-left:1px solid var(--line);
+  background:var(--white);
+  border-left:1px solid var(--txt);
   display:flex;flex-direction:column;
-  padding:16px 10px;
+  padding:22px 14px;
   overflow:hidden;
 }
 .brand{
-  display:flex;align-items:center;gap:10px;
-  padding:2px 8px 14px;border-bottom:1px solid var(--line);
-  margin-bottom:10px;flex-shrink:0;
+  padding:0 6px 18px;
+  border-bottom:1px solid var(--txt);
+  margin-bottom:18px;
+  flex-shrink:0;
 }
-.brand .ic{
-  width:34px;height:34px;border-radius:9px;
-  display:grid;place-items:center;font-size:16px;
-  background:var(--accent-bg);color:var(--accent);
-  border:1px solid var(--accent-border);flex-shrink:0;
+.brand b{
+  display:block;font-size:13px;
+  font-weight:600;color:var(--txt);
+  letter-spacing:.16em;
+  margin-bottom:4px;
 }
-.brand b{display:block;font-size:13px;font-weight:700;color:var(--txt);line-height:1.3}
-.brand span{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}
-.nav{
-  display:flex;flex-direction:column;gap:1px;
-  flex:1;min-height:0;overflow:hidden;
+.brand span{
+  display:block;font-size:10px;
+  color:var(--muted);letter-spacing:.06em;
 }
+.nav{display:flex;flex-direction:column;gap:0;flex:1;min-height:0;overflow:hidden}
 .nav button{
-  display:flex;align-items:center;gap:10px;
-  width:100%;padding:8px 11px;
-  border-radius:7px;border:none;
-  background:transparent;color:var(--muted);
-  cursor:pointer;font-weight:500;font-size:12.5px;
-  text-align:right;transition:.12s;flex-shrink:0;
+  display:flex;align-items:center;
+  width:100%;padding:9px 10px;
+  border:none;background:transparent;
+  color:var(--muted);
+  cursor:pointer;font-weight:500;
+  font-size:12px;text-align:right;
+  transition:background .12s,color .12s;
+  border-radius:0;
+  flex-shrink:0;
+  letter-spacing:.02em;
+  border-right:2px solid transparent;
+  padding-right:8px;
 }
-.nav button:hover{background:var(--gray-bg);color:var(--txt)}
-.nav button.active{background:var(--accent-bg);color:var(--accent);font-weight:600}
-.nav button .ic{font-size:14px;width:18px;text-align:center;flex-shrink:0}
-.side-foot{border-top:1px solid var(--line);padding-top:10px;margin-top:8px;flex-shrink:0}
+.nav button:hover{color:var(--txt);background:var(--faint)}
+.nav button.active{
+  color:var(--txt);
+  font-weight:600;
+  border-right:2px solid var(--txt);
+  background:var(--faint);
+}
+
+.side-foot{
+  border-top:1px solid var(--txt);
+  padding-top:14px;margin-top:14px;
+  flex-shrink:0;
+}
 .user-chip{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 8px;border-radius:8px;
-  background:var(--gray-bg);margin-bottom:8px;
+  display:flex;align-items:center;gap:9px;
+  padding:8px 4px;margin-bottom:10px;
 }
 .user-chip .av{
-  width:28px;height:28px;border-radius:50%;
-  display:grid;place-items:center;font-weight:700;font-size:12px;
-  background:var(--accent);color:#fff;flex:0 0 auto;
+  width:26px;height:26px;
+  border:1px solid var(--txt);
+  display:grid;place-items:center;
+  font-weight:600;font-size:10px;
+  color:var(--txt);flex:0 0 auto;
+  letter-spacing:.02em;
 }
-.user-chip b{display:block;font-size:12px;color:var(--txt);font-weight:600;line-height:1.2}
-.user-chip span{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}
-.overlay{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:45;opacity:0;pointer-events:none;transition:.25s}
+.user-chip b{
+  display:block;font-size:11.5px;
+  color:var(--txt);font-weight:600;
+  line-height:1.25;letter-spacing:.02em;
+}
+.user-chip span{
+  display:block;font-size:9.5px;
+  color:var(--muted);margin-top:2px;
+  letter-spacing:.06em;
+}
+.mode-line{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 4px;margin-bottom:8px;
+  font-size:9.5px;color:var(--muted);
+  letter-spacing:.14em;font-weight:500;
+}
+.mode-line::before{
+  content:'';width:6px;height:6px;
+  background:var(--txt);flex:0 0 auto;
+}
+.mode-line.local::before{background:var(--dim)}
+.side-foot .btn{
+  padding:7px;font-size:11px;
+  letter-spacing:.08em;font-weight:500;
+}
+
+.overlay{
+  position:fixed;inset:0;background:rgba(9,9,11,.32);
+  z-index:45;opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
 .overlay.show{opacity:1;pointer-events:auto}
 
 .main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;width:100%}
 .topbar{
   position:sticky;top:0;z-index:30;
   display:flex;align-items:center;gap:12px;
-  padding:12px 20px;background:#fff;border-bottom:1px solid var(--line);
+  padding:16px 24px;
+  background:var(--white);
+  border-bottom:1px solid var(--txt);
 }
 .topbar h2{
-  margin:0;font-size:15px;font-weight:700;
-  flex:1;min-width:0;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap;color:var(--txt);
+  margin:0;font-size:13px;
+  font-weight:600;flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;
+  letter-spacing:.06em;
+  color:var(--txt);
 }
 .icon-btn{
-  width:36px;height:36px;border-radius:8px;
-  border:1px solid var(--line);background:#fff;color:var(--txt);
-  cursor:pointer;display:none;place-items:center;font-size:16px;flex:0 0 auto;
+  width:34px;height:34px;
+  border:1px solid var(--txt);
+  background:var(--white);color:var(--txt);
+  cursor:pointer;display:none;place-items:center;
+  font-size:15px;flex:0 0 auto;
+  border-radius:0;
 }
-.icon-btn:hover{background:var(--gray-bg)}
+.icon-btn:hover{background:var(--faint)}
 .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.content{flex:1;padding:20px;width:100%;min-width:0}
+.top-actions select{
+  padding:8px 11px;
+  border:1px solid var(--txt);
+  background:var(--white);color:var(--txt);
+  outline:none;font-size:11.5px;
+  border-radius:0;letter-spacing:.02em;
+  max-width:200px;
+  font-variant-numeric:tabular-nums;
+}
+.content{flex:1;padding:24px;width:100%;min-width:0}
 
 /* ============ COMPONENTS ============ */
-.grid{display:grid;gap:12px;width:100%}
-.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-.cols2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid{display:grid;gap:16px;width:100%}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+
 .card{
-  background:var(--card);border:1px solid var(--line);
-  border-radius:var(--r);padding:16px;min-width:0;
+  background:var(--white);
+  border:1px solid var(--txt);
+  padding:20px;min-width:0;
+  border-radius:0;
 }
 .card h3{
-  margin:0 0 12px;font-size:13px;font-weight:700;
-  color:var(--txt);display:flex;align-items:center;gap:8px;
+  margin:0 0 16px;font-size:10.5px;
+  font-weight:600;color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+  letter-spacing:.16em;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line);
 }
-.card h3 .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.kpi .v{font-size:26px;font-weight:800;line-height:1.1;color:var(--txt);letter-spacing:-.5px}
-.kpi .l{color:var(--muted);font-size:11.5px;margin-top:5px}
+.card h3 .dot{
+  width:5px;height:5px;background:var(--txt);flex:0 0 auto;
+}
+
+.kpi .v{
+  font-size:32px;font-weight:600;
+  line-height:1;color:var(--txt);
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.kpi .l{
+  color:var(--muted);font-size:10px;
+  margin-top:8px;letter-spacing:.14em;
+  font-weight:500;
+}
 
 .badge{
   display:inline-flex;align-items:center;gap:4px;
-  padding:2px 9px;border-radius:99px;font-size:11px;
-  border:1px solid transparent;white-space:nowrap;font-weight:500;
+  padding:2px 8px;font-size:10px;
+  white-space:nowrap;font-weight:500;
+  letter-spacing:.06em;
+  border-radius:0;
+  border:1px solid transparent;
 }
-.st-ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
-.st-warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
-.st-bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad-border)}
-.st-gray{background:var(--gray-bg);color:var(--gray);border-color:var(--gray-border)}
-.badge-soft{background:var(--gray-bg);color:var(--muted);border-color:var(--gray-border)}
+.st-ok{background:var(--txt);color:var(--white);border-color:var(--txt)}
+.st-warn{background:var(--white);color:var(--txt);border-color:var(--txt)}
+.st-bad{background:var(--white);color:var(--muted);border-color:var(--line2);border-style:dashed}
+.st-gray{background:transparent;color:var(--dim);border-color:var(--line)}
+.badge-soft{background:var(--faint);color:var(--muted);border-color:var(--line)}
 
-.bar-row{display:grid;grid-template-columns:1fr 48px;gap:10px;align-items:center;margin:8px 0}
-.bar-row .nm{font-size:12px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bar-row .pc{font-size:11.5px;font-weight:700;text-align:left;color:var(--accent)}
-.bar{height:6px;border-radius:99px;background:var(--gray-bg);overflow:hidden;margin-top:5px}
-.bar>i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .5s ease}
-.bar.g>i{background:var(--ok)}
-.bar.w>i{background:var(--warn)}
-.bar.b>i{background:var(--bad)}
+.bar-row{display:grid;grid-template-columns:1fr 42px;gap:12px;align-items:center;margin:10px 0}
+.bar-row .nm{
+  font-size:11.5px;color:var(--txt);font-weight:500;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  letter-spacing:.02em;
+}
+.bar-row .pc{
+  font-size:11px;font-weight:600;text-align:left;
+  color:var(--txt);
+  font-variant-numeric:tabular-nums;
+}
+.bar{
+  height:4px;background:var(--faint);
+  overflow:hidden;margin-top:6px;border-radius:0;
+}
+.bar>i{
+  display:block;height:100%;background:var(--txt);
+  transition:width .6s cubic-bezier(.2,.9,.3,1);
+}
 
-.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center}
-.donut{width:150px;height:150px;border-radius:50%;position:relative;display:grid;place-items:center;flex:0 0 auto}
-.donut::before{content:'';position:absolute;inset:22px;border-radius:50%;background:#fff}
+.donut-wrap{display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center}
+.donut{
+  width:150px;height:150px;border-radius:50%;
+  position:relative;display:grid;place-items:center;flex:0 0 auto;
+}
+.donut::before{
+  content:'';position:absolute;inset:22px;
+  border-radius:50%;background:var(--white);
+}
 .donut .mid{position:relative;z-index:2;text-align:center}
-.donut .mid b{display:block;font-size:24px;font-weight:800;line-height:1;color:var(--txt)}
-.donut .mid span{font-size:10.5px;color:var(--muted);margin-top:2px;display:block}
-.legend{display:flex;flex-direction:column;gap:8px;min-width:140px}
-.legend div{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt)}
-.legend i{width:8px;height:8px;border-radius:2px;flex:0 0 auto}
-.legend b{margin-right:auto;color:var(--txt);font-weight:700}
-
-.toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:12px}
-.toolbar input,.toolbar select{
-  padding:9px 11px;border-radius:7px;
-  border:1px solid var(--line2);background:#fff;color:var(--txt);
-  outline:none;width:100%;font-size:12.5px;transition:.12s;
+.donut .mid b{
+  display:block;font-size:26px;font-weight:600;
+  line-height:1;color:var(--txt);
+  letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;
 }
-.toolbar input:focus,.toolbar select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.donut .mid span{
+  font-size:9.5px;color:var(--muted);
+  margin-top:4px;letter-spacing:.14em;
+  display:block;font-weight:500;
+}
+.legend{display:flex;flex-direction:column;gap:10px;min-width:160px}
+.legend div{
+  display:flex;align-items:center;gap:10px;
+  font-size:11px;color:var(--txt);
+  letter-spacing:.02em;
+}
+.legend i{
+  width:8px;height:8px;flex:0 0 auto;
+  border-radius:0;
+  border:1px solid var(--txt);
+}
+.legend b{
+  margin-right:auto;color:var(--txt);
+  font-weight:600;font-variant-numeric:tabular-nums;
+}
+
+.toolbar{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:8px;margin-bottom:14px;
+}
+.toolbar input,.toolbar select{
+  padding:9px 11px;
+  border:1px solid var(--txt);
+  background:var(--white);color:var(--txt);
+  outline:none;width:100%;font-size:11.5px;
+  border-radius:0;letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
+}
+.toolbar input:focus,.toolbar select:focus{background:var(--faint)}
+.toolbar input::placeholder{color:var(--dim);letter-spacing:.02em}
 
 .list{display:grid;gap:10px}
 .ctrl{
-  background:var(--card);border:1px solid var(--line);
-  border-radius:10px;padding:13px;
-  cursor:pointer;transition:.15s;min-width:0;
+  background:var(--white);
+  border:1px solid var(--line2);
+  padding:14px 16px;
+  cursor:pointer;transition:border-color .12s;min-width:0;
+  border-radius:0;
 }
-.ctrl:hover{border-color:var(--line2);box-shadow:0 2px 8px -2px rgba(15,23,42,.08)}
-.cc-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.cc-no{font-size:10.5px;color:var(--muted2);font-weight:700;background:var(--gray-bg);padding:2px 7px;border-radius:5px;margin-right:auto}
-.cc-title{font-size:13px;line-height:1.9;font-weight:600;margin-bottom:7px;color:var(--txt)}
-.cc-ev{font-size:11.5px;line-height:1.9;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cc-foot{margin-top:9px;display:flex;align-items:center;gap:10px}
-.cc-foot .bar{flex:1}
-.pager{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
-.pager .info{color:var(--muted);font-size:12px;padding:0 6px}
+.ctrl:hover{border-color:var(--txt)}
+.cc-head{
+  display:flex;align-items:center;gap:6px;
+  flex-wrap:wrap;margin-bottom:10px;
+}
+.cc-no{
+  font-size:10px;color:var(--muted);
+  font-weight:500;margin-right:auto;
+  letter-spacing:.08em;
+  font-variant-numeric:tabular-nums;
+}
+.cc-title{
+  font-size:12.5px;line-height:1.85;
+  font-weight:500;margin-bottom:8px;
+  color:var(--txt);letter-spacing:.01em;
+}
+.cc-ev{
+  font-size:11px;line-height:1.85;
+  color:var(--muted);
+  display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;
+  letter-spacing:.01em;
+}
+.cc-foot{
+  margin-top:12px;display:flex;align-items:center;gap:12px;
+}
+.cc-foot .bar{flex:1;margin:0}
+.cc-foot b{
+  font-size:10.5px;color:var(--txt);
+  min-width:38px;text-align:left;
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
 
-.as-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px}
-.as-item .t{font-size:13px;font-weight:600;line-height:1.85;margin-bottom:10px;color:var(--txt)}
-.as-item .t .n{color:var(--accent);font-weight:700;margin-left:5px}
-.as-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:10px}
-.as-grid label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.pager{
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;margin-top:20px;flex-wrap:wrap;
+}
+.pager .info{
+  color:var(--muted);font-size:10.5px;
+  padding:0 8px;letter-spacing:.06em;
+  font-variant-numeric:tabular-nums;
+}
+
+.as-item{
+  background:var(--white);
+  border:1px solid var(--line2);
+  padding:16px;margin-bottom:10px;
+  border-radius:0;
+}
+.as-item .t{
+  font-size:12.5px;font-weight:500;
+  line-height:1.9;margin-bottom:12px;
+  color:var(--txt);letter-spacing:.01em;
+}
+.as-item .t .n{
+  color:var(--muted);font-weight:600;
+  margin-left:6px;font-size:11px;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.06em;
+}
+.as-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:10px;margin-bottom:10px;
+}
+.as-grid label{
+  display:block;font-size:10px;
+  color:var(--muted);margin-bottom:5px;
+  font-weight:500;letter-spacing:.12em;
+}
 .as-grid select,.as-grid input{
-  width:100%;padding:8px 10px;border-radius:7px;
-  border:1px solid var(--line2);background:#fff;color:var(--txt);
-  outline:none;font-size:12.5px;
+  width:100%;padding:8px 10px;
+  border:1px solid var(--txt);
+  background:var(--white);color:var(--txt);
+  outline:none;font-size:11.5px;
+  border-radius:0;letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
 }
-.as-grid select:focus,.as-grid input:focus{border-color:var(--accent)}
-input[type=range]{width:100%;accent-color:var(--accent);margin-top:6px}
+.as-grid select:focus,.as-grid input:focus{background:var(--faint)}
+input[type=range]{
+  width:100%;accent-color:var(--txt);
+  margin-top:8px;border-radius:0;
+}
 textarea{
-  width:100%;padding:9px 11px;border-radius:8px;
-  border:1px solid var(--line2);background:#fff;color:var(--txt);
-  outline:none;resize:vertical;min-height:64px;line-height:1.8;font-size:12.5px;
+  width:100%;padding:10px 12px;
+  border:1px solid var(--txt);
+  background:var(--white);color:var(--txt);
+  outline:none;resize:vertical;
+  min-height:66px;line-height:1.8;
+  font-size:11.5px;border-radius:0;
+  letter-spacing:.01em;
 }
-textarea:focus{border-color:var(--accent)}
+textarea:focus{background:var(--faint)}
 input[type=file]{
-  width:100%;padding:7px;border-radius:7px;
-  border:1px dashed var(--line2);background:#fafbfc;
-  color:var(--muted);font-size:11.5px;cursor:pointer;
+  width:100%;padding:7px;
+  border:1px dashed var(--line2);
+  background:var(--white);color:var(--muted);
+  font-size:10.5px;cursor:pointer;
+  border-radius:0;letter-spacing:.02em;
 }
-.as-foot{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
-.saved{color:var(--ok);font-size:11.5px;font-weight:600}
+.as-foot{
+  display:flex;align-items:center;gap:10px;
+  margin-top:12px;flex-wrap:wrap;
+}
+.saved{
+  color:var(--txt);font-size:10.5px;
+  font-weight:600;letter-spacing:.12em;
+}
 
 .tbl-wrap{overflow-x:auto;width:100%}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}
-th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line)}
-th{color:var(--muted);font-weight:600;font-size:11px;background:#fafbfc;white-space:nowrap}
-tbody tr:hover{background:#fafbfc}
+table{
+  width:100%;border-collapse:collapse;
+  font-size:11.5px;min-width:520px;
+}
+th,td{
+  padding:10px 12px;text-align:right;
+  border-bottom:1px solid var(--line);
+  letter-spacing:.02em;
+}
+th{
+  color:var(--muted);font-weight:600;
+  font-size:9.5px;background:var(--faint);
+  white-space:nowrap;letter-spacing:.14em;
+  border-bottom:1px solid var(--txt);
+}
+tbody tr:hover{background:var(--faint)}
+tbody td{font-variant-numeric:tabular-nums}
 
-.modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);animation:fade .18s}
+.modal{
+  position:fixed;inset:0;z-index:300;
+  display:grid;place-items:center;padding:16px;
+  background:rgba(9,9,11,.4);
+  animation:fade .18s;
+}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .modal-box{
   width:min(760px,100%);max-height:88dvh;overflow:auto;
-  border-radius:12px;border:1px solid var(--line);
-  background:#fff;padding:20px;
-  box-shadow:0 25px 60px -15px rgba(15,23,42,.25);
+  border:1px solid var(--txt);
+  background:var(--white);
+  padding:24px;
+  border-radius:0;
   animation:pop .2s ease;
 }
-@keyframes pop{from{transform:scale(.96);opacity:.5}to{transform:scale(1);opacity:1}}
-.modal-box h3{margin:0 0 14px;font-size:15px;font-weight:700;line-height:1.9;color:var(--txt)}
-.kv{margin-bottom:12px}
-.kv .k{font-size:11.5px;color:var(--muted);margin-bottom:5px;font-weight:500}
-.kv .v{font-size:12.5px;line-height:1.95;background:#f8fafc;padding:10px 12px;border-radius:7px;border:1px solid var(--line)}
+.modal-box h3{
+  margin:0 0 16px;font-size:13px;
+  font-weight:600;line-height:1.9;
+  color:var(--txt);letter-spacing:.01em;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line);
+}
+.kv{margin-bottom:14px}
+.kv .k{
+  font-size:9.5px;color:var(--muted);
+  margin-bottom:6px;font-weight:600;
+  letter-spacing:.14em;
+}
+.kv .v{
+  font-size:12px;line-height:1.95;
+  background:var(--faint);
+  padding:11px 13px;
+  border:1px solid var(--line);
+  border-radius:0;letter-spacing:.01em;
+}
 .close-x{
   position:sticky;top:0;float:left;
-  background:#fff;color:var(--muted);border:1px solid var(--line2);
-  width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:14px;
+  background:var(--white);color:var(--txt);
+  border:1px solid var(--txt);
+  width:28px;height:28px;
+  cursor:pointer;font-size:14px;
+  border-radius:0;line-height:1;
 }
-.close-x:hover{background:var(--gray-bg)}
+.close-x:hover{background:var(--faint)}
 
 .toast{
-  position:fixed;bottom:20px;left:50%;
-  transform:translateX(-50%) translateY(100px);z-index:400;
-  padding:11px 20px;border-radius:9px;
-  background:#111827;color:#fff;font-size:12.5px;font-weight:600;
-  box-shadow:0 15px 40px -10px rgba(15,23,42,.4);
+  position:fixed;bottom:22px;left:50%;
+  transform:translateX(-50%) translateY(100px);
+  z-index:400;padding:10px 20px;
+  background:var(--txt);color:var(--white);
+  font-size:11px;font-weight:500;
+  letter-spacing:.08em;
+  border-radius:0;
   transition:transform .3s cubic-bezier(.2,.9,.3,1.15);
 }
 .toast.show{transform:translateX(-50%) translateY(0)}
-.toast.ok{background:#065f46}
-.toast.err{background:#7f1d1d}
 
-.empty{text-align:center;padding:40px 16px;color:var(--muted);font-size:12.5px;line-height:1.9}
-.spin{width:24px;height:24px;border:2.5px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
-@keyframes sp{to{transform:rotate(360deg)}}
-
-.mode-pill{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:3px 9px;border-radius:99px;
-  font-size:10.5px;font-weight:600;
-  background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border);
+.empty{
+  text-align:center;padding:48px 16px;
+  color:var(--muted);font-size:11.5px;
+  line-height:1.9;letter-spacing:.04em;
 }
-.mode-pill.local{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+.spin{
+  width:22px;height:22px;
+  border:1.5px solid var(--line);
+  border-top-color:var(--txt);
+  border-radius:50%;
+  animation:sp .8s linear infinite;
+  margin:0 auto 12px;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
 
 /* ============ RESPONSIVE ============ */
 @media(max-width:900px){
   .sidebar{
     position:fixed;top:0;right:0;
-    height:100dvh;transform:translateX(100%);
-    transition:transform .28s cubic-bezier(.2,.9,.3,1);
-    box-shadow:-10px 0 40px -10px rgba(15,23,42,.2);
-    width:250px;flex-basis:250px;z-index:55;
+    height:100dvh;
+    transform:translateX(100%);
+    transition:transform .26s cubic-bezier(.2,.9,.3,1);
+    width:240px;flex-basis:240px;
+    z-index:55;
   }
   .sidebar.open{transform:translateX(0)}
   .icon-btn{display:grid}
-  .content{padding:14px}
-  .topbar{padding:10px 14px}
-  .kpi .v{font-size:22px}
-  .card{padding:14px}
+  .content{padding:16px}
+  .topbar{padding:12px 16px}
+  .kpi .v{font-size:26px}
+  .card{padding:16px}
 }
 @media(max-width:560px){
   .kpis{grid-template-columns:repeat(2,1fr)}
   .cols2{grid-template-columns:1fr}
-  .topbar h2{font-size:13.5px}
+  .topbar h2{font-size:11.5px}
   .donut{width:130px;height:130px}
   .donut::before{inset:18px}
-  .donut .mid b{font-size:20px}
+  .donut .mid b{font-size:22px}
   .modal-box{padding:16px}
   .cc-ev{-webkit-line-clamp:3}
+  .content{padding:12px}
 }
 @media(max-height:520px){
   .sidebar{overflow-y:auto}
@@ -347,55 +681,73 @@ tbody tr:hover{background:#fafbfc}
 </head>
 <body>
 
+<!-- ============ LOGIN ============ -->
 <div id="loginScreen" class="login-wrap">
   <div class="bg-anim">
-    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    <div class="bg-grid"></div>
+    <div class="rotor rotor-a"></div>
+    <div class="rotor rotor-b"></div>
+    <div class="rotor rotor-c"></div>
   </div>
   <div class="login-card">
-    <div class="logo">🛡️</div>
-    <h1>سامانه پایش کنترل‌های امنیتی</h1>
-    <p class="sub">مرکز مبادله ارز و طلای ایران — کاشف ۴۹۵</p>
+    <div class="kashaf">KASHAF — 495</div>
+    <div class="kashaf-rule"></div>
+    <h1>ورود به سامانه</h1>
+    <p class="sub">پایش کنترل‌های امنیت اطلاعات</p>
 
     <div id="connBox" class="diag">
       <div><b>وضعیت اتصال:</b> <span id="connTxt">در حال بررسی…</span></div>
     </div>
 
     <form id="loginForm">
-      <div class="field"><label>نام کاربری</label>
-        <input id="luser" value="ice" required></div>
-      <div class="field"><label>رمز عبور</label>
-        <input id="lpass" type="password" value="ice" required></div>
-      <button class="btn btn-primary btn-full" type="submit" id="loginBtn">ورود به سامانه</button>
+      <div class="field">
+        <label>نام کاربری</label>
+        <input id="luser" value="ice" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label>رمز عبور</label>
+        <input id="lpass" type="password" value="ice" required autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-full" type="submit" id="loginBtn">ورود</button>
       <div class="err" id="loginErr"></div>
     </form>
 
-    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-      <button class="btn btn-sm" id="retestBtn" style="flex:1">🔄 تست مجدد</button>
-      <button class="btn btn-sm" id="localModeBtn" style="flex:1">💾 حالت محلی</button>
+    <div class="mode-toggle">
+      <button id="retestBtn">تست اتصال</button>
+      <button id="localModeBtn">حالت محلی</button>
     </div>
 
     <div class="hint">کاربر پیش‌فرض: <b>ice</b> / رمز: <b>ice</b></div>
   </div>
 </div>
 
+<!-- ============ APP ============ -->
 <div id="app" class="hidden">
   <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="ic">🛡️</div><div><b>کاشف ۴۹۵</b><span>پایش کنترل‌های امنیتی</span></div></div>
+    <div class="brand">
+      <b>KASHAF 495</b>
+      <span>پایش کنترل‌های امنیت</span>
+    </div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
-      <div class="user-chip"><div class="av" id="avatar">I</div>
-        <div style="min-width:0"><b id="uName">—</b><span id="uRole">—</span></div></div>
-      <div id="modeIndicator" style="margin-bottom:8px"></div>
-      <button class="btn btn-sm btn-full" id="logoutBtn">🚪 خروج</button>
+      <div class="user-chip">
+        <div class="av" id="avatar">I</div>
+        <div style="min-width:0">
+          <b id="uName">—</b>
+          <span id="uRole">—</span>
+        </div>
+      </div>
+      <div id="modeIndicator"></div>
+      <button class="btn btn-full" id="logoutBtn">خروج از حساب</button>
     </div>
   </aside>
   <div class="overlay" id="overlay"></div>
   <main class="main">
     <header class="topbar">
-      <button class="icon-btn" id="menuBtn">☰</button>
+      <button class="icon-btn" id="menuBtn">≡</button>
       <h2 id="pageTitle">داشبورد</h2>
       <div class="top-actions">
-        <select id="globalPeriod" style="padding:8px 12px;border-radius:8px;border:1px solid var(--line2);background:#fff;color:var(--txt);max-width:190px;font-size:12.5px;outline:none"></select>
+        <select id="globalPeriod"></select>
       </div>
     </header>
     <div class="content" id="content"></div>
@@ -417,8 +769,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt
 const fa = n => String(n ?? '').replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 
 function toast(msg, type='ok'){
-  const t = $('#toast'); t.textContent = msg; t.className = 'toast show '+type;
-  clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='toast '+type, 2600);
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show';
+  clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='toast', 2400);
 }
 async function sha256(str){
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -461,15 +813,15 @@ function updateModeIndicator(){
   const el = $('#modeIndicator');
   if(!el) return;
   el.innerHTML = MODE === 'local'
-    ? `<span class="mode-pill local">💾 حالت محلی</span>`
-    : `<span class="mode-pill">☁️ Supabase</span>`;
+    ? `<div class="mode-line local">LOCAL</div>`
+    : `<div class="mode-line">SUPABASE</div>`;
 }
 function updateConnBox(){
   const box = $('#connBox');
   if(!box) return;
   if(MODE === 'local'){
     box.className = 'diag warn';
-    box.innerHTML = `<div><b>حالت محلی فعال</b> — داده‌ها در مرورگر ذخیره می‌شوند.</div>`;
+    box.innerHTML = `<div><b>حالت محلی فعال</b><br>داده‌ها در مرورگر ذخیره می‌شوند.</div>`;
   } else {
     box.innerHTML = `<div><b>وضعیت اتصال:</b> <span id="connTxt">در حال بررسی…</span></div>`;
     testConnection();
@@ -499,7 +851,7 @@ const LocalDB = {
     return t;
   },
   save(t){ LS.write('tables', t); },
-  async findUser(username){ return this.tables().users.find(u => u.username === username) || null; },
+  async findUser(u){ return this.tables().users.find(x => x.username === u) || null; },
   async addUser(u){ const t = this.tables(); t.users.push(u); this.save(t); },
   async delUser(id){ const t = this.tables(); t.users = t.users.filter(u=>u.id!==id); this.save(t); },
   async listUsers(){ return this.tables().users; },
@@ -535,7 +887,7 @@ async function testConnection(){
   if(!box || !txt || MODE === 'local') return;
   txt.textContent = 'در حال بررسی…';
   box.className = 'diag';
-  if(!sb){ txt.textContent = 'کتابخانه Supabase بارگذاری نشد.'; box.className = 'diag err'; return; }
+  if(!sb){ txt.textContent = 'کتابخانه بارگذاری نشد.'; box.className = 'diag err'; return; }
   const controller = new AbortController();
   const timer = setTimeout(()=> controller.abort(), 9000);
   try{
@@ -545,27 +897,23 @@ async function testConnection(){
       signal: controller.signal
     });
     clearTimeout(timer);
-    if(res.ok){ txt.innerHTML = '✅ اتصال به Supabase برقرار است.'; box.className = 'diag ok'; return true; }
+    if(res.ok){ txt.textContent = 'متصل — پایگاه داده در دسترس است.'; box.className = 'diag ok'; return true; }
     let body = ''; try{ body = await res.text(); }catch(e){}
     if(res.status === 404 || (body && body.includes('does not exist'))){
-      txt.innerHTML = '⚠️ اتصال برقرار شد ولی <b>جداول ساخته نشده‌اند</b>. اسکریپت SQL را در Supabase اجرا کنید.';
+      txt.textContent = 'اتصال برقرار شد ولی جداول ساخته نشده‌اند. اسکریپت SQL را اجرا کنید.';
       box.className = 'diag warn';
-    } else if(res.status === 401 || res.status === 403){
-      txt.innerHTML = '⚠️ کلید Supabase نامعتبر است.'; box.className = 'diag err';
     } else {
-      txt.innerHTML = `⚠️ پاسخ سرور: ${res.status}`; box.className = 'diag warn';
+      txt.textContent = `پاسخ سرور: ${res.status}`; box.className = 'diag warn';
     }
   }catch(err){
     clearTimeout(timer);
     const msg = String(err && err.message || err);
-    if(msg.includes('abort') || msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('timeout')){
-      txt.innerHTML = `❌ <b>اتصال برقرار نشد</b>.<br>
-        علت‌ها: (۱) پروژه در Supabase <b>Paused</b> است → Restore کنید،
-        یا (۲) دسترسی به <code>supabase.co</code> مختل است.
-        <br>می‌توانید روی «حالت محلی» بزنید.`;
+    if(msg.includes('abort') || msg.includes('Failed to fetch') || msg.includes('NetworkError')){
+      txt.textContent = 'اتصال برقرار نشد. پروژه Paused است یا شبکه مسدود است.';
       box.className = 'diag err';
     } else {
-      txt.innerHTML = `❌ خطا: ${esc(msg)}`; box.className = 'diag err';
+      txt.textContent = 'خطا: ' + msg;
+      box.className = 'diag err';
     }
   }
 }
@@ -578,13 +926,13 @@ const S = {
   assessUnit:'', _trendLoaded:false
 };
 const NAV = [
-  { id:'dashboard', label:'داشبورد مانیتورینگ', icon:'📊' },
-  { id:'controls',  label:'کنترل‌ها',            icon:'🗂️' },
-  { id:'assess',    label:'ارزیابی دوره',        icon:'📝' },
-  { id:'trend',     label:'روند پیشرفت',         icon:'📈' },
-  { id:'periods',   label:'مدیریت دوره‌ها',      icon:'🗓️' },
-  { id:'users',     label:'کاربران سامانه',      icon:'👥' },
-  { id:'import',    label:'ورود داده (اکسل)',    icon:'📥' }
+  { id:'dashboard', label:'داشبورد' },
+  { id:'controls',  label:'کنترل‌ها' },
+  { id:'assess',    label:'ارزیابی دوره' },
+  { id:'trend',     label:'روند پیشرفت' },
+  { id:'periods',   label:'مدیریت دوره‌ها' },
+  { id:'users',     label:'کاربران' },
+  { id:'import',    label:'ورود داده' }
 ];
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
 
@@ -592,16 +940,16 @@ async function doLogin(username, password){
   const hash = await sha256(password);
   if(MODE === 'local'){
     const u = await LocalDB.findUser(username);
-    if(!u) throw new Error('کاربر یافت نشد (حالت محلی).');
+    if(!u) throw new Error('کاربر یافت نشد.');
     if(u.password_hash && u.password_hash !== hash) throw new Error('رمز نادرست است.');
     return u;
   }
   let { data, error } = await sb.from('app_users').select('*').eq('username', username).limit(1);
   if(error){
     if(String(error.message).includes('does not exist'))
-      throw new Error('جدول app_users وجود ندارد. اسکریپت SQL را در Supabase اجرا کنید.');
+      throw new Error('جدول app_users وجود ندارد.');
     if(String(error.message).includes('Failed to fetch'))
-      throw new Error('اتصال به Supabase برقرار نشد. پروژه Paused است یا شبکه مسدود است.');
+      throw new Error('اتصال به Supabase برقرار نشد.');
     throw new Error('خطا در اتصال: ' + error.message);
   }
   if(!data || !data.length){
@@ -622,7 +970,7 @@ function startSession(user){
   $('#loginScreen').classList.add('hidden');
   $('#app').classList.remove('hidden');
   $('#uName').textContent = user.full_name || user.username;
-  $('#uRole').textContent = user.role === 'admin' ? 'مدیر سامانه' : 'کاربر';
+  $('#uRole').textContent = user.role === 'admin' ? 'MANAGER' : 'USER';
   $('#avatar').textContent = (user.full_name || user.username).trim().charAt(0).toUpperCase();
   updateModeIndicator();
   bootApp();
@@ -739,7 +1087,7 @@ async function bootApp(){
     renderNav(); renderPeriodSelect(); render();
   }catch(err){
     content.innerHTML = `<div class="card">
-      <h3><span class="dot" style="background:var(--bad)"></span> خطا در بارگذاری</h3>
+      <h3><span class="dot" style="background:var(--txt)"></span> خطا در بارگذاری</h3>
       <div class="empty" style="text-align:right">${esc(err.message || err)}</div>
     </div>`;
   }
@@ -747,8 +1095,7 @@ async function bootApp(){
 
 function renderNav(){
   $('#nav').innerHTML = NAV.map(n =>
-    `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">
-      <span class="ic">${n.icon}</span><span>${n.label}</span></button>`).join('');
+    `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">${n.label}</button>`).join('');
 }
 function renderPeriodSelect(){
   const sel = $('#globalPeriod');
@@ -813,10 +1160,10 @@ function viewDashboard(){
   })).sort((a,b)=>b.pct-a.pct);
 
   const segs = [
-    {label:'پیاده‌سازی شده', val:counts['پیاده‌سازی'], color:'#16a34a'},
-    {label:'در حال پیاده‌سازی', val:counts['در حال پیاده‌سازی'], color:'#d97706'},
-    {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'#dc2626'},
-    {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'#64748b'}
+    {label:'پیاده‌سازی', val:counts['پیاده‌سازی'], color:'#18181b'},
+    {label:'در حال', val:counts['در حال پیاده‌سازی'], color:'#71717a'},
+    {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'#d4d4d8'},
+    {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'#f4f4f5'}
   ];
   let acc = 0;
   const grad = segs.map(s => {
@@ -827,27 +1174,27 @@ function viewDashboard(){
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
 
-  return `<div class="grid" style="gap:12px">
-    <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px">
+  return `<div class="grid" style="gap:16px">
+    <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
       <span class="badge badge-soft">دوره: ${esc(periodName)}</span>
       <span class="badge badge-soft">کنترل: ${fa(total)}</span>
       <span class="badge badge-soft">واحد: ${fa(unitRows.length)}</span>
-      <span class="mode-pill ${MODE==='local'?'local':''}" style="margin-right:auto">${MODE==='local'?'💾 محلی':'☁️ Supabase'}</span>
+      <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'LOCAL':'SUPABASE'}</span>
     </div>
 
     <div class="grid kpis">
       <div class="card kpi"><div class="v">${fa(avg)}٪</div><div class="l">پیشرفت کل</div>
-        <div class="bar g" style="margin-top:10px"><i style="width:${avg}%"></i></div></div>
-      <div class="card kpi"><div class="v" style="color:var(--ok)">${fa(counts['پیاده‌سازی'])}</div><div class="l">پیاده‌سازی شده</div></div>
-      <div class="card kpi"><div class="v" style="color:var(--warn)">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال انجام</div></div>
-      <div class="card kpi"><div class="v" style="color:var(--bad)">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div></div>
+        <div class="bar" style="margin-top:12px"><i style="width:${avg}%"></i></div></div>
+      <div class="card kpi"><div class="v">${fa(counts['پیاده‌سازی'])}</div><div class="l">پیاده‌سازی شده</div></div>
+      <div class="card kpi"><div class="v">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال انجام</div></div>
+      <div class="card kpi"><div class="v">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div></div>
     </div>
 
     <div class="grid cols2">
       <div class="card">
         <h3><span class="dot"></span> توزیع وضعیت</h3>
         <div class="donut-wrap">
-          <div class="donut" style="background:conic-gradient(${grad||'#e2e8f0 0deg 360deg'})">
+          <div class="donut" style="background:conic-gradient(${grad||'#f4f4f5 0deg 360deg'})">
             <div class="mid"><b>${fa(total)}</b><span>کنترل</span></div>
           </div>
           <div class="legend">
@@ -859,7 +1206,7 @@ function viewDashboard(){
         <h3><span class="dot"></span> پیشرفت به تفکیک سطح</h3>
         ${Object.keys(byLevel).length ? Object.entries(byLevel).map(([k,v])=>{
           const pct = v.n?Math.round(v.sum/v.n):0;
-          return `<div class="bar-row"><div><div class="nm">${esc(k)} (${fa(v.n)})</div>
+          return `<div class="bar-row"><div><div class="nm">${esc(k)} — ${fa(v.n)}</div>
             <div class="bar"><i style="width:${pct}%"></i></div></div>
             <div class="pc">${fa(pct)}٪</div></div>`;
         }).join('') : '<div class="empty">—</div>'}
@@ -869,16 +1216,16 @@ function viewDashboard(){
     <div class="card">
       <h3><span class="dot"></span> وضعیت واحدها</h3>
       ${unitRows.length ? `<div class="tbl-wrap"><table>
-        <thead><tr><th>واحد</th><th>کنترل</th><th>پیاده</th><th>در حال</th><th>عدم</th><th>پیشرفت</th></tr></thead>
+        <thead><tr><th>واحد</th><th>کل</th><th>پیاده</th><th>در حال</th><th>عدم</th><th>پیشرفت</th></tr></thead>
         <tbody>${unitRows.map(u=>`<tr>
           <td style="font-weight:600">${esc(u.name)}</td>
           <td>${fa(u.n)}</td>
-          <td style="color:var(--ok)">${fa(u.ok)}</td>
-          <td style="color:var(--warn)">${fa(u.doing)}</td>
-          <td style="color:var(--bad)">${fa(u.bad)}</td>
-          <td style="min-width:140px"><div style="display:flex;align-items:center;gap:8px">
-            <div class="bar" style="flex:1"><i style="width:${u.pct}%"></i></div>
-            <b style="color:var(--accent);font-size:11.5px">${fa(u.pct)}٪</b>
+          <td>${fa(u.ok)}</td>
+          <td>${fa(u.doing)}</td>
+          <td>${fa(u.bad)}</td>
+          <td style="min-width:140px"><div style="display:flex;align-items:center;gap:10px">
+            <div class="bar" style="flex:1;margin:0"><i style="width:${u.pct}%"></i></div>
+            <b style="font-size:10.5px;min-width:36px;text-align:left">${fa(u.pct)}٪</b>
           </div></td></tr>`).join('')}</tbody>
       </table></div>` : '<div class="empty">داده‌ای نیست</div>'}
     </div>
@@ -886,7 +1233,7 @@ function viewDashboard(){
     <div class="card">
       <h3><span class="dot"></span> پیشرفت به تفکیک دسته</h3>
       ${catRows.length ? catRows.map(c=>`<div class="bar-row">
-        <div><div class="nm">${esc(c.name)} (${fa(c.n)})</div>
+        <div><div class="nm">${esc(c.name)} — ${fa(c.n)}</div>
           <div class="bar"><i style="width:${c.pct}%"></i></div></div>
         <div class="pc">${fa(c.pct)}٪</div></div>`).join('') : '<div class="empty">—</div>'}
     </div>
@@ -917,9 +1264,9 @@ function viewControls(){
   const opts = (arr,cur)=>arr.map(v=>`<option value="${esc(v)}" ${v===cur?'selected':''}>${esc(v)}</option>`).join('');
 
   return `
-  <div class="card" style="margin-bottom:12px">
+  <div class="card" style="margin-bottom:16px;padding:16px 20px">
     <div class="toolbar" style="margin-bottom:0">
-      <input id="fQ" placeholder="🔍 جستجو…" value="${esc(S.filters.q)}">
+      <input id="fQ" placeholder="جستجو…" value="${esc(S.filters.q)}">
       <select id="fUnit"><option value="">همه واحدها</option>${opts(S.units,S.filters.unit)}</select>
       <select id="fStatus"><option value="">همه وضعیت‌ها</option>
         ${['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز']
@@ -927,13 +1274,13 @@ function viewControls(){
       </select>
       <select id="fCat"><option value="">همه دسته‌ها</option>${opts(S.cats,S.filters.cat)}</select>
       <select id="fLevel"><option value="">همه سطوح</option>${opts(S.levels,S.filters.level)}</select>
-      <select id="fSize">${[12,24,48,96].map(n=>`<option value="${n}" ${n===S.pageSize?'selected':''}>${n}/صفحه</option>`).join('')}</select>
+      <select id="fSize">${[12,24,48,96].map(n=>`<option value="${n}" ${n===S.pageSize?'selected':''}>${n} / صفحه</option>`).join('')}</select>
     </div>
   </div>
-  <div class="card" style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:11px 16px">
+  <div class="card" style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 20px">
     <span class="badge badge-soft">${fa(list.length)} کنترل</span>
-    <span class="badge badge-soft">صفحه ${fa(S.page)}/${fa(pages)}</span>
-    <button class="btn btn-sm" id="clearFilters" style="margin-right:auto">پاک کردن فیلترها</button>
+    <span class="badge badge-soft">صفحه ${fa(S.page)} / ${fa(pages)}</span>
+    <button class="btn btn-sm" id="clearFilters" style="margin-right:auto">پاک کردن</button>
   </div>
   <div class="list">
     ${slice.length ? slice.map(c=>{
@@ -949,14 +1296,14 @@ function viewControls(){
         <div class="cc-title">${esc(c.title)}</div>
         <div class="cc-ev">${esc(c.evidence||'—')}</div>
         <div class="cc-foot"><div class="bar"><i style="width:${pr}%"></i></div>
-          <b style="font-size:11.5px;color:var(--accent);min-width:42px;text-align:left">${fa(pr)}٪</b></div>
+          <b>${fa(pr)}٪</b></div>
       </div>`;
-    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.<br>اگر داده‌ای نیست، از تب «ورود داده» اکسل را بارگذاری کنید.</div></div>`}
+    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.<br>از تب «ورود داده» اکسل را بارگذاری کنید.</div></div>`}
   </div>
   ${pages>1?`<div class="pager">
     <button class="btn btn-sm" data-page="1" ${S.page===1?'disabled':''}>«</button>
     <button class="btn btn-sm" data-page="${S.page-1}" ${S.page===1?'disabled':''}>قبلی</button>
-    <span class="info">${fa(start+1)}-${fa(Math.min(start+S.pageSize,list.length))} از ${fa(list.length)}</span>
+    <span class="info">${fa(start+1)}—${fa(Math.min(start+S.pageSize,list.length))} از ${fa(list.length)}</span>
     <button class="btn btn-sm" data-page="${S.page+1}" ${S.page===pages?'disabled':''}>بعدی</button>
     <button class="btn btn-sm" data-page="${pages}" ${S.page===pages?'disabled':''}>»</button>
   </div>`:''}
@@ -972,13 +1319,13 @@ function viewAssess(){
   const avg = list.length ? Math.round(list.reduce((s,c)=>s+controlProgress(c),0)/list.length) : 0;
 
   return `
-  <div class="card" style="margin-bottom:12px;padding:12px 16px">
+  <div class="card" style="margin-bottom:16px;padding:16px 20px">
     <div class="toolbar" style="margin-bottom:0">
       <select id="asUnit">${opts||'<option value="">—</option>'}</select>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="badge badge-soft">${fa(list.length)} کنترل</span>
         <span class="badge st-ok">${fa(done)} ارزیابی</span>
-        <span class="badge badge-soft">پیشرفت: <b style="color:var(--accent)">${fa(avg)}٪</b></span>
+        <span class="badge badge-soft">پیشرفت: ${fa(avg)}٪</span>
       </div>
     </div>
   </div>
@@ -988,30 +1335,30 @@ function viewAssess(){
     const pr = (a.progress!==null && a.progress!==undefined && a.progress!=='') ? Number(a.progress) : statusWeight(st);
     return `<div class="as-item" data-cid="${c.id}">
       <div class="t"><span class="n">#${fa(c.row_no??'')}</span>${esc(c.title)}
-        <div style="margin-top:6px">
+        <div style="margin-top:8px">
           <span class="badge badge-soft">${esc(c.category||'—')}</span>
           <span class="badge badge-soft">${esc(c.level||'—')}</span>
           <span class="badge ${statusClass(c.status)}">پایه: ${esc(normalizeStatus(c.status))}</span>
         </div>
       </div>
-      <details style="margin-bottom:10px"><summary style="cursor:pointer;color:var(--muted);font-size:11.5px">شواهد اولیه</summary>
-        <div class="kv" style="margin-top:8px"><div class="v" style="font-size:12px">${esc(c.evidence||'—')}</div></div>
+      <details style="margin-bottom:12px"><summary style="cursor:pointer;color:var(--muted);font-size:10.5px;letter-spacing:.12em">شواهد</summary>
+        <div class="kv" style="margin-top:8px"><div class="v" style="font-size:11.5px">${esc(c.evidence||'—')}</div></div>
       </details>
       <div class="as-grid">
-        <div><label>وضعیت این دوره</label>
+        <div><label>وضعیت دوره</label>
           <select class="a-status">${['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز']
             .map(v=>`<option value="${v}" ${normalizeStatus(st)===v?'selected':''}>${v}</option>`).join('')}
           </select></div>
-        <div><label>درصد پیشرفت: <b class="p-val" style="color:var(--accent)">${fa(pr)}٪</b></label>
+        <div><label>درصد پیشرفت — <span class="p-val" style="color:var(--txt)">${fa(pr)}٪</span></label>
           <input type="range" class="a-range" min="0" max="100" step="5" value="${pr}"></div>
       </div>
-      <label style="display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px">اقدامات این دوره</label>
-      <textarea class="a-actions" placeholder="مثلاً: خط‌مشی تدوین شد…">${esc(a.actions||'')}</textarea>
+      <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات این دوره</label>
+      <textarea class="a-actions" placeholder="اقدامات انجام‌شده را ثبت کنید…">${esc(a.actions||'')}</textarea>
       <div class="as-foot">
-        <input type="file" class="a-file" style="max-width:240px">
-        <button class="btn btn-sm btn-primary a-save">💾 ذخیره</button>
-        ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 پیوست</a>`:''}
-        <span class="saved" style="display:none">✔ ذخیره شد</span>
+        <input type="file" class="a-file" style="max-width:220px">
+        <button class="btn btn-sm btn-primary a-save">ذخیره</button>
+        ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
+        <span class="saved" style="display:none">ذخیره شد</span>
       </div>
     </div>`;
   }).join('') : `<div class="card"><div class="empty">برای این واحد کنترلی ثبت نشده.</div></div>`}
@@ -1031,17 +1378,17 @@ function viewTrend(){
     return { id:p.id, name:p.name, value: vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0 };
   });
   return `
-  <div class="card" style="margin-bottom:12px;padding:12px 16px">
+  <div class="card" style="margin-bottom:16px;padding:16px 20px">
     <div class="toolbar" style="margin-bottom:0">
       <select id="trendUnit">${unitOpts}</select>
       <span class="badge badge-soft">${fa(ctrlFiltered.length)} کنترل</span>
     </div>
   </div>
-  <div class="card" style="margin-bottom:12px">
+  <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> روند ${selected==='__all'?'کل سازمان':esc(selected)}</h3>
     ${lineChart(series)}
   </div>
-  <div class="card" style="margin-bottom:12px">
+  <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> جدول پیشرفت واحدها</h3>
     <div class="tbl-wrap"><table>
       <thead><tr><th>واحد</th>${S.periods.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr></thead>
@@ -1051,8 +1398,7 @@ function viewTrend(){
           const map = assessmentMapFor(p.id);
           const vals = cs.map(c=>progressWithMap(c,map));
           const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
-          const color = avg>=70?'var(--ok)':avg>=40?'var(--warn)':'var(--bad)';
-          return `<td><span style="color:${color};font-weight:700">${fa(avg)}٪</span></td>`;
+          return `<td>${fa(avg)}٪</td>`;
         }).join('');
         return `<tr><td style="font-weight:600">${esc(u)}</td>${cells}</tr>`;
       }).join('')}</tbody>
@@ -1063,19 +1409,19 @@ function viewTrend(){
     ${S.periods.slice().reverse().map(p=>{
       const acts = S.allAssessments.filter(a=>a.period_id===p.id && (a.actions||'').trim());
       if(!acts.length) return '';
-      return `<div style="margin-bottom:16px">
-        <div class="badge badge-soft" style="margin-bottom:9px">${esc(p.name)} — ${fa(acts.length)} اقدام</div>
+      return `<div style="margin-bottom:20px">
+        <div class="badge badge-soft" style="margin-bottom:10px">${esc(p.name)} — ${fa(acts.length)} اقدام</div>
         ${acts.slice(0,80).map(a=>{
           const c = S.controls.find(x=>x.id===a.control_id);
-          return `<div style="background:#f8fafc;border:1px solid var(--line);border-radius:9px;padding:11px;margin-bottom:8px">
-            <div style="font-size:11.5px;color:var(--muted);margin-bottom:5px">
-              <b style="color:var(--accent)">#${fa(c?.row_no??'')}</b> ${esc(c?.owner_unit||'')} — ${esc((c?.title||'').slice(0,90))}
+          return `<div style="background:var(--faint);border:1px solid var(--line);padding:12px;margin-bottom:8px">
+            <div style="font-size:10.5px;color:var(--muted);margin-bottom:6px;letter-spacing:.06em">
+              #${fa(c?.row_no??'')} — ${esc(c?.owner_unit||'')} — ${esc((c?.title||'').slice(0,80))}
             </div>
-            <div style="font-size:12px;line-height:1.9;color:var(--txt)">${esc(a.actions)}</div>
-            <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
+            <div style="font-size:11.5px;line-height:1.9;color:var(--txt)">${esc(a.actions)}</div>
+            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
               ${a.status?`<span class="badge ${statusClass(a.status)}">${esc(normalizeStatus(a.status))}</span>`:''}
               ${a.progress!=null?`<span class="badge badge-soft">${fa(a.progress)}٪</span>`:''}
-              ${a.file_url?`<a class="badge badge-soft" href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 پیوست</a>`:''}
+              ${a.file_url?`<a class="badge badge-soft" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
             </div></div>`;
         }).join('')}
       </div>`;
@@ -1084,29 +1430,19 @@ function viewTrend(){
 }
 function lineChart(series){
   if(!series.length) return '<div class="empty">—</div>';
-  const W=640, H=240, PAD=38, n=series.length;
+  const W=640, H=240, PAD=44, n=series.length;
   const xs = i => n===1?W/2:PAD+i*(W-2*PAD)/(n-1);
   const ys = v => H-PAD-(v/100)*(H-2*PAD);
   const path = series.map((s,i)=>`${i?'L':'M'}${xs(i).toFixed(1)},${ys(s.value).toFixed(1)}`).join(' ');
-  const area = `${path} L${xs(n-1).toFixed(1)},${H-PAD} L${xs(0).toFixed(1)},${H-PAD} Z`;
   return `<div style="width:100%;overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:340px;height:auto">
-    <defs>
-      <linearGradient id="gline" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#93c5fd" stop-opacity=".45"/><stop offset="100%" stop-color="#93c5fd" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="stroke" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#93c5fd"/><stop offset="100%" stop-color="#2563eb"/>
-      </linearGradient>
-    </defs>
     ${[0,25,50,75,100].map(v=>`
-      <line x1="${PAD}" y1="${ys(v)}" x2="${W-PAD}" y2="${ys(v)}" stroke="rgba(15,23,42,.06)" stroke-width="1"/>
-      <text x="${PAD-8}" y="${ys(v)+4}" fill="#94a3b8" font-size="10" text-anchor="end">${v}%</text>`).join('')}
-    <path d="${area}" fill="url(#gline)"/>
-    <path d="${path}" fill="none" stroke="url(#stroke)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="${PAD}" y1="${ys(v)}" x2="${W-PAD}" y2="${ys(v)}" stroke="#e4e4e7" stroke-width="1"/>
+      <text x="${PAD-8}" y="${ys(v)+4}" fill="#a1a1aa" font-size="9" text-anchor="end">${v}%</text>`).join('')}
+    <path d="${path}" fill="none" stroke="#18181b" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
     ${series.map((s,i)=>`
-      <circle cx="${xs(i)}" cy="${ys(s.value)}" r="4.5" fill="#fff" stroke="#2563eb" stroke-width="2.5"/>
-      <text x="${xs(i)}" y="${ys(s.value)-13}" fill="#111827" font-size="11" font-weight="700" text-anchor="middle">${fa(s.value)}٪</text>
-      <text x="${xs(i)}" y="${H-12}" fill="#64748b" font-size="10" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>`).join('')}
+      <circle cx="${xs(i)}" cy="${ys(s.value)}" r="4" fill="#ffffff" stroke="#18181b" stroke-width="1.5"/>
+      <text x="${xs(i)}" y="${ys(s.value)-12}" fill="#09090b" font-size="10" font-weight="600" text-anchor="middle">${fa(s.value)}٪</text>
+      <text x="${xs(i)}" y="${H-14}" fill="#71717a" font-size="9" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>`).join('')}
   </svg></div>`;
 }
 async function ensureTrendData(){
@@ -1118,17 +1454,17 @@ async function ensureTrendData(){
 
 function viewPeriods(){
   return `
-  <div class="card" style="margin-bottom:12px">
+  <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> ایجاد دوره</h3>
     <div class="toolbar" style="margin-bottom:0">
       <input id="pName" placeholder="نام دوره (مثلاً: بهار ۱۴۰۵)">
       <input id="pStart" type="date" title="شروع">
       <input id="pEnd" type="date" title="پایان">
-      <button class="btn btn-primary" id="addPeriod">➕ ایجاد</button>
+      <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
     </div>
   </div>
   <div class="card">
-    <h3><span class="dot"></span> دوره‌ها (${fa(S.periods.length)})</h3>
+    <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
     ${S.periods.length ? `<div class="tbl-wrap"><table>
       <thead><tr><th>نام</th><th>شروع</th><th>پایان</th><th>ارزیابی</th><th>عملیات</th></tr></thead>
       <tbody>${S.periods.map(p=>{
@@ -1140,7 +1476,7 @@ function viewPeriods(){
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
-            <button class="btn btn-sm btn-danger" data-delperiod="${p.id}">حذف</button>
+            <button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>
           </td></tr>`;
       }).join('')}</tbody>
     </table></div>` : '<div class="empty">دوره‌ای نیست.</div>'}
@@ -1148,14 +1484,14 @@ function viewPeriods(){
 }
 function viewUsers(){
   return `
-  <div class="card" style="margin-bottom:12px">
+  <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> افزودن کاربر</h3>
     <div class="toolbar" style="margin-bottom:0">
       <input id="nuUser" placeholder="نام کاربری">
       <input id="nuPass" type="password" placeholder="رمز">
       <input id="nuName" placeholder="نام کامل">
       <select id="nuRole"><option value="admin">مدیر</option><option value="user">کاربر</option></select>
-      <button class="btn btn-primary" id="addUser">➕ افزودن</button>
+      <button class="btn btn-primary" id="addUser">افزودن</button>
     </div>
   </div>
   <div class="card"><h3><span class="dot"></span> کاربران</h3><div id="usersList"><div class="spin"></div></div></div>`;
@@ -1172,8 +1508,8 @@ async function renderUsersList(){
       <tbody>${users.map(u=>`<tr>
         <td style="font-weight:600">${esc(u.username)}</td>
         <td>${esc(u.full_name||'—')}</td>
-        <td><span class="badge badge-soft">${u.role==='admin'?'مدیر':'کاربر'}</span></td>
-        <td>${u.username==='ice'?'<span style="color:var(--muted2);font-size:11.5px">پیش‌فرض</span>':`<button class="btn btn-sm btn-danger" data-deluser="${u.id}">حذف</button>`}</td>
+        <td><span class="badge badge-soft">${u.role==='admin'?'MANAGER':'USER'}</span></td>
+        <td>${u.username==='ice'?'<span style="color:var(--dim);font-size:10.5px;letter-spacing:.08em">پیش‌فرض</span>':`<button class="btn btn-sm" data-deluser="${u.id}">حذف</button>`}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
   }catch(err){
@@ -1182,17 +1518,17 @@ async function renderUsersList(){
 }
 function viewImport(){
   return `
-  <div class="card" style="margin-bottom:12px">
+  <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> بارگذاری اکسل کنترل‌ها</h3>
-    <p style="color:var(--muted);font-size:12px;line-height:1.9;margin:0 0 12px">
-      ستون‌ها: <b>ردیف</b>، <b>دسته</b>، <b>سطح پیشرفتگی</b>، <b>کنترل</b>، <b>شواهد</b>، <b>وضعیت پیاده‌سازی</b>، <b>واحد مسئول رسیدگی</b>.
+    <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px;letter-spacing:.02em">
+      ستون‌ها: <b style="color:var(--txt)">ردیف</b>، <b style="color:var(--txt)">دسته</b>، <b style="color:var(--txt)">سطح پیشرفتگی</b>، <b style="color:var(--txt)">کنترل</b>، <b style="color:var(--txt)">شواهد</b>، <b style="color:var(--txt)">وضعیت پیاده‌سازی</b>، <b style="color:var(--txt)">واحد مسئول رسیدگی</b>.
     </p>
     <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
-      <button class="btn btn-primary" id="doImport">📥 بارگذاری</button>
-      <button class="btn btn-danger" id="wipeControls">🗑️ حذف کنترل‌ها</button>
+      <button class="btn btn-primary" id="doImport">بارگذاری</button>
+      <button class="btn" id="wipeControls">حذف کنترل‌ها</button>
     </div>
-    <div id="importLog" style="font-size:12px;line-height:1.9;color:var(--muted)"></div>
+    <div id="importLog" style="font-size:11px;line-height:1.9;color:var(--muted);letter-spacing:.02em"></div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> وضعیت داده‌ها</h3>
@@ -1228,7 +1564,7 @@ function bindView(){
       range.addEventListener('input', () => { pval.textContent = fa(range.value)+'٪'; });
       statusSel.addEventListener('change', () => { const w = statusWeight(statusSel.value); range.value = w; pval.textContent = fa(w)+'٪'; });
       item.querySelector('.a-save').addEventListener('click', async ev => {
-        const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'در حال ذخیره…';
+        const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'ذخیره…';
         try{
           const payload = {
             status: statusSel.value,
@@ -1245,9 +1581,9 @@ function bindView(){
           const saved = await apiSaveAssessment(cid, payload);
           S.assessments[cid] = saved;
           const s = item.querySelector('.saved'); s.style.display = 'inline'; setTimeout(()=>s.style.display='none', 2000);
-          toast('ذخیره شد ✔','ok');
-        }catch(err){ toast('خطا: '+err.message,'err'); }
-        finally{ btn.disabled = false; btn.textContent = '💾 ذخیره'; }
+          toast('ذخیره شد');
+        }catch(err){ toast('خطا: '+err.message); }
+        finally{ btn.disabled = false; btn.textContent = 'ذخیره'; }
       });
     });
   }
@@ -1257,7 +1593,7 @@ function bindView(){
   if(S.view==='periods'){
     $('#addPeriod')?.addEventListener('click', async () => {
       const name = ($('#pName').value||'').trim();
-      if(!name) return toast('نام دوره را وارد کنید','err');
+      if(!name) return toast('نام دوره را وارد کنید');
       try{
         let row;
         if(MODE==='local'){
@@ -1269,13 +1605,13 @@ function bindView(){
         await loadPeriods();
         S.periodId = row.id;
         renderPeriodSelect(); await loadAssessments();
-        toast('دوره ایجاد شد ✔','ok');
+        toast('دوره ایجاد شد');
         c.innerHTML = viewPeriods(); bindView();
-      }catch(err){ toast('خطا: '+err.message,'err'); }
+      }catch(err){ toast('خطا: '+err.message); }
     });
     c.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
       S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
-      toast('دوره انتخاب شد','ok'); c.innerHTML = viewPeriods(); bindView();
+      toast('دوره انتخاب شد'); c.innerHTML = viewPeriods(); bindView();
     }));
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
@@ -1284,8 +1620,8 @@ function bindView(){
         else { const { error } = await sb.from('periods').delete().eq('id', b.dataset.delperiod); if(error) throw error; }
         await loadPeriods(); if(!S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[0]?.id || null;
         renderPeriodSelect(); await loadAssessments();
-        toast('حذف شد','ok'); c.innerHTML = viewPeriods(); bindView();
-      }catch(err){ toast('خطا: '+err.message,'err'); }
+        toast('حذف شد'); c.innerHTML = viewPeriods(); bindView();
+      }catch(err){ toast('خطا: '+err.message); }
     }));
   }
   if(S.view==='users'){
@@ -1295,13 +1631,13 @@ function bindView(){
         try{
           if(MODE==='local') await LocalDB.delUser(b.dataset.deluser);
           else { const { error } = await sb.from('app_users').delete().eq('id', b.dataset.deluser); if(error) throw error; }
-          toast('حذف شد','ok'); renderUsersList();
-        }catch(err){ toast('خطا: '+err.message,'err'); }
+          toast('حذف شد'); renderUsersList();
+        }catch(err){ toast('خطا: '+err.message); }
       }));
     });
     $('#addUser')?.addEventListener('click', async () => {
       const u = ($('#nuUser').value||'').trim(), p = ($('#nuPass').value||'').trim(), n = ($('#nuName').value||'').trim(), r = $('#nuRole').value;
-      if(!u || !p) return toast('نام کاربری و رمز الزامی است','err');
+      if(!u || !p) return toast('نام کاربری و رمز الزامی است');
       try{
         const hash = await sha256(p);
         if(MODE==='local'){
@@ -1311,10 +1647,10 @@ function bindView(){
           const { error } = await sb.from('app_users').insert({ username:u, password_hash:hash, full_name:n, role:r });
           if(error) throw error;
         }
-        toast('کاربر اضافه شد ✔','ok');
+        toast('کاربر اضافه شد');
         $('#nuUser').value = ''; $('#nuPass').value = ''; $('#nuName').value = '';
         renderUsersList();
-      }catch(err){ toast('خطا: '+err.message,'err'); }
+      }catch(err){ toast('خطا: '+err.message); }
     });
   }
   if(S.view==='import'){
@@ -1323,12 +1659,12 @@ function bindView(){
       try{
         if(MODE==='local') await LocalDB.wipeControls();
         else { const { error } = await sb.from('controls').delete().not('id','is',null); if(error) throw error; }
-        await loadControls(); toast('حذف شد','ok'); c.innerHTML = viewImport(); bindView();
-      }catch(err){ toast('خطا: '+err.message,'err'); }
+        await loadControls(); toast('حذف شد'); c.innerHTML = viewImport(); bindView();
+      }catch(err){ toast('خطا: '+err.message); }
     });
     $('#doImport')?.addEventListener('click', async () => {
       const file = $('#xlsFile').files[0]; const log = $('#importLog');
-      if(!file) return toast('فایل را انتخاب کنید','err');
+      if(!file) return toast('فایل را انتخاب کنید');
       log.textContent = 'در حال خواندن…';
       try{
         const rows = await parseSheet(file);
@@ -1352,7 +1688,7 @@ function bindView(){
           };
         }).filter(x=>x.title);
         if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند.');
-        log.textContent = `${fa(mapped.length)} رکورد. در حال بارگذاری…`;
+        log.textContent = `${fa(mapped.length)} رکورد. بارگذاری…`;
         if(MODE==='local'){
           await LocalDB.setControls(mapped);
         } else {
@@ -1367,11 +1703,11 @@ function bindView(){
           }
         }
         await loadControls();
-        log.innerHTML = `<span style="color:var(--ok);font-weight:700">✔ ${fa(mapped.length)} کنترل بارگذاری شد.</span>`;
-        toast('بارگذاری کامل شد ✔','ok'); render();
+        log.innerHTML = `<span style="color:var(--txt);font-weight:600">بارگذاری کامل شد — ${fa(mapped.length)} کنترل</span>`;
+        toast('بارگذاری کامل شد'); render();
       }catch(err){
-        log.innerHTML = `<span style="color:var(--bad)">خطا: ${esc(err.message||err)}</span>`;
-        toast('خطا در بارگذاری','err');
+        log.innerHTML = `<span style="color:var(--txt)">خطا: ${esc(err.message||err)}</span>`;
+        toast('خطا در بارگذاری');
       }
     });
   }
@@ -1397,9 +1733,9 @@ function openControlModal(id){
   const st = controlStatus(c), pr = controlProgress(c);
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || '—';
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
-    <button class="close-x" id="closeModal">✕</button>
+    <button class="close-x" id="closeModal">×</button>
     <h3>#${fa(c.row_no??'')} — ${esc(c.title)}</h3>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
       <span class="badge badge-soft">${esc(c.category||'—')}</span>
       <span class="badge badge-soft">سطح: ${esc(c.level||'—')}</span>
       <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
@@ -1410,12 +1746,12 @@ function openControlModal(id){
     <div class="kv"><div class="k">وضعیت دوره «${esc(periodName)}»</div>
       <div class="v" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
-        <div class="bar" style="flex:1;min-width:120px"><i style="width:${pr}%"></i></div>
-        <b style="color:var(--accent)">${fa(pr)}٪</b>
+        <div class="bar" style="flex:1;min-width:120px;margin:0"><i style="width:${pr}%"></i></div>
+        <b>${fa(pr)}٪</b>
       </div></div>
     ${a.actions?`<div class="kv"><div class="k">اقدامات این دوره</div><div class="v">${esc(a.actions)}</div></div>`:''}
-    ${a.file_url?`<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 ${esc(a.file_name||'دانلود')}</a></div></div>`:''}
-    <button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">✏️ فرم ارزیابی این واحد</button>
+    ${a.file_url?`<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">${esc(a.file_name||'دانلود فایل')}</a></div></div>`:''}
+    <button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">فرم ارزیابی این واحد</button>
   </div></div>`;
   const close = () => $('#modalHost').innerHTML = '';
   $('#closeModal').addEventListener('click', close);
@@ -1431,7 +1767,7 @@ $('#loginForm').addEventListener('submit', async e => {
     const u = await doLogin($('#luser').value.trim(), $('#lpass').value);
     startSession(u);
   }catch(ex){ err.textContent = ex.message || 'ورود ناموفق'; }
-  finally{ btn.disabled = false; btn.textContent = 'ورود به سامانه'; }
+  finally{ btn.disabled = false; btn.textContent = 'ورود'; }
 });
 
 $('#retestBtn').addEventListener('click', async () => {
@@ -1439,7 +1775,7 @@ $('#retestBtn').addEventListener('click', async () => {
 });
 $('#localModeBtn').addEventListener('click', () => {
   setMode('local');
-  toast('حالت محلی فعال — داده‌ها در مرورگر ذخیره می‌شوند','ok');
+  toast('حالت محلی فعال شد');
 });
 $('#nav').addEventListener('click', e => {
   const b = e.target.closest('button[data-view]'); if(!b) return;
@@ -1450,7 +1786,7 @@ $('#nav').addEventListener('click', e => {
 $('#globalPeriod').addEventListener('change', async e => {
   S.periodId = e.target.value || null;
   await loadAssessments();
-  toast('دوره تغییر کرد','ok'); render();
+  toast('دوره تغییر کرد'); render();
 });
 $('#menuBtn').addEventListener('click', () => { $('#sidebar').classList.add('open'); $('#overlay').classList.add('show'); });
 $('#overlay').addEventListener('click', () => { $('#sidebar').classList.remove('open'); $('#overlay').classList.remove('show'); });
