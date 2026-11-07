@@ -47,7 +47,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .diag.err{background:var(--white);border-color:var(--txt);border-style:dashed}
 .diag.warn{background:var(--white);border-color:var(--line2)}
 .diag b{color:var(--txt);font-weight:600}
-.diag code{background:var(--white);padding:1px 4px;font-size:10px;border:1px solid var(--line)}
 .hint{text-align:center;color:var(--dim);font-size:10.5px;margin-top:16px;letter-spacing:.06em;padding-top:16px;border-top:1px solid var(--line)}
 .hint b{color:var(--txt);font-weight:600}
 .mode-toggle{display:flex;margin-top:12px;border:1px solid var(--txt)}
@@ -55,7 +54,7 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
 
-/* APP - Fixed sidebar, main column scrolls internally */
+/* APP */
 #app{height:100vh;height:100dvh;display:block}
 .sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--white);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
 .brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
@@ -142,10 +141,13 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .as-grid label{display:block;font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:500;letter-spacing:.12em}
 .as-grid select,.as-grid input{width:100%;padding:8px 10px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;font-variant-numeric:tabular-nums}
 .as-grid select:focus,.as-grid input:focus{background:var(--faint)}
+.as-grid select:disabled,.as-grid input:disabled{background:var(--faint);color:var(--muted);cursor:not-allowed;border-color:var(--line2)}
 .prog-row{display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center}
 input[type=range]{width:100%;accent-color:var(--txt);margin-top:8px}
+input[type=range]:disabled{opacity:.5;cursor:not-allowed}
 textarea{width:100%;padding:10px 12px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;resize:vertical;min-height:66px;line-height:1.8;font-size:11.5px}
 textarea:focus{background:var(--faint)}
+textarea:disabled{background:var(--faint);color:var(--muted);cursor:not-allowed;border-color:var(--line2)}
 input[type=file]{width:100%;padding:7px;border:1px dashed var(--line2);background:var(--white);color:var(--muted);font-size:10.5px;cursor:pointer}
 .as-foot{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 .saved{color:var(--txt);font-size:10.5px;font-weight:600;letter-spacing:.12em}
@@ -170,12 +172,10 @@ tbody td{font-variant-numeric:tabular-nums}
 .spin{width:22px;height:22px;border:1.5px solid var(--line);border-top-color:var(--txt);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* Date input */
 .date-field{position:relative}
 .date-input{padding-left:36px !important;cursor:pointer;caret-color:transparent}
 .date-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;color:var(--muted)}
 
-/* Jalali Date Picker */
 .date-picker{position:fixed;inset:0;z-index:600;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .15s}
 .date-picker-box{width:min(340px,100%);background:var(--white);border:1px solid var(--txt);padding:20px;animation:pop .2s ease;max-height:92dvh;overflow-y:auto}
 .dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);gap:8px}
@@ -199,7 +199,8 @@ tbody td{font-variant-numeric:tabular-nums}
 .dp-foot button.primary{background:var(--txt);color:var(--white)}
 .dp-foot button.primary:hover{background:var(--txt2)}
 
-/* RESPONSIVE */
+.ro-notice{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:10px;font-weight:600;letter-spacing:.08em;border:1px solid var(--line2);background:var(--faint);color:var(--muted)}
+
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
   .sidebar.open{transform:translateX(0)}
@@ -254,7 +255,7 @@ tbody td{font-variant-numeric:tabular-nums}
       <div class="err" id="loginErr"></div>
     </form>
     <div class="mode-toggle">
-      <button id="retestBtn">تست اتصال</button>
+      <button id="retestBtn">بررسی اتصال</button>
       <button id="localModeBtn">حالت محلی</button>
     </div>
     <div class="hint">کاربر پیش‌فرض: <b>ice</b> / رمز: <b>ice</b></div>
@@ -358,7 +359,6 @@ function jalaliMonthLength(jy, jm){
 function firstWeekdayOfJalaliMonth(jy, jm){
   const [gy, gm, gd] = j2g(jy, jm, 1);
   const d = new Date(gy, gm-1, gd);
-  // JS: 0=Sun..6=Sat. Persian week starts Saturday(0).
   return (d.getDay() + 1) % 7;
 }
 function todayJalali(){
@@ -382,97 +382,75 @@ function displayDate(s){
 }
 
 /* =========================================================
-   JALALI DATE PICKER
+   DATE PICKER
 ========================================================= */
 function openDatePicker(currentValue, onPick){
   const today = todayJalali();
   const parsed = currentValue ? parseJalali(currentValue) : null;
-  let viewParts = (parsed || today).split('/').map(Number);
-  let jy = viewParts[0], jm = viewParts[1];
+  let parts = (parsed || today).split('/').map(Number);
+  let jy = parts[0], jm = parts[1];
   let selected = parsed;
-
   const host = document.getElementById('datePickerHost');
 
   function render(){
-    const monthLen = jalaliMonthLength(jy, jm);
+    const len = jalaliMonthLength(jy, jm);
     const firstWd = firstWeekdayOfJalaliMonth(jy, jm);
     const cells = [];
     for(let i=0; i<firstWd; i++) cells.push(null);
-    for(let d=1; d<=monthLen; d++) cells.push(d);
+    for(let d=1; d<=len; d++) cells.push(d);
     while(cells.length % 7 !== 0) cells.push(null);
 
     const daysHtml = cells.map(d => {
       if(d === null) return `<span class="dp-day empty"></span>`;
       const full = `${jy}/${String(jm).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
-      const isToday = full === today;
-      const isSel = selected === full;
       const cls = ['dp-day'];
-      if(isToday) cls.push('today');
-      if(isSel) cls.push('selected');
+      if(full === today) cls.push('today');
+      if(selected === full) cls.push('selected');
       return `<button type="button" class="${cls.join(' ')}" data-day="${d}">${fa(d)}</button>`;
     }).join('');
 
-    host.innerHTML = `<div class="date-picker" id="dpBg">
-      <div class="date-picker-box">
-        <div class="dp-header">
-          <div class="dp-nav">
-            <button type="button" data-nav="py" title="سال قبل">««</button>
-            <button type="button" data-nav="pm" title="ماه قبل">«</button>
-          </div>
-          <div class="dp-title">${JALALI_MONTHS[jm-1]} ${fa(jy)}</div>
-          <div class="dp-nav">
-            <button type="button" data-nav="nm" title="ماه بعد">»</button>
-            <button type="button" data-nav="ny" title="سال بعد">»»</button>
-          </div>
+    host.innerHTML = `<div class="date-picker" id="dpBg"><div class="date-picker-box">
+      <div class="dp-header">
+        <div class="dp-nav">
+          <button type="button" data-nav="py">««</button>
+          <button type="button" data-nav="pm">«</button>
         </div>
-        <div class="dp-weekdays">${JALALI_WEEKDAYS.map(w=>`<span>${w}</span>`).join('')}</div>
-        <div class="dp-days">${daysHtml}</div>
-        <div class="dp-foot">
-          <button type="button" data-act="today" class="primary">امروز</button>
-          <button type="button" data-act="clear">پاک</button>
-          <button type="button" data-act="close">بستن</button>
+        <div class="dp-title">${JALALI_MONTHS[jm-1]} ${fa(jy)}</div>
+        <div class="dp-nav">
+          <button type="button" data-nav="nm">»</button>
+          <button type="button" data-nav="ny">»»</button>
         </div>
       </div>
-    </div>`;
+      <div class="dp-weekdays">${JALALI_WEEKDAYS.map(w=>`<span>${w}</span>`).join('')}</div>
+      <div class="dp-days">${daysHtml}</div>
+      <div class="dp-foot">
+        <button type="button" data-act="today" class="primary">امروز</button>
+        <button type="button" data-act="clear">پاک</button>
+        <button type="button" data-act="close">بستن</button>
+      </div>
+    </div></div>`;
 
     host.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', () => {
       const n = b.dataset.nav;
-      if(n === 'py') jy--;
-      if(n === 'ny') jy++;
+      if(n === 'py') jy--; if(n === 'ny') jy++;
       if(n === 'pm') { jm--; if(jm<1){ jm=12; jy--; } }
       if(n === 'nm') { jm++; if(jm>12){ jm=1; jy++; } }
       render();
     }));
-
     host.querySelectorAll('[data-day]').forEach(b => b.addEventListener('click', () => {
       const d = Number(b.dataset.day);
       const full = `${jy}/${String(jm).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
-      selected = full;
-      onPick(full);
-      close();
+      selected = full; onPick(full); close();
     }));
-
     host.querySelector('[data-act="today"]').addEventListener('click', () => {
       const p = today.split('/').map(Number);
-      jy = p[0]; jm = p[1]; selected = today;
-      onPick(today);
-      close();
+      jy = p[0]; jm = p[1]; selected = today; onPick(today); close();
     });
-
-    host.querySelector('[data-act="clear"]').addEventListener('click', () => {
-      onPick(null);
-      close();
-    });
-
+    host.querySelector('[data-act="clear"]').addEventListener('click', () => { onPick(null); close(); });
     host.querySelector('[data-act="close"]').addEventListener('click', close);
-
-    host.querySelector('#dpBg').addEventListener('click', e => {
-      if(e.target.id === 'dpBg') close();
-    });
+    host.querySelector('#dpBg').addEventListener('click', e => { if(e.target.id === 'dpBg') close(); });
   }
-
   function close(){ host.innerHTML = ''; }
-
   render();
 }
 
@@ -514,7 +492,7 @@ function statusClass(s){
    MODE
 ========================================================= */
 const MODE_KEY = 'kashaf_mode';
-let MODE = localStorage.getItem(MODE_KEY) || 'supabase';
+let MODE = localStorage.getItem(MODE_KEY) || 'online';
 let sb = null;
 if(window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -525,8 +503,8 @@ function setMode(m){
 function updateModeIndicator(){
   const el = $('#modeIndicator'); if(!el) return;
   el.innerHTML = MODE==='local'
-    ? `<div class="mode-line local">LOCAL</div>`
-    : `<div class="mode-line">SUPABASE</div>`;
+    ? `<div class="mode-line local">محلی</div>`
+    : `<div class="mode-line">آنلاین</div>`;
 }
 function updateConnBox(){
   const box = $('#connBox'); if(!box) return;
@@ -607,17 +585,17 @@ async function testConnection(){
   const box = $('#connBox'); const txt = document.getElementById('connTxt');
   if(!box||!txt||MODE==='local') return;
   txt.textContent = 'در حال بررسی…'; box.className = 'diag';
-  if(!sb){ txt.textContent = 'کتابخانه بارگذاری نشد.'; box.className = 'diag err'; return; }
+  if(!sb){ txt.textContent = 'سامانه آماده نیست.'; box.className = 'diag err'; return; }
   const ctrl = new AbortController(); const timer = setTimeout(()=>ctrl.abort(), 9000);
   try{
     const res = await fetch(`${SUPABASE_URL}/rest/v1/app_users?select=id&limit=1`, {
       method:'GET', headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}` }, signal:ctrl.signal
     });
     clearTimeout(timer);
-    if(res.ok){ txt.textContent = 'متصل — پایگاه داده در دسترس است.'; box.className = 'diag ok'; return true; }
+    if(res.ok){ txt.textContent = 'متصل — سرور در دسترس است.'; box.className = 'diag ok'; return true; }
     let body=''; try{ body = await res.text(); }catch(e){}
     if(res.status===404 || (body && body.includes('does not exist'))){
-      txt.textContent = 'اتصال برقرار شد ولی جداول ساخته نشده‌اند.';
+      txt.textContent = 'اتصال برقرار شد ولی جداول آماده نیستند.';
       box.className = 'diag warn';
     } else {
       txt.textContent = `پاسخ سرور: ${res.status}`; box.className = 'diag warn';
@@ -626,7 +604,7 @@ async function testConnection(){
     clearTimeout(timer);
     const msg = String(err&&err.message||err);
     if(msg.includes('abort') || msg.includes('Failed to fetch') || msg.includes('NetworkError')){
-      txt.textContent = 'اتصال برقرار نشد. پروژه Paused است یا شبکه مسدود است.';
+      txt.textContent = 'اتصال به سرور برقرار نشد.';
       box.className = 'diag err';
     } else {
       txt.textContent = 'خطا: '+msg; box.className = 'diag err';
@@ -651,10 +629,14 @@ const NAV = [
   {id:'trend',     label:'روند پیشرفت'},
   {id:'periods',   label:'مدیریت دوره‌ها'},
   {id:'users',     label:'کاربران'},
-  {id:'import',    label:'ورود داده'}
+  {id:'import',    label:'ورود داده', adminOnly:true}
 ];
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
 
+function isAdmin(){ return S.user && S.user.role === 'admin'; }
+function visibleNav(){
+  return NAV.filter(n => !n.adminOnly || isAdmin());
+}
 function periodIndex(){ return S.periods.findIndex(p => p.id === S.periodId); }
 function isFirstPeriod(){ return periodIndex() === 0; }
 
@@ -671,8 +653,8 @@ async function doLogin(username, password){
   }
   let { data, error } = await sb.from('app_users').select('*').eq('username', username).limit(1);
   if(error){
-    if(String(error.message).includes('does not exist')) throw new Error('جدول app_users وجود ندارد.');
-    if(String(error.message).includes('Failed to fetch')) throw new Error('اتصال به Supabase برقرار نشد.');
+    if(String(error.message).includes('does not exist')) throw new Error('پایگاه داده آماده نیست. با مدیر سامانه تماس بگیرید.');
+    if(String(error.message).includes('Failed to fetch')) throw new Error('اتصال به سرور برقرار نشد.');
     throw new Error('خطا در اتصال: '+error.message);
   }
   if(!data||!data.length){
@@ -692,7 +674,7 @@ function startSession(user){
   $('#loginScreen').classList.add('hidden');
   $('#app').classList.remove('hidden');
   $('#uName').textContent = user.full_name || user.username;
-  $('#uRole').textContent = user.role==='admin' ? 'MANAGER' : 'USER';
+  $('#uRole').textContent = user.role==='admin' ? 'MANAGER' : 'VIEWER';
   $('#avatar').textContent = (user.full_name || user.username).trim().charAt(0).toUpperCase();
   updateModeIndicator();
   bootApp();
@@ -846,7 +828,7 @@ async function bootApp(){
   }
 }
 function renderNav(){
-  $('#nav').innerHTML = NAV.map(n =>
+  $('#nav').innerHTML = visibleNav().map(n =>
     `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">${n.label}</button>`).join('');
 }
 function renderPeriodSelect(){
@@ -857,6 +839,7 @@ function renderPeriodSelect(){
     `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}${i===0?' (پایه)':''}</option>`).join('');
 }
 function render(){
+  if(S.view === 'import' && !isAdmin()) S.view = 'dashboard';
   $('#pageTitle').textContent = TITLES[S.view] || '';
   document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.view===S.view));
   const c = $('#content');
@@ -935,7 +918,7 @@ function viewDashboard(){
       <span class="badge badge-soft">دوره: ${esc(periodName)}${idx===0?' (پایه)':''}</span>
       <span class="badge badge-soft">کنترل: ${fa(total)}</span>
       <span class="badge badge-soft">واحد: ${fa(unitRows.length)}</span>
-      <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'LOCAL':'SUPABASE'}</span>
+      <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'محلی':'آنلاین'}</span>
     </div>
 
     <div class="grid kpis">
@@ -1021,6 +1004,7 @@ function viewControls(){
   const start = (S.page-1)*S.pageSize;
   const slice = list.slice(start, start+S.pageSize);
   const opts = (arr,cur)=>arr.map(v=>`<option value="${esc(v)}" ${v===cur?'selected':''}>${esc(v)}</option>`).join('');
+  const admin = isAdmin();
 
   return `
   <div class="card" style="margin-bottom:16px;padding:16px 20px">
@@ -1038,14 +1022,14 @@ function viewControls(){
       <span class="badge badge-soft">${fa(list.length)} کنترل</span>
       <span class="badge badge-soft">صفحه ${fa(S.page)} / ${fa(pages)}</span>
       <button class="btn btn-sm" id="clearFilters">پاک کردن فیلترها</button>
-      <button class="btn btn-sm btn-primary" id="addControlBtn" style="margin-right:auto">+ افزودن کنترل</button>
+      ${admin ? `<button class="btn btn-sm btn-primary" id="addControlBtn" style="margin-right:auto">+ افزودن کنترل</button>` : `<span class="ro-notice" style="margin-right:auto">فقط مشاهده</span>`}
     </div>
   </div>
   <div class="list">
     ${slice.length ? slice.map(c=>{
       const st = controlStatus(c), pr = controlProgress(c);
       return `<div class="ctrl" data-open="${c.id}">
-        <button class="del-btn" data-del="${c.id}" title="حذف">×</button>
+        ${admin ? `<button class="del-btn" data-del="${c.id}" title="حذف">×</button>` : ''}
         <div class="cc-head">
           <span class="badge badge-soft">${esc(c.category||'—')}</span>
           <span class="badge badge-soft">${esc(c.level||'—')}</span>
@@ -1058,7 +1042,7 @@ function viewControls(){
         <div class="cc-foot"><div class="bar"><i style="width:${pr}%"></i></div>
           <b>${fa(pr)}٪</b></div>
       </div>`;
-    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.<br>از تب «ورود داده» اکسل را بارگذاری کنید یا از دکمه «افزودن کنترل» استفاده کنید.</div></div>`}
+    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.${admin?'<br>از تب «ورود داده» اکسل را بارگذاری کنید یا از دکمه «افزودن کنترل» استفاده کنید.':''}</div></div>`}
   </div>
   ${pages>1?`<div class="pager">
     <button class="btn btn-sm" data-page="1" ${S.page===1?'disabled':''}>«</button>
@@ -1083,6 +1067,8 @@ function viewAssess(){
   const first = isFirstPeriod();
   const idx = periodIndex();
   const firstPeriodName = S.periods[0]?.name || '';
+  const admin = isAdmin();
+  const dis = admin ? '' : 'disabled';
 
   return `
   <div class="card" style="margin-bottom:16px;padding:16px 20px">
@@ -1095,10 +1081,11 @@ function viewAssess(){
         ${first
           ? `<span class="badge st-warn">دوره پایه — ثبت وضعیت</span>`
           : `<span class="badge badge-soft">دوره ${fa(idx+1)} — ثبت درصد</span>`}
+        ${!admin ? `<span class="ro-notice">فقط مشاهده</span>` : ''}
       </div>
     </div>
-    ${first ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:10px">
-      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است. در دوره‌های بعدی صرفاً درصد پیشرفت ثبت می‌شود و وضعیت از درصد استنتاج می‌گردد.
+    ${first && admin ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:10px">
+      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است. در دوره‌های بعدی صرفاً درصد پیشرفت ثبت می‌شود.
     </div>` : ''}
   </div>
   ${list.length ? list.map(c=>{
@@ -1121,14 +1108,14 @@ function viewAssess(){
         </details>
         <div class="as-grid">
           <div><label>وضعیت پیاده‌سازی</label>
-            <select class="a-status">${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
+            <select class="a-status" ${dis}>${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
             </select></div>
         </div>
         <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات / یادداشت</label>
-        <textarea class="a-actions" placeholder="اقدامات انجام‌شده…">${esc(a.actions||'')}</textarea>
+        <textarea class="a-actions" placeholder="اقدامات انجام‌شده…" ${dis}>${esc(a.actions||'')}</textarea>
         <div class="as-foot">
-          <input type="file" class="a-file" style="max-width:220px">
-          <button class="btn btn-sm btn-primary a-save">ذخیره</button>
+          ${admin ? `<input type="file" class="a-file" style="max-width:220px">
+          <button class="btn btn-sm btn-primary a-save">ذخیره</button>` : ''}
           ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
           <span class="saved" style="display:none">ذخیره شد</span>
         </div>
@@ -1148,8 +1135,8 @@ function viewAssess(){
       <div class="as-grid">
         <div><label>درصد پیشرفت (۰ تا ۱۰۰)</label>
           <div class="prog-row">
-            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}">
-            <input type="number" class="a-num" min="0" max="100" value="${pr}">
+            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}" ${dis}>
+            <input type="number" class="a-num" min="0" max="100" value="${pr}" ${dis}>
           </div>
         </div>
         <div><label>وضعیت (خودکار)</label>
@@ -1157,10 +1144,10 @@ function viewAssess(){
           </select></div>
       </div>
       <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات این دوره</label>
-      <textarea class="a-actions" placeholder="اقدامات انجام‌شده…">${esc(a.actions||'')}</textarea>
+      <textarea class="a-actions" placeholder="اقدامات انجام‌شده…" ${dis}>${esc(a.actions||'')}</textarea>
       <div class="as-foot">
-        <input type="file" class="a-file" style="max-width:220px">
-        <button class="btn btn-sm btn-primary a-save">ذخیره</button>
+        ${admin ? `<input type="file" class="a-file" style="max-width:220px">
+        <button class="btn btn-sm btn-primary a-save">ذخیره</button>` : ''}
         ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
         <span class="saved" style="display:none">ذخیره شد</span>
       </div>
@@ -1263,7 +1250,9 @@ async function ensureTrendData(){
    PERIODS
 ========================================================= */
 function viewPeriods(){
+  const admin = isAdmin();
   return `
+  ${admin ? `
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> ایجاد دوره جدید</h3>
     <div class="toolbar" style="margin-bottom:0">
@@ -1282,6 +1271,7 @@ function viewPeriods(){
       روی فیلد تاریخ بزنید تا تقویم شمسی باز شود. اولین دوره <b style="color:var(--txt)">پایه</b> است (ثبت وضعیت) — در دوره‌های بعد فقط درصد پیشرفت ثبت می‌شود.
     </div>
   </div>
+  ` : ''}
   <div class="card">
     <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
     ${S.periods.length ? `<div class="tbl-wrap"><table>
@@ -1296,7 +1286,7 @@ function viewPeriods(){
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
-            <button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>
+            ${admin ? `<button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>` : ''}
           </td></tr>`;
       }).join('')}</tbody>
     </table></div>` : '<div class="empty">دوره‌ای نیست.</div>'}
@@ -1307,7 +1297,9 @@ function viewPeriods(){
    USERS
 ========================================================= */
 function viewUsers(){
+  const admin = isAdmin();
   return `
+  ${admin ? `
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> افزودن کاربر</h3>
     <div class="toolbar" style="margin-bottom:0">
@@ -1318,22 +1310,24 @@ function viewUsers(){
       <button class="btn btn-primary" id="addUser">افزودن</button>
     </div>
   </div>
+  ` : `<div class="card" style="margin-bottom:16px;padding:14px 20px"><span class="ro-notice">فقط مشاهده — امکان افزودن کاربر وجود ندارد</span></div>`}
   <div class="card"><h3><span class="dot"></span> کاربران</h3><div id="usersList"><div class="spin"></div></div></div>`;
 }
 async function renderUsersList(){
   const host = document.getElementById('usersList');
   if(!host) return;
+  const admin = isAdmin();
   try{
     let users;
     if(MODE==='local') users = await LocalDB.listUsers();
     else { const {data,error} = await sb.from('app_users').select('*').order('created_at',{ascending:true}); if(error) throw error; users = data||[]; }
     host.innerHTML = `<div class="tbl-wrap"><table>
-      <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th><th>عملیات</th></tr></thead>
+      <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th>${admin?'<th>عملیات</th>':''}</tr></thead>
       <tbody>${users.map(u=>`<tr>
         <td style="font-weight:600">${esc(u.username)}</td>
         <td>${esc(u.full_name||'—')}</td>
-        <td><span class="badge badge-soft">${u.role==='admin'?'MANAGER':'USER'}</span></td>
-        <td>${u.username==='ice'?'<span style="color:var(--dim);font-size:10.5px;letter-spacing:.08em">پیش‌فرض</span>':`<button class="btn btn-sm" data-deluser="${u.id}">حذف</button>`}</td>
+        <td><span class="badge badge-soft">${u.role==='admin'?'MANAGER':'VIEWER'}</span></td>
+        ${admin?`<td>${u.username==='ice'?'<span style="color:var(--dim);font-size:10.5px;letter-spacing:.08em">پیش‌فرض</span>':`<button class="btn btn-sm" data-deluser="${u.id}">حذف</button>`}</td>`:''}
       </tr>`).join('')}</tbody>
     </table></div>`;
   }catch(err){
@@ -1345,6 +1339,7 @@ async function renderUsersList(){
    IMPORT
 ========================================================= */
 function viewImport(){
+  if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> بارگذاری اکسل کنترل‌ها</h3>
@@ -1376,13 +1371,11 @@ function viewImport(){
 ========================================================= */
 function bindView(){
   const c = $('#content');
+  const admin = isAdmin();
 
-  // date inputs (open picker on click)
   document.querySelectorAll('.date-input').forEach(inp => {
     inp.addEventListener('click', () => {
-      openDatePicker(inp.value, v => {
-        inp.value = v ? fa(v) : '';
-      });
+      openDatePicker(inp.value, v => { inp.value = v ? fa(v) : ''; });
     });
   });
 
@@ -1395,7 +1388,18 @@ function bindView(){
     $('#fLevel')?.addEventListener('change', e => { S.filters.level = e.target.value; S.page = 1; rebind(); });
     $('#fSize')?.addEventListener('change', e => { S.pageSize = Number(e.target.value); S.page = 1; rebind(); });
     $('#clearFilters')?.addEventListener('click', () => { S.filters = {q:'',unit:'',status:'',cat:'',level:''}; S.page = 1; rebind(); });
-    $('#addControlBtn')?.addEventListener('click', () => openAddControlModal());
+    if(admin){
+      $('#addControlBtn')?.addEventListener('click', () => openAddControlModal());
+      c.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async ev => {
+        ev.stopPropagation();
+        if(!confirm('این کنترل و ارزیابی‌هایش حذف شود؟')) return;
+        try{
+          await apiDelControl(b.dataset.del);
+          await loadControls(); await loadAssessments();
+          toast('حذف شد'); render();
+        }catch(err){ toast('خطا: '+err.message); }
+      }));
+    }
     c.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => { S.page = Number(b.dataset.page); rebind(); c.scrollTop = 0; }));
     c.querySelectorAll('[data-open]').forEach(el => {
       el.addEventListener('click', (ev) => {
@@ -1403,15 +1407,6 @@ function bindView(){
         openControlModal(el.dataset.open);
       });
     });
-    c.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async ev => {
-      ev.stopPropagation();
-      if(!confirm('این کنترل و ارزیابی‌هایش حذف شود؟')) return;
-      try{
-        await apiDelControl(b.dataset.del);
-        await loadControls(); await loadAssessments();
-        toast('حذف شد'); render();
-      }catch(err){ toast('خطا: '+err.message); }
-    }));
   }
   if(S.view==='assess'){
     $('#asUnit')?.addEventListener('change', e => { S.assessUnit = e.target.value; c.innerHTML = viewAssess(); bindView(); });
@@ -1422,7 +1417,7 @@ function bindView(){
       const num = item.querySelector('.a-num');
       const statusSel = item.querySelector('.a-status');
 
-      if(!isFirst && range && num && statusSel){
+      if(admin && !isFirst && range && num && statusSel){
         const sync = v => {
           v = Math.max(0, Math.min(100, Math.round(Number(v)||0)));
           range.value = v; num.value = v;
@@ -1432,7 +1427,7 @@ function bindView(){
         num.addEventListener('input', () => sync(num.value));
       }
 
-      item.querySelector('.a-save').addEventListener('click', async ev => {
+      item.querySelector('.a-save')?.addEventListener('click', async ev => {
         const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'ذخیره…';
         try{
           let payload;
@@ -1454,13 +1449,13 @@ function bindView(){
             };
           }
           const fi = item.querySelector('.a-file');
-          if(fi.files && fi.files[0]){
+          if(fi && fi.files && fi.files[0]){
             const up = await apiUpload(fi.files[0], cid);
             payload.file_url = up.url; payload.file_name = up.name;
           }
           const saved = await apiSaveAssessment(cid, payload);
           S.assessments[cid] = saved;
-          const s = item.querySelector('.saved'); s.style.display = 'inline'; setTimeout(()=>s.style.display='none', 2000);
+          const s = item.querySelector('.saved'); if(s){ s.style.display = 'inline'; setTimeout(()=>s.style.display='none', 2000); }
           toast('ذخیره شد');
         }catch(err){ toast('خطا: '+err.message); }
         finally{ btn.disabled = false; btn.textContent = 'ذخیره'; }
@@ -1470,7 +1465,7 @@ function bindView(){
   if(S.view==='trend'){
     $('#trendUnit')?.addEventListener('change', e => { S._trendUnit = e.target.value; c.innerHTML = viewTrend(); bindView(); });
   }
-  if(S.view==='periods'){
+  if(S.view==='periods' && admin){
     $('#addPeriod')?.addEventListener('click', async () => {
       const name = ($('#pName').value||'').trim();
       if(!name) return toast('نام دوره را وارد کنید');
@@ -1487,10 +1482,6 @@ function bindView(){
         c.innerHTML = viewPeriods(); bindView();
       }catch(err){ toast('خطا: '+err.message); }
     });
-    c.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
-      S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
-      toast('دوره انتخاب شد'); c.innerHTML = viewPeriods(); bindView();
-    }));
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
       try{
@@ -1502,39 +1493,49 @@ function bindView(){
       }catch(err){ toast('خطا: '+err.message); }
     }));
   }
+  if(S.view==='periods'){
+    c.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
+      S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
+      toast('دوره انتخاب شد'); c.innerHTML = viewPeriods(); bindView();
+    }));
+  }
   if(S.view==='users'){
     renderUsersList().then(() => {
-      document.querySelectorAll('[data-deluser]').forEach(b => b.addEventListener('click', async () => {
-        if(!confirm('حذف کاربر؟')) return;
+      if(admin){
+        document.querySelectorAll('[data-deluser]').forEach(b => b.addEventListener('click', async () => {
+          if(!confirm('حذف کاربر؟')) return;
+          try{
+            if(MODE==='local') await LocalDB.delUser(b.dataset.deluser);
+            else { const { error } = await sb.from('app_users').delete().eq('id', b.dataset.deluser); if(error) throw error; }
+            toast('حذف شد'); renderUsersList();
+          }catch(err){ toast('خطا: '+err.message); }
+        }));
+      }
+    });
+    if(admin){
+      $('#addUser')?.addEventListener('click', async () => {
+        const u = ($('#nuUser').value||'').trim();
+        const p = ($('#nuPass').value||'').trim();
+        const n = ($('#nuName').value||'').trim();
+        const r = $('#nuRole').value;
+        if(!u || !p) return toast('نام کاربری و رمز الزامی است');
         try{
-          if(MODE==='local') await LocalDB.delUser(b.dataset.deluser);
-          else { const { error } = await sb.from('app_users').delete().eq('id', b.dataset.deluser); if(error) throw error; }
-          toast('حذف شد'); renderUsersList();
+          const hash = await sha256(p);
+          if(MODE==='local'){
+            if(await LocalDB.findUser(u)) throw new Error('کاربر تکراری است');
+            await LocalDB.addUser({ id:uuid(), username:u, password_hash:hash, full_name:n, role:r });
+          } else {
+            const { error } = await sb.from('app_users').insert({ username:u, password_hash:hash, full_name:n, role:r });
+            if(error) throw error;
+          }
+          toast('کاربر اضافه شد');
+          $('#nuUser').value = ''; $('#nuPass').value = ''; $('#nuName').value = '';
+          renderUsersList();
         }catch(err){ toast('خطا: '+err.message); }
-      }));
-    });
-    $('#addUser')?.addEventListener('click', async () => {
-      const u = ($('#nuUser').value||'').trim();
-      const p = ($('#nuPass').value||'').trim();
-      const n = ($('#nuName').value||'').trim();
-      const r = $('#nuRole').value;
-      if(!u || !p) return toast('نام کاربری و رمز الزامی است');
-      try{
-        const hash = await sha256(p);
-        if(MODE==='local'){
-          if(await LocalDB.findUser(u)) throw new Error('کاربر تکراری است');
-          await LocalDB.addUser({ id:uuid(), username:u, password_hash:hash, full_name:n, role:r });
-        } else {
-          const { error } = await sb.from('app_users').insert({ username:u, password_hash:hash, full_name:n, role:r });
-          if(error) throw error;
-        }
-        toast('کاربر اضافه شد');
-        $('#nuUser').value = ''; $('#nuPass').value = ''; $('#nuName').value = '';
-        renderUsersList();
-      }catch(err){ toast('خطا: '+err.message); }
-    });
+      });
+    }
   }
-  if(S.view==='import'){
+  if(S.view==='import' && admin){
     $('#addCtrlFromImport')?.addEventListener('click', () => openAddControlModal());
     $('#wipeControls')?.addEventListener('click', async () => {
       if(!confirm('همه کنترل‌ها و ارزیابی‌های مرتبط حذف شوند؟')) return;
@@ -1612,6 +1613,7 @@ function parseSheet(file){
    ADD CONTROL MODAL
 ========================================================= */
 function openAddControlModal(){
+  if(!isAdmin()) return;
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
     <button class="close-x" id="closeModal">×</button>
     <h3>افزودن کنترل جدید</h3>
@@ -1675,6 +1677,7 @@ function openControlModal(id){
   const a = S.assessments[c.id] || {};
   const st = controlStatus(c), pr = controlProgress(c);
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || '—';
+  const admin = isAdmin();
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
     <button class="close-x" id="closeModal">×</button>
     <h3>#${fa(c.row_no??'')} — ${esc(c.title)}</h3>
@@ -1694,12 +1697,12 @@ function openControlModal(id){
       </div></div>
     ${a.actions?`<div class="kv"><div class="k">اقدامات این دوره</div><div class="v">${esc(a.actions)}</div></div>`:''}
     ${a.file_url?`<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">${esc(a.file_name||'دانلود فایل')}</a></div></div>`:''}
-    <button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">فرم ارزیابی این واحد</button>
+    ${admin?`<button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">فرم ارزیابی این واحد</button>`:''}
   </div></div>`;
   const close = () => $('#modalHost').innerHTML='';
   $('#closeModal').addEventListener('click', close);
   $('#modalBg').addEventListener('click', e => { if(e.target.id==='modalBg') close(); });
-  $('#goAssess').addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
+  $('#goAssess')?.addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
 }
 
 /* =========================================================
@@ -1716,7 +1719,7 @@ $('#loginForm').addEventListener('submit', async e => {
   finally{ btn.disabled = false; btn.textContent = 'ورود'; }
 });
 $('#retestBtn').addEventListener('click', async () => {
-  if(MODE==='local'){ setMode('supabase'); } else { await testConnection(); }
+  if(MODE==='local'){ setMode('online'); } else { await testConnection(); }
 });
 $('#localModeBtn').addEventListener('click', () => { setMode('local'); toast('حالت محلی فعال شد'); });
 $('#nav').addEventListener('click', e => {
