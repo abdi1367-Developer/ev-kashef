@@ -159,7 +159,7 @@ tbody tr:hover{background:var(--faint)}
 tbody td{font-variant-numeric:tabular-nums}
 .modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .18s;overflow-y:auto}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.modal-box{width:min(760px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease;margin:auto}
+.modal-box{width:min(720px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease;margin:auto}
 .modal-box h3{margin:0 0 16px;font-size:13px;font-weight:600;line-height:1.9;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .kv{margin-bottom:14px}
 .kv .k{font-size:9.5px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.14em}
@@ -201,6 +201,16 @@ tbody td{font-variant-numeric:tabular-nums}
 
 .ro-notice{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:10px;font-weight:600;letter-spacing:.08em;border:1px solid var(--line2);background:var(--faint);color:var(--muted)}
 
+/* unit access checkboxes */
+.unit-box{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding:2px}
+.unit-check{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--line2);cursor:pointer;font-size:11.5px;background:var(--white);transition:.12s}
+.unit-check:hover{background:var(--faint);border-color:var(--txt)}
+.unit-check.all{border-color:var(--txt);background:var(--faint);font-weight:600}
+.unit-check input{cursor:pointer;flex-shrink:0}
+.unit-check input:disabled{cursor:not-allowed}
+.unit-check.disabled{opacity:.55;cursor:not-allowed}
+.unit-check.disabled:hover{background:var(--white);border-color:var(--line2)}
+
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
   .sidebar.open{transform:translateX(0)}
@@ -230,7 +240,6 @@ tbody td{font-variant-numeric:tabular-nums}
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen" class="login-wrap">
   <div class="bg-anim">
     <div class="bg-grid"></div>
@@ -262,7 +271,6 @@ tbody td{font-variant-numeric:tabular-nums}
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" class="hidden">
   <aside class="sidebar" id="sidebar">
     <div class="brand"><b>KASHAF 495</b><span>پایش کنترل‌های امنیت</span></div>
@@ -294,9 +302,6 @@ tbody td{font-variant-numeric:tabular-nums}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
-/* =========================================================
-   CONFIG
-========================================================= */
 const SUPABASE_URL = 'https://qtpybadjaczlkzkbbcge.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GUfLjO0eaIx_LYNZgfIKzw_GcUsKjHC';
 const BUCKET = 'assessment-files';
@@ -315,12 +320,9 @@ async function sha256(str){
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-/* =========================================================
-   JALALI CALENDAR
-========================================================= */
+/* ============ JALALI ============ */
 const JALALI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 const JALALI_WEEKDAYS = ['ش','ی','د','س','چ','پ','ج'];
-
 function g2j(gy, gm, gd){
   const gdm = [0,31,59,90,120,151,181,212,243,273,304,334];
   let jy = (gy <= 1600) ? 0 : 979;
@@ -347,15 +349,8 @@ function j2g(jy, jm, jd){
   let gm; for (gm=1; gm<=12; gm++) { if (gd <= sa[gm]) break; gd -= sa[gm]; }
   return [gy, gm, gd];
 }
-function isLeapJalali(jy){
-  const a = jy % 33;
-  return [1,5,9,13,17,22,26,30].includes(a);
-}
-function jalaliMonthLength(jy, jm){
-  if (jm <= 6) return 31;
-  if (jm <= 11) return 30;
-  return isLeapJalali(jy) ? 30 : 29;
-}
+function isLeapJalali(jy){ return [1,5,9,13,17,22,26,30].includes(jy % 33); }
+function jalaliMonthLength(jy, jm){ if(jm<=6) return 31; if(jm<=11) return 30; return isLeapJalali(jy)?30:29; }
 function firstWeekdayOfJalaliMonth(jy, jm){
   const [gy, gm, gd] = j2g(jy, jm, 1);
   const d = new Date(gy, gm-1, gd);
@@ -371,19 +366,11 @@ function parseJalali(s){
   if(!m) return null;
   const y = +m[1], mo = +m[2], d = +m[3];
   if(y<1200||y>1600||mo<1||mo>12||d<1||d>31) return null;
-  const maxD = jalaliMonthLength(y, mo);
-  if(d > maxD) return null;
+  if(d > jalaliMonthLength(y, mo)) return null;
   return `${y}/${String(mo).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
 }
-function displayDate(s){
-  if(!s) return '';
-  const p = parseJalali(s);
-  return p ? fa(p) : '';
-}
+function displayDate(s){ if(!s) return ''; const p = parseJalali(s); return p ? fa(p) : ''; }
 
-/* =========================================================
-   DATE PICKER
-========================================================= */
 function openDatePicker(currentValue, onPick){
   const today = todayJalali();
   const parsed = currentValue ? parseJalali(currentValue) : null;
@@ -391,7 +378,6 @@ function openDatePicker(currentValue, onPick){
   let jy = parts[0], jm = parts[1];
   let selected = parsed;
   const host = document.getElementById('datePickerHost');
-
   function render(){
     const len = jalaliMonthLength(jy, jm);
     const firstWd = firstWeekdayOfJalaliMonth(jy, jm);
@@ -399,7 +385,6 @@ function openDatePicker(currentValue, onPick){
     for(let i=0; i<firstWd; i++) cells.push(null);
     for(let d=1; d<=len; d++) cells.push(d);
     while(cells.length % 7 !== 0) cells.push(null);
-
     const daysHtml = cells.map(d => {
       if(d === null) return `<span class="dp-day empty"></span>`;
       const full = `${jy}/${String(jm).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
@@ -408,18 +393,11 @@ function openDatePicker(currentValue, onPick){
       if(selected === full) cls.push('selected');
       return `<button type="button" class="${cls.join(' ')}" data-day="${d}">${fa(d)}</button>`;
     }).join('');
-
     host.innerHTML = `<div class="date-picker" id="dpBg"><div class="date-picker-box">
       <div class="dp-header">
-        <div class="dp-nav">
-          <button type="button" data-nav="py">««</button>
-          <button type="button" data-nav="pm">«</button>
-        </div>
+        <div class="dp-nav"><button type="button" data-nav="py">««</button><button type="button" data-nav="pm">«</button></div>
         <div class="dp-title">${JALALI_MONTHS[jm-1]} ${fa(jy)}</div>
-        <div class="dp-nav">
-          <button type="button" data-nav="nm">»</button>
-          <button type="button" data-nav="ny">»»</button>
-        </div>
+        <div class="dp-nav"><button type="button" data-nav="nm">»</button><button type="button" data-nav="ny">»»</button></div>
       </div>
       <div class="dp-weekdays">${JALALI_WEEKDAYS.map(w=>`<span>${w}</span>`).join('')}</div>
       <div class="dp-days">${daysHtml}</div>
@@ -429,7 +407,6 @@ function openDatePicker(currentValue, onPick){
         <button type="button" data-act="close">بستن</button>
       </div>
     </div></div>`;
-
     host.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', () => {
       const n = b.dataset.nav;
       if(n === 'py') jy--; if(n === 'ny') jy++;
@@ -454,9 +431,7 @@ function openDatePicker(currentValue, onPick){
   render();
 }
 
-/* =========================================================
-   STATUS
-========================================================= */
+/* ============ STATUS ============ */
 const STATUS_OPTS = ['عدم پیاده‌سازی','در حال پیاده‌سازی','پیاده‌سازی کامل'];
 function normalizeStatus(s){
   s = String(s||'').trim();
@@ -488,23 +463,16 @@ function statusClass(s){
   return 'st-bad';
 }
 
-/* =========================================================
-   MODE
-========================================================= */
+/* ============ MODE ============ */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'online';
 let sb = null;
 if(window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function setMode(m){
-  MODE = m; localStorage.setItem(MODE_KEY, m);
-  updateModeIndicator(); updateConnBox();
-}
+function setMode(m){ MODE = m; localStorage.setItem(MODE_KEY, m); updateModeIndicator(); updateConnBox(); }
 function updateModeIndicator(){
   const el = $('#modeIndicator'); if(!el) return;
-  el.innerHTML = MODE==='local'
-    ? `<div class="mode-line local">محلی</div>`
-    : `<div class="mode-line">آنلاین</div>`;
+  el.innerHTML = MODE==='local' ? `<div class="mode-line local">محلی</div>` : `<div class="mode-line">آنلاین</div>`;
 }
 function updateConnBox(){
   const box = $('#connBox'); if(!box) return;
@@ -528,7 +496,7 @@ const LocalDB = {
   tables(){
     const t = LS.read('tables') || { users:[], controls:[], periods:[], assessments:[] };
     if(!t.users || !t.users.length){
-      t.users = [{ id:uuid(), username:'ice', password_hash:null, full_name:'مدیر سامانه', role:'admin' }];
+      t.users = [{ id:uuid(), username:'ice', password_hash:null, full_name:'مدیر سامانه', role:'admin', allowed_units:null }];
       LS.write('tables', t);
       sha256('ice').then(h => {
         const x = LS.read('tables') || t;
@@ -542,6 +510,7 @@ const LocalDB = {
   async findUser(u){ return this.tables().users.find(x => x.username === u) || null; },
   async addUser(u){ const t = this.tables(); t.users.push(u); this.save(t); },
   async delUser(id){ const t = this.tables(); t.users = t.users.filter(u=>u.id!==id); this.save(t); },
+  async updateUser(id, patch){ const t = this.tables(); const u = t.users.find(x=>x.id===id); if(u){ Object.assign(u, patch); this.save(t); } },
   async listUsers(){ return this.tables().users; },
   async listControls(){ return this.tables().controls; },
   async addControl(row){
@@ -595,8 +564,7 @@ async function testConnection(){
     if(res.ok){ txt.textContent = 'متصل — سرور در دسترس است.'; box.className = 'diag ok'; return true; }
     let body=''; try{ body = await res.text(); }catch(e){}
     if(res.status===404 || (body && body.includes('does not exist'))){
-      txt.textContent = 'اتصال برقرار شد ولی جداول آماده نیستند.';
-      box.className = 'diag warn';
+      txt.textContent = 'اتصال برقرار شد ولی جداول آماده نیستند.'; box.className = 'diag warn';
     } else {
       txt.textContent = `پاسخ سرور: ${res.status}`; box.className = 'diag warn';
     }
@@ -604,20 +572,17 @@ async function testConnection(){
     clearTimeout(timer);
     const msg = String(err&&err.message||err);
     if(msg.includes('abort') || msg.includes('Failed to fetch') || msg.includes('NetworkError')){
-      txt.textContent = 'اتصال به سرور برقرار نشد.';
-      box.className = 'diag err';
+      txt.textContent = 'اتصال به سرور برقرار نشد.'; box.className = 'diag err';
     } else {
       txt.textContent = 'خطا: '+msg; box.className = 'diag err';
     }
   }
 }
 
-/* =========================================================
-   STATE
-========================================================= */
+/* ============ STATE ============ */
 const S = {
-  user:null, controls:[], periods:[], periodId:null,
-  assessments:{}, allAssessments:[], units:[], cats:[], levels:[],
+  user:null, controls:[], allControls:[], periods:[], periodId:null,
+  assessments:{}, allAssessments:[], units:[], allUnits:[], cats:[], levels:[],
   view:'dashboard', page:1, pageSize:12,
   filters:{q:'',unit:'',status:'',cat:'',level:''},
   assessUnit:'', _trendLoaded:false
@@ -625,24 +590,33 @@ const S = {
 const NAV = [
   {id:'dashboard', label:'داشبورد'},
   {id:'controls',  label:'کنترل‌ها'},
-  {id:'assess',    label:'ارزیابی دوره'},
   {id:'trend',     label:'روند پیشرفت'},
-  {id:'periods',   label:'مدیریت دوره‌ها'},
-  {id:'users',     label:'کاربران'},
+  {id:'assess',    label:'ارزیابی دوره', adminOnly:true},
+  {id:'periods',   label:'مدیریت دوره‌ها', adminOnly:true},
+  {id:'users',     label:'کاربران', adminOnly:true},
   {id:'import',    label:'ورود داده', adminOnly:true}
 ];
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
 
 function isAdmin(){ return S.user && S.user.role === 'admin'; }
 function visibleNav(){
-  return NAV.filter(n => !n.adminOnly || isAdmin());
+  if(isAdmin()) return NAV;
+  return NAV.filter(n => !n.adminOnly);
 }
 function periodIndex(){ return S.periods.findIndex(p => p.id === S.periodId); }
 function isFirstPeriod(){ return periodIndex() === 0; }
 
-/* =========================================================
-   AUTH
-========================================================= */
+/* apply unit access to a list of controls */
+function applyUnitAccess(all){
+  if(!S.user) return all;
+  if(S.user.role === 'admin') return all;
+  const allowed = S.user.allowed_units;
+  if(!Array.isArray(allowed)) return [];
+  if(allowed.length === 0) return [];
+  return all.filter(c => allowed.includes(c.owner_unit));
+}
+
+/* ============ AUTH ============ */
 async function doLogin(username, password){
   const hash = await sha256(password);
   if(MODE==='local'){
@@ -653,7 +627,7 @@ async function doLogin(username, password){
   }
   let { data, error } = await sb.from('app_users').select('*').eq('username', username).limit(1);
   if(error){
-    if(String(error.message).includes('does not exist')) throw new Error('پایگاه داده آماده نیست. با مدیر سامانه تماس بگیرید.');
+    if(String(error.message).includes('does not exist')) throw new Error('پایگاه داده آماده نیست.');
     if(String(error.message).includes('Failed to fetch')) throw new Error('اتصال به سرور برقرار نشد.');
     throw new Error('خطا در اتصال: '+error.message);
   }
@@ -687,9 +661,7 @@ function logout(){
   updateConnBox();
 }
 
-/* =========================================================
-   API
-========================================================= */
+/* ============ API ============ */
 async function apiListControls(){
   if(MODE==='local') return LocalDB.listControls();
   const { data, error } = await sb.from('controls').select('*').order('row_no',{ascending:true});
@@ -762,20 +734,19 @@ async function apiUpload(file, controlId){
   return { url: data.publicUrl, name: file.name };
 }
 
-/* =========================================================
-   LOADERS
-========================================================= */
+/* ============ LOADERS ============ */
 async function loadControls(){
-  S.controls = await apiListControls();
+  const all = await apiListControls();
+  S.allControls = all;
+  S.controls = applyUnitAccess(all);
+  S.allUnits = [...new Set(all.map(c=>c.owner_unit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
   S.units = [...new Set(S.controls.map(c=>c.owner_unit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
-  S.cats  = [...new Set(S.controls.map(c=>c.category).filter(Boolean))];
-  S.levels= [...new Set(S.controls.map(c=>c.level).filter(Boolean))];
+  S.cats = [...new Set(S.controls.map(c=>c.category).filter(Boolean))];
+  S.levels = [...new Set(S.controls.map(c=>c.level).filter(Boolean))];
 }
 async function loadPeriods(){
   S.periods = await apiListPeriods();
-  if(S.periods.length && !S.periods.find(p=>p.id===S.periodId)){
-    S.periodId = S.periods[0].id;
-  }
+  if(S.periods.length && !S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[0].id;
 }
 async function loadAssessments(){
   S.assessments = {};
@@ -787,9 +758,6 @@ async function loadAllAssessments(){
   S.allAssessments = await apiListAssessments(null);
 }
 
-/* =========================================================
-   DERIVED
-========================================================= */
 function controlStatus(c){
   const a = S.assessments[c.id];
   return normalizeStatus((a && a.status) || c.status || 'عدم پیاده‌سازی');
@@ -810,9 +778,7 @@ function progressWithMap(c, map){
   return statusWeight((a && a.status) || c.status);
 }
 
-/* =========================================================
-   BOOT
-========================================================= */
+/* ============ BOOT ============ */
 async function bootApp(){
   const content = $('#content');
   content.innerHTML = `<div class="card"><div class="spin"></div><div class="empty">در حال بارگذاری…</div></div>`;
@@ -820,7 +786,7 @@ async function bootApp(){
     await loadPeriods();
     await loadControls();
     await loadAssessments();
-    if(!S.periods.length) S.view = 'periods';
+    if(!S.periods.length && isAdmin()) S.view = 'periods';
     renderNav(); renderPeriodSelect(); render();
   }catch(err){
     content.innerHTML = `<div class="card"><h3><span class="dot"></span> خطا در بارگذاری</h3>
@@ -839,7 +805,8 @@ function renderPeriodSelect(){
     `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}${i===0?' (پایه)':''}</option>`).join('');
 }
 function render(){
-  if(S.view === 'import' && !isAdmin()) S.view = 'dashboard';
+  const allowedViews = visibleNav().map(n=>n.id);
+  if(!allowedViews.includes(S.view)) S.view = 'dashboard';
   $('#pageTitle').textContent = TITLES[S.view] || '';
   document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.view===S.view));
   const c = $('#content');
@@ -857,9 +824,7 @@ function render(){
   if(S.view==='trend') ensureTrendData();
 }
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
+/* ============ DASHBOARD ============ */
 function viewDashboard(){
   const total = S.controls.length;
   const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی کامل':0,'غیر قابل احراز':0};
@@ -912,12 +877,13 @@ function viewDashboard(){
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
   const idx = periodIndex();
+  const scopeLabel = isAdmin() ? 'همه واحدها' : `${fa(S.units.length)} واحد`;
 
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
       <span class="badge badge-soft">دوره: ${esc(periodName)}${idx===0?' (پایه)':''}</span>
       <span class="badge badge-soft">کنترل: ${fa(total)}</span>
-      <span class="badge badge-soft">واحد: ${fa(unitRows.length)}</span>
+      <span class="badge badge-soft">${scopeLabel}</span>
       <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'محلی':'آنلاین'}</span>
     </div>
 
@@ -979,9 +945,7 @@ function viewDashboard(){
   </div>`;
 }
 
-/* =========================================================
-   CONTROLS
-========================================================= */
+/* ============ CONTROLS ============ */
 function filteredControls(){
   const f = S.filters;
   return S.controls.filter(c => {
@@ -1042,7 +1006,7 @@ function viewControls(){
         <div class="cc-foot"><div class="bar"><i style="width:${pr}%"></i></div>
           <b>${fa(pr)}٪</b></div>
       </div>`;
-    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.${admin?'<br>از تب «ورود داده» اکسل را بارگذاری کنید یا از دکمه «افزودن کنترل» استفاده کنید.':''}</div></div>`}
+    }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.</div></div>`}
   </div>
   ${pages>1?`<div class="pager">
     <button class="btn btn-sm" data-page="1" ${S.page===1?'disabled':''}>«</button>
@@ -1054,10 +1018,9 @@ function viewControls(){
   `;
 }
 
-/* =========================================================
-   ASSESS
-========================================================= */
+/* ============ ASSESS ============ */
 function viewAssess(){
+  if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   if(!S.periods.length) return `<div class="card"><div class="empty">ابتدا از تب «مدیریت دوره‌ها» یک دوره بسازید.</div></div>`;
   if(!S.assessUnit) S.assessUnit = S.units[0] || '';
   const list = S.controls.filter(c => (c.owner_unit||'')===S.assessUnit);
@@ -1067,8 +1030,6 @@ function viewAssess(){
   const first = isFirstPeriod();
   const idx = periodIndex();
   const firstPeriodName = S.periods[0]?.name || '';
-  const admin = isAdmin();
-  const dis = admin ? '' : 'disabled';
 
   return `
   <div class="card" style="margin-bottom:16px;padding:16px 20px">
@@ -1078,14 +1039,11 @@ function viewAssess(){
         <span class="badge badge-soft">${fa(list.length)} کنترل</span>
         <span class="badge st-ok">${fa(done)} ارزیابی</span>
         <span class="badge badge-soft">پیشرفت: ${fa(avg)}٪</span>
-        ${first
-          ? `<span class="badge st-warn">دوره پایه — ثبت وضعیت</span>`
-          : `<span class="badge badge-soft">دوره ${fa(idx+1)} — ثبت درصد</span>`}
-        ${!admin ? `<span class="ro-notice">فقط مشاهده</span>` : ''}
+        ${first ? `<span class="badge st-warn">دوره پایه — ثبت وضعیت</span>` : `<span class="badge badge-soft">دوره ${fa(idx+1)} — ثبت درصد</span>`}
       </div>
     </div>
-    ${first && admin ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:10px">
-      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است. در دوره‌های بعدی صرفاً درصد پیشرفت ثبت می‌شود.
+    ${first ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:10px">
+      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است.
     </div>` : ''}
   </div>
   ${list.length ? list.map(c=>{
@@ -1108,14 +1066,14 @@ function viewAssess(){
         </details>
         <div class="as-grid">
           <div><label>وضعیت پیاده‌سازی</label>
-            <select class="a-status" ${dis}>${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
+            <select class="a-status">${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
             </select></div>
         </div>
         <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات / یادداشت</label>
-        <textarea class="a-actions" placeholder="اقدامات انجام‌شده…" ${dis}>${esc(a.actions||'')}</textarea>
+        <textarea class="a-actions">${esc(a.actions||'')}</textarea>
         <div class="as-foot">
-          ${admin ? `<input type="file" class="a-file" style="max-width:220px">
-          <button class="btn btn-sm btn-primary a-save">ذخیره</button>` : ''}
+          <input type="file" class="a-file" style="max-width:220px">
+          <button class="btn btn-sm btn-primary a-save">ذخیره</button>
           ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
           <span class="saved" style="display:none">ذخیره شد</span>
         </div>
@@ -1135,8 +1093,8 @@ function viewAssess(){
       <div class="as-grid">
         <div><label>درصد پیشرفت (۰ تا ۱۰۰)</label>
           <div class="prog-row">
-            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}" ${dis}>
-            <input type="number" class="a-num" min="0" max="100" value="${pr}" ${dis}>
+            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}">
+            <input type="number" class="a-num" min="0" max="100" value="${pr}">
           </div>
         </div>
         <div><label>وضعیت (خودکار)</label>
@@ -1144,10 +1102,10 @@ function viewAssess(){
           </select></div>
       </div>
       <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات این دوره</label>
-      <textarea class="a-actions" placeholder="اقدامات انجام‌شده…" ${dis}>${esc(a.actions||'')}</textarea>
+      <textarea class="a-actions">${esc(a.actions||'')}</textarea>
       <div class="as-foot">
-        ${admin ? `<input type="file" class="a-file" style="max-width:220px">
-        <button class="btn btn-sm btn-primary a-save">ذخیره</button>` : ''}
+        <input type="file" class="a-file" style="max-width:220px">
+        <button class="btn btn-sm btn-primary a-save">ذخیره</button>
         ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
         <span class="saved" style="display:none">ذخیره شد</span>
       </div>
@@ -1156,9 +1114,7 @@ function viewAssess(){
   `;
 }
 
-/* =========================================================
-   TREND
-========================================================= */
+/* ============ TREND ============ */
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
@@ -1179,7 +1135,7 @@ function viewTrend(){
     </div>
   </div>
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> روند ${selected==='__all'?'کل سازمان':esc(selected)}</h3>
+    <h3><span class="dot"></span> روند ${selected==='__all'?'کل':esc(selected)}</h3>
     ${lineChart(series)}
   </div>
   <div class="card" style="margin-bottom:16px">
@@ -1207,9 +1163,10 @@ function viewTrend(){
         <div class="badge badge-soft" style="margin-bottom:10px">${esc(p.name)} — ${fa(acts.length)} اقدام</div>
         ${acts.slice(0,80).map(a=>{
           const c = S.controls.find(x=>x.id===a.control_id);
+          if(!c) return '';
           return `<div style="background:var(--faint);border:1px solid var(--line);padding:12px;margin-bottom:8px">
             <div style="font-size:10.5px;color:var(--muted);margin-bottom:6px;letter-spacing:.06em">
-              #${fa(c?.row_no??'')} — ${esc(c?.owner_unit||'')} — ${esc((c?.title||'').slice(0,80))}
+              #${fa(c.row_no??'')} — ${esc(c.owner_unit||'')} — ${esc((c.title||'').slice(0,80))}
             </div>
             <div style="font-size:11.5px;line-height:1.9">${esc(a.actions)}</div>
             <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
@@ -1246,32 +1203,25 @@ async function ensureTrendData(){
   if(S.view==='trend'){ $('#content').innerHTML = viewTrend(); bindView(); }
 }
 
-/* =========================================================
-   PERIODS
-========================================================= */
+/* ============ PERIODS ============ */
 function viewPeriods(){
-  const admin = isAdmin();
+  if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
-  ${admin ? `
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> ایجاد دوره جدید</h3>
     <div class="toolbar" style="margin-bottom:0">
       <input id="pName" placeholder="نام دوره (مثلاً: بهار ۱۴۰۵)">
       <div class="date-field">
-        <input id="pStart" class="date-input" placeholder="انتخاب تاریخ شروع" readonly value="${displayDate(todayJalali())}">
+        <input id="pStart" class="date-input" placeholder="تاریخ شروع" readonly value="${displayDate(todayJalali())}">
         <span class="date-icon">📅</span>
       </div>
       <div class="date-field">
-        <input id="pEnd" class="date-input" placeholder="انتخاب تاریخ پایان" readonly>
+        <input id="pEnd" class="date-input" placeholder="تاریخ پایان" readonly>
         <span class="date-icon">📅</span>
       </div>
       <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
     </div>
-    <div style="font-size:10.5px;color:var(--muted);margin-top:10px;line-height:1.8">
-      روی فیلد تاریخ بزنید تا تقویم شمسی باز شود. اولین دوره <b style="color:var(--txt)">پایه</b> است (ثبت وضعیت) — در دوره‌های بعد فقط درصد پیشرفت ثبت می‌شود.
-    </div>
   </div>
-  ` : ''}
   <div class="card">
     <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
     ${S.periods.length ? `<div class="tbl-wrap"><table>
@@ -1286,67 +1236,196 @@ function viewPeriods(){
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
-            ${admin ? `<button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>` : ''}
+            <button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>
           </td></tr>`;
       }).join('')}</tbody>
     </table></div>` : '<div class="empty">دوره‌ای نیست.</div>'}
   </div>`;
 }
 
-/* =========================================================
-   USERS
-========================================================= */
+/* ============ USERS ============ */
+function userAccessText(u){
+  if(u.role === 'admin') return 'همه واحدها (مدیر)';
+  if(!Array.isArray(u.allowed_units)){
+    return u.allowed_units === null || u.allowed_units === undefined ? 'همه واحدها' : '—';
+  }
+  if(u.allowed_units.length === 0) return 'بدون دسترسی';
+  if(u.allowed_units.length > 2){
+    return u.allowed_units.slice(0,2).join('، ') + ` +${u.allowed_units.length - 2}`;
+  }
+  return u.allowed_units.join('، ');
+}
 function viewUsers(){
-  const admin = isAdmin();
+  if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
-  ${admin ? `
-  <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> افزودن کاربر</h3>
-    <div class="toolbar" style="margin-bottom:0">
-      <input id="nuUser" placeholder="نام کاربری">
-      <input id="nuPass" type="password" placeholder="رمز">
-      <input id="nuName" placeholder="نام کامل">
-      <select id="nuRole"><option value="admin">مدیر</option><option value="user">کاربر</option></select>
-      <button class="btn btn-primary" id="addUser">افزودن</button>
+  <div class="card" style="margin-bottom:16px;padding:14px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:12px;font-weight:600;margin-bottom:2px">مدیریت کاربران</div>
+      <div style="font-size:10.5px;color:var(--muted);line-height:1.7">برای هر کاربر می‌توانید واحدهای تحت مسئولیت را تعیین کنید — کاربر عادی فقط به کنترل‌های همان واحدها دسترسی دارد.</div>
     </div>
+    <button class="btn btn-primary" id="addUserBtn">+ افزودن کاربر</button>
   </div>
-  ` : `<div class="card" style="margin-bottom:16px;padding:14px 20px"><span class="ro-notice">فقط مشاهده — امکان افزودن کاربر وجود ندارد</span></div>`}
   <div class="card"><h3><span class="dot"></span> کاربران</h3><div id="usersList"><div class="spin"></div></div></div>`;
 }
 async function renderUsersList(){
   const host = document.getElementById('usersList');
   if(!host) return;
-  const admin = isAdmin();
   try{
     let users;
     if(MODE==='local') users = await LocalDB.listUsers();
     else { const {data,error} = await sb.from('app_users').select('*').order('created_at',{ascending:true}); if(error) throw error; users = data||[]; }
     host.innerHTML = `<div class="tbl-wrap"><table>
-      <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th>${admin?'<th>عملیات</th>':''}</tr></thead>
+      <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th><th>دسترسی</th><th>عملیات</th></tr></thead>
       <tbody>${users.map(u=>`<tr>
         <td style="font-weight:600">${esc(u.username)}</td>
         <td>${esc(u.full_name||'—')}</td>
         <td><span class="badge badge-soft">${u.role==='admin'?'MANAGER':'VIEWER'}</span></td>
-        ${admin?`<td>${u.username==='ice'?'<span style="color:var(--dim);font-size:10.5px;letter-spacing:.08em">پیش‌فرض</span>':`<button class="btn btn-sm" data-deluser="${u.id}">حذف</button>`}</td>`:''}
-      </tr>`).join('')}</tbody>
+        <td style="font-size:10.5px;color:var(--muted)">${esc(userAccessText(u))}</td>
+        <td style="white-space:nowrap">
+          ${u.username==='ice'
+            ? '<span style="color:var(--dim);font-size:10px;letter-spacing:.08em">پیش‌فرض</span>'
+            : `<button class="btn btn-sm" data-edituser="${u.id}">ویرایش</button>
+               <button class="btn btn-sm" data-deluser="${u.id}">حذف</button>`}
+        </td></tr>`).join('')}</tbody>
     </table></div>`;
+    host._users = users;
   }catch(err){
     host.innerHTML = `<div class="empty">خطا: ${esc(err.message)}</div>`;
   }
 }
 
-/* =========================================================
-   IMPORT
-========================================================= */
+function openUserModal(userToEdit = null){
+  if(!isAdmin()) return;
+  const isEdit = !!userToEdit;
+  const units = S.allUnits.length ? S.allUnits : S.units;
+  const currentAllowed = isEdit ? userToEdit.allowed_units : null;
+  const currentRole = isEdit ? userToEdit.role : 'user';
+  const isAll = !currentAllowed || (Array.isArray(currentAllowed) && currentAllowed.length === 0 && currentRole !== 'user');
+  // determine all-state: null → all, admin → all
+  const treatAll = currentRole === 'admin' || currentAllowed === null || currentAllowed === undefined;
+
+  const unitChecks = units.length
+    ? units.map(u => {
+        const checked = !treatAll && Array.isArray(currentAllowed) && currentAllowed.includes(u) ? 'checked' : '';
+        const dis = treatAll ? 'disabled' : '';
+        const cls = treatAll ? 'unit-check disabled' : 'unit-check';
+        return `<label class="${cls}">
+          <input type="checkbox" class="u-unit" value="${esc(u)}" ${checked} ${dis}>
+          <span>${esc(u)}</span>
+        </label>`;
+      }).join('')
+    : `<div style="padding:10px;font-size:10.5px;color:var(--dim);text-align:center">واحدی در سامانه ثبت نشده است</div>`;
+
+  $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
+    <button class="close-x" id="closeModal">×</button>
+    <h3>${isEdit ? 'ویرایش کاربر' : 'افزودن کاربر جدید'}</h3>
+    <div class="field"><label>نام کاربری</label>
+      <input id="mUser" value="${isEdit ? esc(userToEdit.username) : ''}" ${isEdit ? 'disabled style="background:var(--faint);color:var(--muted)"' : ''} placeholder="username"></div>
+    ${!isEdit ? `<div class="field"><label>رمز عبور</label>
+      <input id="mPass" type="password" placeholder="رمز"></div>` : ''}
+    <div class="field"><label>نام کامل</label>
+      <input id="mName" value="${isEdit ? esc(userToEdit.full_name||'') : ''}" placeholder="نام و نام خانوادگی"></div>
+    <div class="field"><label>نقش</label>
+      <select id="mRole">
+        <option value="user" ${currentRole==='user'?'selected':''}>کاربر عادی — محدود به واحدهای انتخابی</option>
+        <option value="admin" ${currentRole==='admin'?'selected':''}>مدیر سامانه — دسترسی کامل</option>
+      </select></div>
+
+    <div id="unitsBox" style="${currentRole==='admin' ? 'display:none' : ''}">
+      <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:.12em;font-weight:500">دسترسی به واحدها</label>
+      <label class="unit-check all" style="margin-bottom:6px">
+        <input type="checkbox" id="allUnits" ${treatAll?'checked':''}>
+        <b>همه واحدها (مشاهده همه)</b>
+      </label>
+      <div class="unit-box" id="unitsList">${unitChecks}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.7">
+        کاربر عادی فقط کنترل‌های واحدهای انتخاب‌شده را در داشبورد، لیست کنترل‌ها و روند مشاهده خواهد کرد.
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+      <button class="btn btn-primary" id="mSave">${isEdit ? 'ذخیره تغییرات' : 'افزودن'}</button>
+      <button class="btn" id="mCancel">انصراف</button>
+    </div>
+  </div></div>`;
+
+  const close = () => $('#modalHost').innerHTML='';
+  $('#closeModal').addEventListener('click', close);
+  $('#mCancel').addEventListener('click', close);
+  $('#modalBg').addEventListener('click', e => { if(e.target.id==='modalBg') close(); });
+
+  $('#mRole').addEventListener('change', () => {
+    $('#unitsBox').style.display = $('#mRole').value === 'admin' ? 'none' : '';
+  });
+
+  const allCb = $('#allUnits');
+  function refreshDisabled(){
+    const all = allCb.checked;
+    document.querySelectorAll('.u-unit').forEach(cb => {
+      cb.disabled = all;
+      if(all) cb.checked = false;
+      cb.closest('.unit-check').classList.toggle('disabled', all);
+    });
+  }
+  refreshDisabled();
+  allCb.addEventListener('change', refreshDisabled);
+
+  $('#mSave').addEventListener('click', async () => {
+    const role = $('#mRole').value;
+    const fullName = $('#mName').value.trim();
+    let allowedUnits = null;
+    if(role !== 'admin' && !allCb.checked){
+      allowedUnits = [...document.querySelectorAll('.u-unit:checked')].map(cb => cb.value);
+    }
+    // role === 'admin'  → null (full)
+    // role === 'user' + allUnits checked → null (full read)
+    // role === 'user' + specific checked → array
+    // role === 'user' + nothing checked → []
+
+    try{
+      if(isEdit){
+        const patch = { full_name: fullName, role, allowed_units: allowedUnits };
+        if(MODE==='local'){
+          await LocalDB.updateUser(userToEdit.id, patch);
+        } else {
+          const { error } = await sb.from('app_users').update(patch).eq('id', userToEdit.id);
+          if(error) throw error;
+        }
+        toast('ذخیره شد');
+      } else {
+        const username = $('#mUser').value.trim();
+        const password = $('#mPass').value.trim();
+        if(!username || !password) return toast('نام کاربری و رمز الزامی است');
+        const hash = await sha256(password);
+        if(MODE==='local'){
+          if(await LocalDB.findUser(username)) throw new Error('کاربر تکراری است');
+          await LocalDB.addUser({ id:uuid(), username, password_hash:hash, full_name:fullName, role, allowed_units:allowedUnits });
+        } else {
+          const record = { username, password_hash:hash, full_name:fullName, role, allowed_units:allowedUnits };
+          const { error } = await sb.from('app_users').insert(record);
+          if(error){
+            if(String(error.message).includes('allowed_units')){
+              throw new Error('ستون allowed_units در پایگاه داده وجود ندارد. با مدیر فنی تماس بگیرید.');
+            }
+            throw error;
+          }
+        }
+        toast('کاربر اضافه شد');
+      }
+      close();
+      renderUsersList();
+    }catch(err){ toast('خطا: '+err.message); }
+  });
+}
+
+/* ============ IMPORT ============ */
 function viewImport(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> بارگذاری اکسل کنترل‌ها</h3>
     <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
-      ستون‌های مورد نیاز (به همین ترتیب):<br>
-      <b style="color:var(--txt)">دسته</b> — <b style="color:var(--txt)">سطح پیشرفتگی</b> — <b style="color:var(--txt)">کنترل</b> — <b style="color:var(--txt)">شواهد</b> — <b style="color:var(--txt)">وضعیت پیاده‌سازی</b> — <b style="color:var(--txt)">واحد مسئول رسیدگی</b>
-      <br>ستون «ردیف» لازم نیست — شماره‌ها خودکار (۱، ۲، ۳ …) اختصاص می‌یابند.
+      ستون‌های مورد نیاز: <b style="color:var(--txt)">دسته</b>، <b style="color:var(--txt)">سطح پیشرفتگی</b>، <b style="color:var(--txt)">کنترل</b>، <b style="color:var(--txt)">شواهد</b>، <b style="color:var(--txt)">وضعیت پیاده‌سازی</b>، <b style="color:var(--txt)">واحد مسئول رسیدگی</b>. ستون «ردیف» لازم نیست.
     </p>
     <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
@@ -1360,15 +1439,13 @@ function viewImport(){
     <h3><span class="dot"></span> وضعیت داده‌ها</h3>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <span class="badge badge-soft">کنترل: ${fa(S.controls.length)}</span>
-      <span class="badge badge-soft">واحد: ${fa(S.units.length)}</span>
+      <span class="badge badge-soft">واحد: ${fa(S.allUnits.length)}</span>
       <span class="badge badge-soft">دوره: ${fa(S.periods.length)}</span>
     </div>
   </div>`;
 }
 
-/* =========================================================
-   BIND VIEW
-========================================================= */
+/* ============ BIND ============ */
 function bindView(){
   const c = $('#content');
   const admin = isAdmin();
@@ -1402,13 +1479,13 @@ function bindView(){
     }
     c.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => { S.page = Number(b.dataset.page); rebind(); c.scrollTop = 0; }));
     c.querySelectorAll('[data-open]').forEach(el => {
-      el.addEventListener('click', (ev) => {
+      el.addEventListener('click', ev => {
         if(ev.target.closest('[data-del]')) return;
         openControlModal(el.dataset.open);
       });
     });
   }
-  if(S.view==='assess'){
+  if(S.view==='assess' && admin){
     $('#asUnit')?.addEventListener('change', e => { S.assessUnit = e.target.value; c.innerHTML = viewAssess(); bindView(); });
     c.querySelectorAll('.as-item').forEach(item => {
       const cid = item.dataset.cid;
@@ -1416,8 +1493,7 @@ function bindView(){
       const range = item.querySelector('.a-range');
       const num = item.querySelector('.a-num');
       const statusSel = item.querySelector('.a-status');
-
-      if(admin && !isFirst && range && num && statusSel){
+      if(!isFirst && range && num && statusSel){
         const sync = v => {
           v = Math.max(0, Math.min(100, Math.round(Number(v)||0)));
           range.value = v; num.value = v;
@@ -1426,27 +1502,16 @@ function bindView(){
         range.addEventListener('input', () => sync(range.value));
         num.addEventListener('input', () => sync(num.value));
       }
-
       item.querySelector('.a-save')?.addEventListener('click', async ev => {
         const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'ذخیره…';
         try{
           let payload;
           if(isFirst){
             const st = statusSel.value;
-            payload = {
-              status: st, progress: statusWeight(st),
-              actions: item.querySelector('.a-actions').value.trim(),
-              updated_by: S.user?.username || '',
-              updated_at: new Date().toISOString()
-            };
+            payload = { status: st, progress: statusWeight(st), actions: item.querySelector('.a-actions').value.trim(), updated_by: S.user?.username||'', updated_at: new Date().toISOString() };
           } else {
             const pr = Math.max(0, Math.min(100, Math.round(Number(num.value)||0)));
-            payload = {
-              status: statusFromProgress(pr), progress: pr,
-              actions: item.querySelector('.a-actions').value.trim(),
-              updated_by: S.user?.username || '',
-              updated_at: new Date().toISOString()
-            };
+            payload = { status: statusFromProgress(pr), progress: pr, actions: item.querySelector('.a-actions').value.trim(), updated_by: S.user?.username||'', updated_at: new Date().toISOString() };
           }
           const fi = item.querySelector('.a-file');
           if(fi && fi.files && fi.files[0]){
@@ -1455,7 +1520,7 @@ function bindView(){
           }
           const saved = await apiSaveAssessment(cid, payload);
           S.assessments[cid] = saved;
-          const s = item.querySelector('.saved'); if(s){ s.style.display = 'inline'; setTimeout(()=>s.style.display='none', 2000); }
+          const s = item.querySelector('.saved'); if(s){ s.style.display='inline'; setTimeout(()=>s.style.display='none',2000); }
           toast('ذخیره شد');
         }catch(err){ toast('خطا: '+err.message); }
         finally{ btn.disabled = false; btn.textContent = 'ذخیره'; }
@@ -1482,6 +1547,10 @@ function bindView(){
         c.innerHTML = viewPeriods(); bindView();
       }catch(err){ toast('خطا: '+err.message); }
     });
+    c.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
+      S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
+      toast('دوره انتخاب شد'); c.innerHTML = viewPeriods(); bindView();
+    }));
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
       try{
@@ -1493,47 +1562,24 @@ function bindView(){
       }catch(err){ toast('خطا: '+err.message); }
     }));
   }
-  if(S.view==='periods'){
-    c.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
-      S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
-      toast('دوره انتخاب شد'); c.innerHTML = viewPeriods(); bindView();
-    }));
-  }
-  if(S.view==='users'){
+  if(S.view==='users' && admin){
     renderUsersList().then(() => {
-      if(admin){
-        document.querySelectorAll('[data-deluser]').forEach(b => b.addEventListener('click', async () => {
-          if(!confirm('حذف کاربر؟')) return;
-          try{
-            if(MODE==='local') await LocalDB.delUser(b.dataset.deluser);
-            else { const { error } = await sb.from('app_users').delete().eq('id', b.dataset.deluser); if(error) throw error; }
-            toast('حذف شد'); renderUsersList();
-          }catch(err){ toast('خطا: '+err.message); }
-        }));
-      }
-    });
-    if(admin){
-      $('#addUser')?.addEventListener('click', async () => {
-        const u = ($('#nuUser').value||'').trim();
-        const p = ($('#nuPass').value||'').trim();
-        const n = ($('#nuName').value||'').trim();
-        const r = $('#nuRole').value;
-        if(!u || !p) return toast('نام کاربری و رمز الزامی است');
+      const host = document.getElementById('usersList');
+      const users = host?._users || [];
+      document.querySelectorAll('[data-deluser]').forEach(b => b.addEventListener('click', async () => {
+        if(!confirm('حذف کاربر؟')) return;
         try{
-          const hash = await sha256(p);
-          if(MODE==='local'){
-            if(await LocalDB.findUser(u)) throw new Error('کاربر تکراری است');
-            await LocalDB.addUser({ id:uuid(), username:u, password_hash:hash, full_name:n, role:r });
-          } else {
-            const { error } = await sb.from('app_users').insert({ username:u, password_hash:hash, full_name:n, role:r });
-            if(error) throw error;
-          }
-          toast('کاربر اضافه شد');
-          $('#nuUser').value = ''; $('#nuPass').value = ''; $('#nuName').value = '';
-          renderUsersList();
+          if(MODE==='local') await LocalDB.delUser(b.dataset.deluser);
+          else { const { error } = await sb.from('app_users').delete().eq('id', b.dataset.deluser); if(error) throw error; }
+          toast('حذف شد'); renderUsersList();
         }catch(err){ toast('خطا: '+err.message); }
-      });
-    }
+      }));
+      document.querySelectorAll('[data-edituser]').forEach(b => b.addEventListener('click', () => {
+        const u = users.find(x => x.id === b.dataset.edituser);
+        if(u) openUserModal(u);
+      }));
+    });
+    $('#addUserBtn')?.addEventListener('click', () => openUserModal());
   }
   if(S.view==='import' && admin){
     $('#addCtrlFromImport')?.addEventListener('click', () => openAddControlModal());
@@ -1569,8 +1615,8 @@ function bindView(){
             owner_unit: g('واحد مسئول رسیدگی')||null
           };
         }).filter(x=>x.title);
-        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند. سرستون‌ها را بررسی کنید.');
-        log.textContent = `${fa(mapped.length)} رکورد. حذف داده قبلی…`;
+        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند.');
+        log.textContent = `${fa(mapped.length)} رکورد…`;
         if(MODE==='local'){
           await LocalDB.setControls(mapped);
         } else {
@@ -1609,9 +1655,7 @@ function parseSheet(file){
   });
 }
 
-/* =========================================================
-   ADD CONTROL MODAL
-========================================================= */
+/* ============ ADD CONTROL MODAL ============ */
 function openAddControlModal(){
   if(!isAdmin()) return;
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
@@ -1626,14 +1670,14 @@ function openAddControlModal(){
         <option value="پیشرفته">پیشرفته</option>
       </select></div>
     <div class="field"><label>متن کنترل</label>
-      <textarea id="mTitle" placeholder="متن کنترل…"></textarea></div>
+      <textarea id="mTitle"></textarea></div>
     <div class="field"><label>شواهد</label>
-      <textarea id="mEvidence" placeholder="شواهد ارزیابی…"></textarea></div>
+      <textarea id="mEvidence"></textarea></div>
     <div class="field"><label>وضعیت پیاده‌سازی (اولیه)</label>
       <select id="mStatus">${STATUS_OPTS.map(v=>`<option value="${v}">${v}</option>`).join('')}</select></div>
     <div class="field"><label>واحد مسئول رسیدگی</label>
       <input id="mUnit" placeholder="مثلاً: واحد مدیریت زیرساخت و شبکه"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
       <button class="btn btn-primary" id="mSave">افزودن</button>
       <button class="btn" id="mCancel">انصراف</button>
     </div>
@@ -1657,21 +1701,17 @@ function openAddControlModal(){
       if(MODE==='local'){
         await LocalDB.addControl(row);
       } else {
-        const maxRow = S.controls.reduce((m,c)=>Math.max(m, Number(c.row_no)||0), 0);
+        const maxRow = S.allControls.reduce((m,c)=>Math.max(m, Number(c.row_no)||0), 0);
         const { error } = await sb.from('controls').insert({ row_no: maxRow+1, ...row });
         if(error) throw error;
       }
       await loadControls();
-      toast('کنترل اضافه شد');
-      close();
-      render();
+      toast('کنترل اضافه شد'); close(); render();
     }catch(err){ toast('خطا: '+err.message); }
   });
 }
 
-/* =========================================================
-   CONTROL DETAIL MODAL
-========================================================= */
+/* ============ CONTROL DETAIL MODAL ============ */
 function openControlModal(id){
   const c = S.controls.find(x=>x.id===id); if(!c) return;
   const a = S.assessments[c.id] || {};
@@ -1705,22 +1745,16 @@ function openControlModal(id){
   $('#goAssess')?.addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
 }
 
-/* =========================================================
-   GLOBAL EVENTS
-========================================================= */
+/* ============ GLOBAL ============ */
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('#loginBtn'), err = $('#loginErr');
   err.textContent = ''; btn.disabled = true; btn.textContent = 'در حال بررسی…';
-  try{
-    const u = await doLogin($('#luser').value.trim(), $('#lpass').value);
-    startSession(u);
-  }catch(ex){ err.textContent = ex.message || 'ورود ناموفق'; }
+  try{ const u = await doLogin($('#luser').value.trim(), $('#lpass').value); startSession(u); }
+  catch(ex){ err.textContent = ex.message || 'ورود ناموفق'; }
   finally{ btn.disabled = false; btn.textContent = 'ورود'; }
 });
-$('#retestBtn').addEventListener('click', async () => {
-  if(MODE==='local'){ setMode('online'); } else { await testConnection(); }
-});
+$('#retestBtn').addEventListener('click', async () => { if(MODE==='local'){ setMode('online'); } else { await testConnection(); } });
 $('#localModeBtn').addEventListener('click', () => { setMode('local'); toast('حالت محلی فعال شد'); });
 $('#nav').addEventListener('click', e => {
   const b = e.target.closest('button[data-view]'); if(!b) return;
