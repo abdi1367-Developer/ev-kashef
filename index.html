@@ -6,16 +6,36 @@
 <title>کاشف ۴۹۵ | پایش کنترل‌های امنیتی</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
-:root{--white:#fff;--line:#e4e4e7;--line2:#d4d4d8;--txt:#09090b;--txt2:#3f3f46;--muted:#71717a;--dim:#a1a1aa;--faint:#f4f4f5}
+/* ========== THEME: DEFAULT (MONOCHROME) ========== */
+:root{
+  --white:#fff;--line:#e4e4e7;--line2:#d4d4d8;
+  --txt:#09090b;--txt2:#3f3f46;--muted:#71717a;--dim:#a1a1aa;--faint:#f4f4f5;
+  --bg-main:#fff;--bg-side:#fff;--bg-top:#fff;
+  --donut-1:#18181b;--donut-2:#71717a;--donut-3:#d4d4d8;--donut-4:#f4f4f5;
+  --bar-fill:#18181b;
+  --blob-1:#e4e4e7;--blob-2:#f4f4f5;--blob-3:#d4d4d8;
+}
+
+/* ========== THEME: PASTEL ========== */
+body.theme-pastel{
+  --white:#fefcff;--line:#ebe2f5;--line2:#ddd2ec;
+  --txt:#4a3f5c;--txt2:#5d4f7a;--muted:#8a7fa3;--dim:#b5a9c8;--faint:#f6f0ff;
+  --bg-main:#faf6ff;--bg-side:#f5efff;--bg-top:#faf6ff;
+  --donut-1:#a7d4b9;--donut-2:#f2cba9;--donut-3:#efc0c8;--donut-4:#e0d6ee;
+  --bar-fill:#a887d3;
+  --blob-1:#c9b6e4;--blob-2:#b5d4e8;--blob-3:#f2d9b8;
+}
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;height:100%;height:100dvh;overflow:hidden}
-body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--white);color:var(--txt);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg-main);color:var(--txt);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;transition:background .25s,color .25s}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line2)}
 a{color:var(--txt);text-decoration:none}
 button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
 
-.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px;background:var(--white)}
+/* LOGIN */
+.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px;background:var(--bg-main)}
 .bg-anim{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px);background-size:48px 48px;opacity:.8}
 .rotor{position:absolute;border:1px solid var(--faint);top:50%;left:50%;pointer-events:none}
@@ -23,8 +43,15 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .rotor-b{width:34vmin;height:34vmin;border-style:dashed;border-color:var(--line);animation:rot 240s linear infinite reverse}
 .rotor-c{width:80vmin;height:80vmin;animation:rot 320s linear infinite}
 @keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg)}}
-.login-card{position:relative;z-index:3;width:min(380px,94vw);padding:36px 28px 28px;background:var(--white);border:1px solid var(--txt);animation:pop .5s ease}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
+.b1{width:44vw;height:44vw;min-width:300px;min-height:300px;background:var(--blob-1);top:-10%;right:-8%;animation:float 19s ease-in-out infinite}
+.b2{width:38vw;height:38vw;min-width:280px;min-height:280px;background:var(--blob-2);bottom:-12%;left:-8%;animation:float 23s ease-in-out infinite reverse}
+.b3{width:30vw;height:30vw;min-width:240px;min-height:240px;background:var(--blob-3);top:42%;left:38%;opacity:.4;animation:float 27s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(-7%,9%,0) scale(1.1)}66%{transform:translate3d(9%,-7%,0) scale(.95)}}
+.login-card{position:relative;z-index:3;width:min(380px,94vw);padding:36px 28px 28px;background:var(--white);border:1px solid var(--txt);animation:pop .5s ease;transition:background .25s,border-color .25s}
 @keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.login-theme{position:absolute;top:12px;left:12px;padding:5px 10px;border:1px solid var(--txt);background:transparent;color:var(--txt);cursor:pointer;font-size:10px;font-weight:500;letter-spacing:.08em;font-family:inherit}
+.login-theme:hover{background:var(--faint)}
 .kashaf{font-size:11px;font-weight:600;letter-spacing:.32em;text-align:center;text-transform:uppercase;margin-bottom:14px}
 .kashaf-rule{height:1px;background:var(--txt);margin-bottom:22px}
 .login-card h1{font-size:15px;font-weight:600;margin:0 0 4px;text-align:center}
@@ -53,8 +80,9 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
 
+/* APP */
 #app{height:100vh;height:100dvh;display:block}
-.sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--white);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
+.sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--bg-side);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden;transition:background .25s,border-color .25s}
 .brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
 .brand b{display:block;font-size:13px;font-weight:600;letter-spacing:.16em;margin-bottom:4px}
 .brand span{display:block;font-size:10px;color:var(--muted);letter-spacing:.06em}
@@ -64,7 +92,7 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .nav button.active{color:var(--txt);font-weight:600;border-right-color:var(--txt);background:var(--faint)}
 .side-foot{border-top:1px solid var(--txt);padding-top:14px;margin-top:14px;flex-shrink:0}
 .user-chip{display:flex;align-items:center;gap:9px;padding:8px 4px;margin-bottom:10px}
-.user-chip .av{width:26px;height:26px;border:1px solid var(--txt);display:grid;place-items:center;font-weight:600;font-size:10px;flex:0 0 auto}
+.user-chip .av{width:26px;height:26px;border:1px solid var(--txt);display:grid;place-items:center;font-weight:600;font-size:10px;flex:0 0 auto;background:var(--faint)}
 .user-chip b{display:block;font-size:11.5px;font-weight:600;line-height:1.25}
 .user-chip span{display:block;font-size:9.5px;color:var(--muted);margin-top:2px;letter-spacing:.06em}
 .mode-line{display:flex;align-items:center;gap:6px;padding:6px 4px;margin-bottom:8px;font-size:9.5px;color:var(--muted);letter-spacing:.14em;font-weight:500}
@@ -73,22 +101,28 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .side-foot .btn{padding:7px;font-size:11px;letter-spacing:.08em}
 
 .main{margin-right:220px;height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:0}
-.topbar{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--txt);z-index:30}
+.topbar{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--bg-top);border-bottom:1px solid var(--txt);z-index:30;transition:background .25s,border-color .25s}
 .topbar h2{margin:0;font-size:13px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.06em}
 .icon-btn{width:34px;height:34px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;display:none;place-items:center;font-size:15px;flex:0 0 auto}
 .icon-btn:hover{background:var(--faint)}
 .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.top-actions select{padding:8px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:220px;font-variant-numeric:tabular-nums}
+.top-actions select{padding:8px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:200px;font-variant-numeric:tabular-nums}
+.theme-btn{padding:8px 12px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;font-size:11px;font-weight:500;letter-spacing:.06em;font-family:inherit;transition:.12s}
+.theme-btn:hover{background:var(--faint)}
 .content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:24px;width:100%;min-width:0}
 .overlay{position:fixed;inset:0;background:rgba(9,9,11,.32);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
+body.theme-pastel .overlay{background:rgba(74,63,92,.28)}
 .overlay.show{opacity:1;pointer-events:auto}
 
+/* COMPONENTS */
 .grid{display:grid;gap:16px;width:100%}
 .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-.card{background:var(--white);border:1px solid var(--txt);padding:20px;min-width:0}
+.card{background:var(--white);border:1px solid var(--txt);padding:20px;min-width:0;transition:background .25s,border-color .25s}
+body.theme-pastel .card{border-color:var(--line2)}
 .card h3{margin:0 0 16px;font-size:10.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:8px;letter-spacing:.16em;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .card h3 .dot{width:5px;height:5px;background:var(--txt);flex:0 0 auto}
+body.theme-pastel .card h3 .dot{background:#a887d3}
 .kpi .v{font-size:32px;font-weight:600;line-height:1;letter-spacing:-.02em}
 .kpi .l{color:var(--muted);font-size:10px;margin-top:8px;letter-spacing:.14em;font-weight:500}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-size:10px;white-space:nowrap;font-weight:500;letter-spacing:.06em;border:1px solid transparent}
@@ -98,11 +132,23 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .st-gray{background:transparent;color:var(--dim);border-color:var(--line)}
 .badge-soft{background:var(--faint);color:var(--muted);border-color:var(--line)}
 .badge-first{background:var(--txt);color:var(--white);border-color:var(--txt);letter-spacing:.1em}
+/* pastel state overrides */
+body.theme-pastel .st-ok{background:#c8e8d5;color:#2f5c42;border-color:#a7d4b9}
+body.theme-pastel .st-warn{background:#fbe4d4;color:#854a1e;border-color:#f2cba9;border-style:solid}
+body.theme-pastel .st-bad{background:#f8d9de;color:#8a3540;border-color:#efc0c8;border-style:solid}
+body.theme-pastel .st-gray{background:#f0ebf6;color:#8a7fa3;border-color:#e0d6ee;border-style:solid}
+body.theme-pastel .badge-first{background:#a887d3;border-color:#a887d3}
 .bar-row{display:grid;grid-template-columns:1fr 42px;gap:12px;align-items:center;margin:10px 0}
 .bar-row .nm{font-size:11.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bar-row .pc{font-size:11px;font-weight:600;text-align:left}
 .bar{height:4px;background:var(--faint);overflow:hidden;margin-top:6px}
-.bar>i{display:block;height:100%;background:var(--txt);transition:width .6s cubic-bezier(.2,.9,.3,1)}
+.bar>i{display:block;height:100%;background:var(--bar-fill);transition:width .6s cubic-bezier(.2,.9,.3,1)}
+.bar.g>i{background:var(--txt)}
+.bar.w>i{background:var(--muted)}
+.bar.b>i{background:var(--line2)}
+body.theme-pastel .bar.g>i{background:#7ec99b}
+body.theme-pastel .bar.w>i{background:#e9b077}
+body.theme-pastel .bar.b>i{background:#dd8b93}
 .donut-wrap{display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center}
 .donut{width:150px;height:150px;border-radius:50%;position:relative;display:grid;place-items:center;flex:0 0 auto}
 .donut::before{content:'';position:absolute;inset:22px;border-radius:50%;background:var(--white)}
@@ -112,6 +158,7 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .legend{display:flex;flex-direction:column;gap:10px;min-width:160px}
 .legend div{display:flex;align-items:center;gap:10px;font-size:11px}
 .legend i{width:8px;height:8px;flex:0 0 auto;border:1px solid var(--txt)}
+body.theme-pastel .legend i{border-color:var(--line2)}
 .legend b{margin-right:auto;font-weight:600}
 .toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:14px}
 .toolbar input,.toolbar select{padding:9px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;width:100%;font-size:11.5px;font-variant-numeric:tabular-nums}
@@ -120,6 +167,8 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .list{display:grid;gap:10px}
 .ctrl{background:var(--white);border:1px solid var(--line2);padding:14px 16px;cursor:pointer;transition:border-color .12s;min-width:0;position:relative}
 .ctrl:hover{border-color:var(--txt)}
+body.theme-pastel .ctrl{border-color:var(--line)}
+body.theme-pastel .ctrl:hover{border-color:#a887d3}
 .cc-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding-left:30px}
 .cc-no{font-size:10px;color:var(--muted);font-weight:500;margin-right:auto;letter-spacing:.08em}
 .cc-title{font-size:12.5px;line-height:1.85;font-weight:500;margin-bottom:8px}
@@ -135,7 +184,9 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:520px}
 th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
 th{color:var(--muted);font-weight:600;font-size:9.5px;background:var(--faint);white-space:nowrap;letter-spacing:.14em;border-bottom:1px solid var(--txt)}
+body.theme-pastel th{background:#f3ecfa;border-bottom-color:#d4c2e8}
 tbody tr:hover{background:var(--faint)}
+body.theme-pastel tbody tr:hover{background:#f9f4ff}
 tbody td{font-variant-numeric:tabular-nums}
 .modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .18s;overflow-y:auto}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -147,6 +198,7 @@ tbody td{font-variant-numeric:tabular-nums}
 .close-x{position:sticky;top:0;float:left;background:var(--white);color:var(--txt);border:1px solid var(--txt);width:28px;height:28px;cursor:pointer;font-size:14px;line-height:1}
 .close-x:hover{background:var(--faint)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);z-index:400;padding:10px 20px;background:var(--txt);color:var(--white);font-size:11px;font-weight:500;letter-spacing:.08em;transition:transform .3s cubic-bezier(.2,.9,.3,1.15)}
+body.theme-pastel .toast{background:#a887d3}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;padding:48px 16px;color:var(--muted);font-size:11.5px;line-height:1.9;letter-spacing:.04em}
 .spin{width:22px;height:22px;border:1.5px solid var(--line);border-top-color:var(--txt);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
@@ -170,14 +222,14 @@ tbody td{font-variant-numeric:tabular-nums}
 .dp-day:hover{background:var(--faint);border-color:var(--line2)}
 .dp-day.today{font-weight:700;border-color:var(--line2)}
 .dp-day.selected{background:var(--txt);color:var(--white);border-color:var(--txt);font-weight:600}
-.dp-day.selected:hover{background:var(--txt2)}
+body.theme-pastel .dp-day.selected{background:#a887d3;border-color:#a887d3}
 .dp-day.empty{cursor:default;background:transparent;border-color:transparent}
 .dp-day.empty:hover{background:transparent;border-color:transparent}
 .dp-foot{display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
 .dp-foot button{flex:1;padding:8px;border:1px solid var(--txt);background:var(--white);cursor:pointer;font-size:11px;font-weight:500;font-family:inherit;color:var(--txt)}
 .dp-foot button:hover{background:var(--faint)}
 .dp-foot button.primary{background:var(--txt);color:var(--white)}
-.dp-foot button.primary:hover{background:var(--txt2)}
+body.theme-pastel .dp-foot button.primary{background:#a887d3;border-color:#a887d3}
 
 .ro-notice{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:10px;font-weight:600;letter-spacing:.08em;border:1px solid var(--line2);background:var(--faint);color:var(--muted)}
 
@@ -198,6 +250,9 @@ tbody td{font-variant-numeric:tabular-nums}
 .unit-check input:disabled{cursor:not-allowed}
 .unit-check.disabled{opacity:.5;cursor:not-allowed}
 .unit-check.disabled:hover{background:var(--white);border-color:transparent}
+body.theme-pastel .unit-check input[type=checkbox],
+body.theme-pastel input[type=checkbox],
+body.theme-pastel input[type=range]{accent-color:#a887d3}
 @media(max-width:480px){
   .unit-box{grid-template-columns:1fr}
   .um-head{padding:14px 16px 10px}
@@ -233,6 +288,7 @@ tbody td{font-variant-numeric:tabular-nums}
   .modal-box{padding:16px}
   .cc-ev{-webkit-line-clamp:3}
   .content{padding:12px}
+  .theme-btn{padding:7px 9px;font-size:10.5px}
 }
 @media(max-height:520px){
   .sidebar{overflow-y:auto}
@@ -242,14 +298,17 @@ tbody td{font-variant-numeric:tabular-nums}
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="loginScreen" class="login-wrap">
   <div class="bg-anim">
     <div class="bg-grid"></div>
     <div class="rotor rotor-a"></div>
     <div class="rotor rotor-b"></div>
     <div class="rotor rotor-c"></div>
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
   </div>
   <div class="login-card">
+    <button class="login-theme" id="loginThemeBtn" type="button" title="تغییر تم">تم</button>
     <div class="kashaf">KASHAF — 495</div>
     <div class="kashaf-rule"></div>
     <h1>ورود به سامانه</h1>
@@ -273,6 +332,7 @@ tbody td{font-variant-numeric:tabular-nums}
   </div>
 </div>
 
+<!-- APP -->
 <div id="app" class="hidden">
   <aside class="sidebar" id="sidebar">
     <div class="brand"><b>KASHAF 495</b><span>پایش کنترل‌های امنیت</span></div>
@@ -291,7 +351,10 @@ tbody td{font-variant-numeric:tabular-nums}
     <header class="topbar">
       <button class="icon-btn" id="menuBtn">≡</button>
       <h2 id="pageTitle">داشبورد</h2>
-      <div class="top-actions"><select id="globalPeriod"></select></div>
+      <div class="top-actions">
+        <select id="globalPeriod"></select>
+        <button class="theme-btn" id="themeBtn" title="تغییر تم">تم</button>
+      </div>
     </header>
     <div class="content" id="content"></div>
   </main>
@@ -304,6 +367,28 @@ tbody td{font-variant-numeric:tabular-nums}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
+/* ===== THEME ===== */
+const THEME_KEY = 'kashaf_theme';
+(function initTheme(){
+  const t = localStorage.getItem(THEME_KEY) || 'default';
+  if(t === 'pastel') document.body.classList.add('theme-pastel');
+})();
+function isPastelTheme(){ return document.body.classList.contains('theme-pastel'); }
+function updateThemeBtn(){
+  const btn = $('#themeBtn');
+  if(btn) btn.textContent = isPastelTheme() ? 'ساده' : 'رنگی';
+  const lb = $('#loginThemeBtn');
+  if(lb) lb.textContent = isPastelTheme() ? 'ساده' : 'رنگی';
+}
+function toggleTheme(){
+  const wasPastel = document.body.classList.toggle('theme-pastel');
+  localStorage.setItem(THEME_KEY, wasPastel ? 'pastel' : 'default');
+  updateThemeBtn();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  updateThemeBtn();
+});
+
 const SUPABASE_URL = 'https://qtpybadjaczlkzkbbcge.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GUfLjO0eaIx_LYNZgfIKzw_GcUsKjHC';
 const BUCKET = 'assessment-files';
@@ -451,12 +536,6 @@ function statusWeight(s){
   if(n==='در حال پیاده‌سازی') return 50;
   return 0;
 }
-function statusFromProgress(p){
-  p = Number(p)||0;
-  if(p<=0) return 'عدم پیاده‌سازی';
-  if(p>=100) return 'پیاده‌سازی کامل';
-  return 'در حال پیاده‌سازی';
-}
 function statusClass(s){
   const n = normalizeStatus(s);
   if(n==='پیاده‌سازی کامل') return 'st-ok';
@@ -561,6 +640,7 @@ const LocalDB = {
   async listPeriods(){ return this.tables().periods; },
   async addPeriod(p){ const t = this.tables(); const row = { id:uuid(), created_at:new Date().toISOString(), ...p }; t.periods.push(row); this.save(t); return row; },
   async delPeriod(id){ const t=this.tables(); t.periods=t.periods.filter(p=>p.id!==id); t.assessments=t.assessments.filter(a=>a.period_id!==id); this.save(t); },
+  async updatePeriod(id, patch){ const t=this.tables(); const p=t.periods.find(x=>x.id===id); if(p){ Object.assign(p, patch); this.save(t); } },
   async listAssessments(pid){
     const t = this.tables();
     return pid ? t.assessments.filter(a=>a.period_id===pid) : t.assessments;
@@ -654,8 +734,8 @@ const TREND_PAGE_SIZE = 25;
 function isAdmin(){ return S.user && S.user.role === 'admin'; }
 function visibleNav(){ return isAdmin() ? NAV : NAV.filter(n => !n.adminOnly); }
 function periodIndex(){ return S.periods.findIndex(p => p.id === S.periodId); }
-function isFirstPeriodById(id){ return S.periods.length && S.periods[0].id === id; }
-function isLastPeriodById(id){ return S.periods.length && S.periods[S.periods.length - 1].id === id; }
+function isFirstPeriodById(id){ return S.periods.length > 0 && S.periods[0].id === id; }
+function isLastPeriodById(id){ return S.periods.length > 0 && S.periods[S.periods.length - 1].id === id; }
 
 function applyUnitAccess(all){
   if(!S.user) return all;
@@ -743,6 +823,11 @@ async function apiAddPeriod(p){
   const { data, error } = await sb.from('periods').insert(p).select().single();
   if(error) throw new Error('خطا: '+error.message);
   return data;
+}
+async function apiUpdatePeriod(id, patch){
+  if(MODE==='local') return LocalDB.updatePeriod(id, patch);
+  const { error } = await sb.from('periods').update(patch).eq('id', id);
+  if(error) throw new Error('خطا: '+error.message);
 }
 async function apiDelPeriod(id){
   if(MODE==='local') return LocalDB.delPeriod(id);
@@ -874,8 +959,9 @@ function renderPeriodSelect(){
   const sel = $('#globalPeriod');
   if(!S.periods.length){ sel.innerHTML = `<option value="">— بدون دوره —</option>`; sel.disabled = true; return; }
   sel.disabled = false;
-  sel.innerHTML = S.periods.map((p,i) =>
-    `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}${i===0?' — اول':''}</option>`).join('');
+  // Just show the name - no suffix. Badge in the table gives the "پایه" indicator.
+  sel.innerHTML = S.periods.map((p) =>
+    `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}</option>`).join('');
 }
 function render(){
   const allowedViews = visibleNav().map(n=>n.id);
@@ -894,6 +980,7 @@ function render(){
   c.scrollTop = 0;
   bindView();
   if(S.view==='trend') ensureTrendData();
+  updateThemeBtn();
 }
 
 /* ===== DASHBOARD ===== */
@@ -935,10 +1022,10 @@ function viewDashboard(){
   })).sort((a,b)=>b.pct-a.pct);
 
   const segs = [
-    {label:'پیاده‌سازی کامل', val:counts['پیاده‌سازی کامل'], color:'#18181b'},
-    {label:'در حال', val:counts['در حال پیاده‌سازی'], color:'#71717a'},
-    {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'#d4d4d8'},
-    {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'#f4f4f5'}
+    {label:'پیاده‌سازی کامل', val:counts['پیاده‌سازی کامل'], color:'var(--donut-1)'},
+    {label:'در حال', val:counts['در حال پیاده‌سازی'], color:'var(--donut-2)'},
+    {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'var(--donut-3)'},
+    {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'var(--donut-4)'}
   ];
   let acc = 0;
   const grad = segs.map(s => {
@@ -949,12 +1036,11 @@ function viewDashboard(){
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
   const isLatest = isLastPeriodById(S.periodId);
-  const isFirst = isFirstPeriodById(S.periodId);
   const scopeLabel = isAdmin() ? 'همه واحدها' : `${fa(S.units.length)} واحد مجاز`;
 
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
-      <span class="badge badge-soft">دوره: ${esc(periodName)}${isFirst?' — اول':''}${isLatest?' — آخرین':''}</span>
+      <span class="badge badge-soft">دوره: ${esc(periodName)}</span>
       <span class="badge badge-soft">کنترل: ${fa(total)}</span>
       <span class="badge badge-soft">${scopeLabel}</span>
       <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'محلی':'آنلاین'}</span>
@@ -972,7 +1058,7 @@ function viewDashboard(){
       <div class="card">
         <h3><span class="dot"></span> توزیع وضعیت</h3>
         <div class="donut-wrap">
-          <div class="donut" style="background:conic-gradient(${grad||'#f4f4f5 0deg 360deg'})">
+          <div class="donut" style="background:conic-gradient(${grad||'var(--donut-4) 0deg 360deg'})">
             <div class="mid"><b>${fa(total)}</b><span>کنترل</span></div>
           </div>
           <div class="legend">
@@ -1096,12 +1182,11 @@ function viewControls(){
   `;
 }
 
-/* ===== TREND (multi-dimensional) ===== */
+/* ===== TREND ===== */
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
   
-  // filters
   const fUnit = S._trendUnit || '__all';
   const fCat = S._trendCat || '__all';
   const fLevel = S._trendLevel || '__all';
@@ -1124,19 +1209,16 @@ function viewTrend(){
   const levelOpts = ['<option value="__all">همه سطوح</option>']
     .concat(S.levels.map(u=>`<option value="${esc(u)}" ${fLevel===u?'selected':''}>${esc(u)}</option>`)).join('');
   
-  // overall chart series
   const series = S.periods.map(p => {
     const map = assessmentMapFor(p.id);
     const vals = ctrlFiltered.map(c => progressWithMap(c, map));
     return { id:p.id, name:p.name, value: vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0 };
   });
   
-  // group
   const groups = {};
   if(groupBy === 'control'){
     ctrlFiltered.forEach(c => {
-      const key = c.id;
-      groups[key] = {
+      groups[c.id] = {
         name: c.title || '',
         meta: { row_no: c.row_no, owner_unit: c.owner_unit, category: c.category, level: c.level },
         controls: [c]
@@ -1161,7 +1243,6 @@ function viewTrend(){
     return { ...g, perPeriod, lastVal: perPeriod[perPeriod.length - 1] || 0 };
   }).sort((a,b) => b.lastVal - a.lastVal);
   
-  // pagination (only control-level)
   const isControlMode = groupBy === 'control';
   const total = groupsArr.length;
   const pages = isControlMode ? Math.max(1, Math.ceil(total / TREND_PAGE_SIZE)) : 1;
@@ -1294,13 +1375,13 @@ function lineChart(series){
   const path = series.map((s,i)=>`${i?'L':'M'}${xs(i).toFixed(1)},${ys(s.value).toFixed(1)}`).join(' ');
   return `<div style="width:100%;overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:340px;height:auto">
     ${[0,25,50,75,100].map(v=>`
-      <line x1="${PAD}" y1="${ys(v)}" x2="${W-PAD}" y2="${ys(v)}" stroke="#e4e4e7" stroke-width="1"/>
-      <text x="${PAD-8}" y="${ys(v)+4}" fill="#a1a1aa" font-size="9" text-anchor="end">${v}%</text>`).join('')}
-    <path d="${path}" fill="none" stroke="#18181b" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="${PAD}" y1="${ys(v)}" x2="${W-PAD}" y2="${ys(v)}" style="stroke:var(--line);stroke-width:1"/>
+      <text x="${PAD-8}" y="${ys(v)+4}" style="fill:var(--dim);font-size:9px" text-anchor="end">${v}%</text>`).join('')}
+    <path d="${path}" style="fill:none;stroke:var(--bar-fill);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"/>
     ${series.map((s,i)=>`
-      <circle cx="${xs(i)}" cy="${ys(s.value)}" r="4" fill="#ffffff" stroke="#18181b" stroke-width="1.5"/>
-      <text x="${xs(i)}" y="${ys(s.value)-12}" fill="#09090b" font-size="10" font-weight="600" text-anchor="middle">${fa(s.value)}٪</text>
-      <text x="${xs(i)}" y="${H-14}" fill="#71717a" font-size="9" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>`).join('')}
+      <circle cx="${xs(i)}" cy="${ys(s.value)}" r="4" style="fill:var(--white);stroke:var(--bar-fill);stroke-width:1.5"/>
+      <text x="${xs(i)}" y="${ys(s.value)-12}" style="fill:var(--txt);font-size:10px;font-weight:600" text-anchor="middle">${fa(s.value)}٪</text>
+      <text x="${xs(i)}" y="${H-14}" style="fill:var(--muted);font-size:9px" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>`).join('')}
   </svg></div>`;
 }
 async function ensureTrendData(){
@@ -1328,7 +1409,7 @@ function viewPeriods(){
       </div>
       <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
     </div>
-    <div class="info-hint">دوره <b>اول</b> قابل حذف نیست و داده‌های آن از اولین بارگذاری اکسل محافظت می‌شوند.</div>
+    <div class="info-hint">دوره <b>پایه</b> قابل حذف نیست و داده‌های آن از اولین بارگذاری اکسل محافظت می‌شوند.</div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
@@ -1338,23 +1419,22 @@ function viewPeriods(){
         const cnt = S.allAssessments.filter(a=>a.period_id===p.id).length;
         const isFirst = i === 0;
         const isCurrent = p.id === S.periodId;
-        const isLatest = i === S.periods.length - 1;
         return `<tr>
           <td>${fa(i+1)}</td>
           <td style="font-weight:600">
             ${esc(p.name)}
-            ${isFirst?'<span class="badge badge-first">اول</span>':''}
+            ${isFirst?'<span class="badge badge-first">پایه</span>':''}
             ${isCurrent?'<span class="badge st-ok">جاری</span>':''}
-            ${isLatest && !isFirst?'<span class="badge badge-soft">آخرین</span>':''}
           </td>
           <td>${displayDate(p.start_date) || '—'}</td>
           <td>${displayDate(p.end_date) || '—'}</td>
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
+            <button class="btn btn-sm" data-renameperiod="${p.id}" title="تغییر نام">تغییر نام</button>
             <button class="btn btn-sm" data-exportperiod="${p.id}">خروجی اکسل</button>
             ${isFirst
-              ? `<button class="btn btn-sm" disabled title="دوره اول قابل حذف نیست" style="opacity:.4">حذف</button>`
+              ? `<button class="btn btn-sm" disabled title="دوره پایه قابل حذف نیست" style="opacity:.4">حذف</button>`
               : `<button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>`}
           </td></tr>`;
       }).join('')}</tbody>
@@ -1533,7 +1613,7 @@ function openUserModal(userToEdit = null){
   });
 }
 
-/* ===== EXCEL PARSING / EXPORT ===== */
+/* ===== EXCEL ===== */
 function excelRowToRecord(r){
   const g = (...names) => {
     for(const n of names){
@@ -1634,14 +1714,14 @@ function viewImport(){
   
   return `
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> ${noPeriods ? 'بارگذاری اولیه — دوره اول' : 'بارگذاری اکسل برای دوره'}</h3>
+    <h3><span class="dot"></span> ${noPeriods ? 'بارگذاری اولیه — دوره پایه' : 'بارگذاری اکسل برای دوره'}</h3>
     <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
       ستون‌ها: <b style="color:var(--txt)">دسته، سطح پیشرفتگی، کنترل، شواهد، وضعیت پیاده‌سازی، واحد مسئول رسیدگی، اقدامات انجام شده تاکنون، آخرین مهلت اجرای اقدام، درصد پیشرفت، توضیحات</b>.
-      ${noPeriods ? 'اولین بارگذاری به‌عنوان <b style="color:var(--txt)">دوره اول</b> ثبت می‌شود.' : 'ردیف‌ها بر اساس عنوان «کنترل» با رکوردهای موجود تطبیق داده می‌شوند.'}
+      ${noPeriods ? 'اولین بارگذاری به‌عنوان <b style="color:var(--txt)">دوره پایه</b> ثبت می‌شود.' : 'ردیف‌ها بر اساس عنوان «کنترل» با رکوردهای موجود تطبیق داده می‌شوند.'}
     </p>
     ${noPeriods ? `
-      <div class="field"><label>نام دوره اول</label>
-        <input id="firstPeriodName" value="دوره اول — ${todayJalali()}">
+      <div class="field"><label>نام دوره پایه</label>
+        <input id="firstPeriodName" value="پایه — ${todayJalali()}">
       </div>
     ` : `
       <div class="field"><label>دوره هدف</label>
@@ -1652,7 +1732,7 @@ function viewImport(){
     `}
     <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
-      <button class="btn btn-primary" id="doImport">${noPeriods ? 'بارگذاری و ایجاد دوره اول' : 'بارگذاری برای این دوره'}</button>
+      <button class="btn btn-primary" id="doImport">${noPeriods ? 'بارگذاری و ایجاد دوره پایه' : 'بارگذاری برای این دوره'}</button>
       <button class="btn" id="addCtrlFromImport">+ افزودن کنترل دستی</button>
       ${!noControls ? `<button class="btn" id="wipeControls">حذف همه کنترل‌ها</button>` : ''}
     </div>
@@ -1723,25 +1803,12 @@ function bindView(){
   }
 
   if(S.view==='trend'){
-    $('#trendUnit')?.addEventListener('change', e => {
-      S._trendUnit = e.target.value; S._trendPage = 1;
-      c.innerHTML = viewTrend(); bindView();
-    });
-    $('#trendCat')?.addEventListener('change', e => {
-      S._trendCat = e.target.value; S._trendPage = 1;
-      c.innerHTML = viewTrend(); bindView();
-    });
-    $('#trendLevel')?.addEventListener('change', e => {
-      S._trendLevel = e.target.value; S._trendPage = 1;
-      c.innerHTML = viewTrend(); bindView();
-    });
-    $('#trendGroupBy')?.addEventListener('change', e => {
-      S._trendGroupBy = e.target.value; S._trendPage = 1;
-      c.innerHTML = viewTrend(); bindView();
-    });
+    $('#trendUnit')?.addEventListener('change', e => { S._trendUnit = e.target.value; S._trendPage = 1; c.innerHTML = viewTrend(); bindView(); });
+    $('#trendCat')?.addEventListener('change', e => { S._trendCat = e.target.value; S._trendPage = 1; c.innerHTML = viewTrend(); bindView(); });
+    $('#trendLevel')?.addEventListener('change', e => { S._trendLevel = e.target.value; S._trendPage = 1; c.innerHTML = viewTrend(); bindView(); });
+    $('#trendGroupBy')?.addEventListener('change', e => { S._trendGroupBy = e.target.value; S._trendPage = 1; c.innerHTML = viewTrend(); bindView(); });
     $('#trendSearch')?.addEventListener('input', e => {
       S._trendSearch = e.target.value; S._trendPage = 1;
-      // re-render only table body would be complex; just re-render whole view and refocus
       const val = e.target.value;
       c.innerHTML = viewTrend(); bindView();
       const inp = $('#trendSearch');
@@ -1780,6 +1847,21 @@ function bindView(){
       S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
       toast('دوره انتخاب شد'); render();
     }));
+    c.querySelectorAll('[data-renameperiod]').forEach(b => b.addEventListener('click', async () => {
+      const p = S.periods.find(x => x.id === b.dataset.renameperiod);
+      if(!p) return;
+      const newName = prompt('نام جدید دوره:', p.name);
+      if(newName === null) return;
+      const trimmed = newName.trim();
+      if(!trimmed || trimmed === p.name) return;
+      try{
+        await apiUpdatePeriod(p.id, { name: trimmed });
+        await loadPeriods();
+        renderPeriodSelect();
+        toast('نام تغییر کرد');
+        render();
+      }catch(err){ toast('خطا: '+err.message); }
+    }));
     c.querySelectorAll('[data-exportperiod]').forEach(b => b.addEventListener('click', async () => {
       if(!S.allAssessments.length) await loadAllAssessments();
       exportPeriodToExcel(b.dataset.exportperiod);
@@ -1787,7 +1869,7 @@ function bindView(){
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       const pid = b.dataset.delperiod;
       if(isFirstPeriodById(pid)){
-        return toast('دوره اول قابل حذف نیست');
+        return toast('دوره پایه قابل حذف نیست');
       }
       if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
       try{
@@ -1851,7 +1933,7 @@ function bindView(){
         const isFirstUpload = S.periods.length === 0;
         
         if(isFirstUpload){
-          const periodName = ($('#firstPeriodName')?.value || '').trim() || `دوره اول — ${todayJalali()}`;
+          const periodName = ($('#firstPeriodName')?.value || '').trim() || `پایه — ${todayJalali()}`;
           log.textContent = `ایجاد دوره «${periodName}»…`;
           const period = await apiAddPeriod({ name: periodName });
           S.periodId = period.id;
@@ -1883,7 +1965,7 @@ function bindView(){
           S.periodId = period.id;
           renderPeriodSelect();
           
-          log.textContent = `ثبت ارزیابی دوره اول…`;
+          log.textContent = `ثبت ارزیابی دوره پایه…`;
           for(let i = 0; i < parsed.length; i++){
             const r = parsed[i];
             const ctrl = S.allControls.find(c => c.title === r.title);
@@ -1897,8 +1979,8 @@ function bindView(){
           }
           
           await loadAssessments();
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره اول با ${fa(parsed.length)} کنترل ایجاد شد.</span>`;
-          toast('دوره اول ایجاد شد');
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره پایه با ${fa(parsed.length)} کنترل ایجاد شد.</span>`;
+          toast('دوره پایه ایجاد شد');
           
         } else {
           const targetPid = $('#importPeriod').value;
@@ -1934,7 +2016,6 @@ function bindView(){
             if(i % 20 === 0) log.textContent = `ثبت: ${fa(i+1)} از ${fa(parsed.length)}`;
           }
           
-          // Set target as current period
           S.periodId = targetPid;
           renderPeriodSelect();
           await loadAssessments();
@@ -2059,6 +2140,8 @@ $('#globalPeriod').addEventListener('change', async e => {
 $('#menuBtn').addEventListener('click', () => { $('#sidebar').classList.add('open'); $('#overlay').classList.add('show'); });
 $('#overlay').addEventListener('click', () => { $('#sidebar').classList.remove('open'); $('#overlay').classList.remove('show'); });
 $('#logoutBtn').addEventListener('click', logout);
+$('#themeBtn').addEventListener('click', toggleTheme);
+$('#loginThemeBtn').addEventListener('click', toggleTheme);
 document.addEventListener('keydown', e => {
   if(e.key==='Escape'){
     $('#sidebar').classList.remove('open');
@@ -2069,6 +2152,7 @@ document.addEventListener('keydown', e => {
 });
 
 updateConnBox();
+updateThemeBtn();
 </script>
 </body>
 </html>
