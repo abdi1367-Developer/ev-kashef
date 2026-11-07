@@ -6,147 +6,343 @@
 <title>سامانه پایش کنترل‌های امنیتی | کاشف ۴۹۵</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
-:root{--bg:#060a14;--panel:rgba(17,25,42,.86);--line:#1e2b45;--txt:#e9f0ff;--muted:#8ba0c4;--accent:#22d3ee;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--gray:#64748b;--r:16px}
+:root{
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --line:#e5e9f0;
+  --line2:#d4dce8;
+  --txt:#111827;
+  --muted:#6b7280;
+  --muted2:#9ca3af;
+  --accent:#2563eb;
+  --accent2:#1d4ed8;
+  --accent-bg:#eff6ff;
+  --accent-border:#dbeafe;
+  --ok:#16a34a;--ok-bg:#f0fdf4;--ok-border:#bbf7d0;
+  --warn:#d97706;--warn-bg:#fffbeb;--warn-border:#fde68a;
+  --bad:#dc2626;--bad-bg:#fef2f2;--bad-border:#fecaca;
+  --gray:#64748b;--gray-bg:#f1f5f9;--gray-border:#e2e8f0;
+  --r:12px;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;min-height:100%}
-body{font-family:'Vazirmatn',system-ui,-apple-system,'Segoe UI',sans-serif;background:radial-gradient(1200px 600px at 92% -10%,rgba(124,58,237,.20),transparent 62%),radial-gradient(1000px 520px at -5% 0%,rgba(34,211,238,.13),transparent 62%),var(--bg);color:var(--txt);overflow-x:hidden;font-size:14px}
-::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#1e2b45;border-radius:9px}
+body{
+  font-family:'Vazirmatn',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--txt);
+  font-size:14px;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+::-webkit-scrollbar-track{background:transparent}
 a{color:var(--accent);text-decoration:none}
-button,input,select,textarea{font-family:inherit;font-size:14px}
+button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
-/* login */
-.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px}
+
+/* ============ LOGIN ============ */
+.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px;background:#f8fafc}
 .bg-anim{position:absolute;inset:0;overflow:hidden}
-.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
-.b1{width:48vw;height:48vw;min-width:320px;min-height:320px;background:#22d3ee;top:-12%;right:-10%;animation:float 19s ease-in-out infinite}
-.b2{width:42vw;height:42vw;min-width:300px;min-height:300px;background:#7c3aed;bottom:-14%;left:-8%;animation:float 23s ease-in-out infinite reverse}
-.b3{width:34vw;height:34vw;min-width:260px;min-height:260px;background:#f43f5e;top:38%;left:34%;opacity:.30;animation:float 27s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(-7%,9%,0) scale(1.14)}66%{transform:translate3d(9%,-7%,0) scale(.92)}}
-.grid-lines{position:absolute;inset:-60%;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:64px 64px;transform:perspective(700px) rotateX(62deg);animation:gridmove 18s linear infinite;opacity:.55}
-@keyframes gridmove{to{background-position:0 64px,64px 0}}
-.pt{position:absolute;border-radius:50%;background:rgba(34,211,238,.9);box-shadow:0 0 10px rgba(34,211,238,.95);animation:rise linear infinite}
-@keyframes rise{0%{transform:translateY(0);opacity:0}12%{opacity:1}100%{transform:translateY(-112vh);opacity:0}}
-.login-card{position:relative;z-index:3;width:min(440px,94vw);padding:30px 24px;border-radius:26px;background:rgba(10,16,30,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.13);box-shadow:0 34px 90px rgba(0,0,0,.65);animation:pop .7s cubic-bezier(.2,.9,.3,1.25)}
-@keyframes pop{from{opacity:0;transform:translateY(26px) scale(.95)}to{opacity:1;transform:none}}
-.logo{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;font-size:28px;margin:0 auto 14px;background:linear-gradient(140deg,#22d3ee,#7c3aed);box-shadow:0 12px 34px rgba(124,58,237,.5)}
-.login-card h1{font-size:18px;margin:0 0 5px;text-align:center;font-weight:800}
-.login-card .sub{margin:0 0 18px;text-align:center;color:var(--muted);font-size:12px}
-.field{margin-bottom:12px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-.field input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--txt);outline:none;transition:.2s}
-.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;border:1px solid var(--line);background:#16203a;color:var(--txt);cursor:pointer;font-weight:600;transition:.18s}
-.btn:hover{background:#1d2a49}.btn:active{transform:scale(.98)}
-.btn-primary{background:linear-gradient(135deg,#22d3ee,#7c3aed);border:none;color:#04101e;font-weight:800;box-shadow:0 10px 26px rgba(34,211,238,.28)}
-.btn-primary:hover{filter:brightness(1.08)}
-.btn-full{width:100%;padding:12px}.btn-sm{padding:7px 12px;border-radius:10px;font-size:12.5px}
-.btn-danger{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.4);color:#fca5a5}
-.btn-ghost{background:transparent}
-.err{color:#fca5a5;font-size:12px;text-align:center;margin-top:10px;min-height:16px;line-height:1.9}
-/* diagnostics box */
-.diag{margin:14px 0;padding:11px 13px;border-radius:12px;font-size:11.5px;line-height:1.9;border:1px solid var(--line);background:rgba(255,255,255,.03)}
-.diag.ok{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08);color:#86efac}
-.diag.err{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:#fca5a5}
-.diag.warn{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.08);color:#fcd34d}
-.diag b{color:#fff}
-.diag code{background:rgba(0,0,0,.35);padding:1px 6px;border-radius:5px;font-size:10.5px;color:#93c5fd;font-family:monospace}
-/* app */
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
+.b1{width:44vw;height:44vw;min-width:300px;min-height:300px;background:#bfdbfe;top:-10%;right:-8%;animation:float 19s ease-in-out infinite}
+.b2{width:38vw;height:38vw;min-width:280px;min-height:280px;background:#c7d2fe;bottom:-12%;left:-8%;animation:float 23s ease-in-out infinite reverse}
+.b3{width:30vw;height:30vw;min-width:240px;min-height:240px;background:#ddd6fe;top:42%;left:38%;opacity:.4;animation:float 27s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(-7%,9%,0) scale(1.1)}66%{transform:translate3d(9%,-7%,0) scale(.95)}}
+
+.login-card{
+  position:relative;z-index:3;width:min(400px,94vw);
+  padding:32px 26px;border-radius:16px;
+  background:#fff;border:1px solid var(--line);
+  box-shadow:0 20px 60px -20px rgba(15,23,42,.12),0 4px 12px -4px rgba(15,23,42,.04);
+}
+.logo{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;margin:0 auto 16px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.login-card h1{font-size:17px;margin:0 0 6px;text-align:center;font-weight:700;color:var(--txt)}
+.login-card .sub{margin:0 0 22px;text-align:center;color:var(--muted);font-size:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.field input{
+  width:100%;padding:11px 13px;border-radius:8px;
+  border:1px solid var(--line2);background:#fff;color:var(--txt);
+  outline:none;transition:.15s;font-size:13.5px;
+}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 16px;border-radius:8px;border:1px solid var(--line2);
+  background:#fff;color:var(--txt);cursor:pointer;font-weight:600;
+  transition:.15s;font-size:13px;
+}
+.btn:hover{background:#f8fafc;border-color:#94a3b8}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn-full{width:100%;padding:11px}
+.btn-sm{padding:6px 11px;border-radius:7px;font-size:12px}
+.btn-danger{background:#fff;border-color:var(--bad-border);color:var(--bad)}
+.btn-danger:hover{background:var(--bad-bg);border-color:var(--bad)}
+
+.err{color:var(--bad);font-size:12px;text-align:center;margin-top:10px;min-height:16px;line-height:1.7}
+.diag{margin:14px 0;padding:10px 12px;border-radius:8px;font-size:11.5px;line-height:1.8;border:1px solid var(--line);background:#f8fafc;color:var(--muted)}
+.diag.ok{background:var(--ok-bg);border-color:var(--ok-border);color:#166534}
+.diag.err{background:var(--bad-bg);border-color:var(--bad-border);color:#991b1b}
+.diag.warn{background:var(--warn-bg);border-color:var(--warn-border);color:#92400e}
+.diag b{color:var(--txt);font-weight:700}
+.diag code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px;font-size:10.5px;font-family:monospace;color:#1e40af}
+.hint{text-align:center;color:var(--muted);font-size:11px;margin-top:12px;line-height:1.8}
+
+/* ============ APP LAYOUT ============ */
 #app{display:flex;min-height:100dvh;width:100%}
-.sidebar{width:264px;flex:0 0 264px;height:100dvh;position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#0b1120,#070c16);border-left:1px solid var(--line);display:flex;flex-direction:column;padding:18px 13px;gap:8px}
-.brand{display:flex;align-items:center;gap:11px;padding:6px 8px 16px;border-bottom:1px solid var(--line);margin-bottom:10px}
-.brand .ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:linear-gradient(140deg,#22d3ee,#7c3aed)}
-.brand b{display:block;font-size:13px}.brand span{display:block;font-size:11px;color:var(--muted)}
-.nav{display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1}
-.nav button{display:flex;align-items:center;gap:11px;width:100%;padding:11px 13px;border-radius:12px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;font-weight:600;font-size:13px;text-align:right;transition:.18s}
-.nav button:hover{background:rgba(255,255,255,.05);color:var(--txt)}
-.nav button.active{background:linear-gradient(90deg,rgba(34,211,238,.16),rgba(124,58,237,.16));color:#fff;border-color:rgba(34,211,238,.32)}
-.nav button .ic{font-size:16px;width:22px;text-align:center}
-.side-foot{border-top:1px solid var(--line);padding-top:12px;margin-top:8px}
-.user-chip{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.045);margin-bottom:8px}
-.user-chip .av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;background:linear-gradient(140deg,#22d3ee,#7c3aed);color:#04101e;flex:0 0 auto}
-.user-chip b{display:block;font-size:12.5px}.user-chip span{display:block;font-size:10.5px;color:var(--muted)}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:45;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(2px)}
+.sidebar{
+  width:236px;flex:0 0 236px;
+  height:100dvh;position:sticky;top:0;z-index:50;
+  background:#fff;border-left:1px solid var(--line);
+  display:flex;flex-direction:column;
+  padding:16px 10px;
+  overflow:hidden;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  padding:2px 8px 14px;border-bottom:1px solid var(--line);
+  margin-bottom:10px;flex-shrink:0;
+}
+.brand .ic{
+  width:34px;height:34px;border-radius:9px;
+  display:grid;place-items:center;font-size:16px;
+  background:var(--accent-bg);color:var(--accent);
+  border:1px solid var(--accent-border);flex-shrink:0;
+}
+.brand b{display:block;font-size:13px;font-weight:700;color:var(--txt);line-height:1.3}
+.brand span{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}
+.nav{
+  display:flex;flex-direction:column;gap:1px;
+  flex:1;min-height:0;overflow:hidden;
+}
+.nav button{
+  display:flex;align-items:center;gap:10px;
+  width:100%;padding:8px 11px;
+  border-radius:7px;border:none;
+  background:transparent;color:var(--muted);
+  cursor:pointer;font-weight:500;font-size:12.5px;
+  text-align:right;transition:.12s;flex-shrink:0;
+}
+.nav button:hover{background:var(--gray-bg);color:var(--txt)}
+.nav button.active{background:var(--accent-bg);color:var(--accent);font-weight:600}
+.nav button .ic{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.side-foot{border-top:1px solid var(--line);padding-top:10px;margin-top:8px;flex-shrink:0}
+.user-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 8px;border-radius:8px;
+  background:var(--gray-bg);margin-bottom:8px;
+}
+.user-chip .av{
+  width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;font-weight:700;font-size:12px;
+  background:var(--accent);color:#fff;flex:0 0 auto;
+}
+.user-chip b{display:block;font-size:12px;color:var(--txt);font-weight:600;line-height:1.2}
+.user-chip span{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:45;opacity:0;pointer-events:none;transition:.25s}
 .overlay.show{opacity:1;pointer-events:auto}
+
 .main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;width:100%}
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:12px 18px;background:rgba(6,10,20,.78);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
-.topbar h2{margin:0;font-size:15px;font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:#131c30;color:var(--txt);cursor:pointer;display:none;place-items:center;font-size:17px;flex:0 0 auto}
-.top-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
-.content{flex:1;padding:18px;width:100%;min-width:0}
-.grid{display:grid;gap:14px;width:100%}
-.kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
-.cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;backdrop-filter:blur(10px);min-width:0}
-.card h3{margin:0 0 14px;font-size:13px;font-weight:800;color:#cfe0ff;display:flex;align-items:center;gap:8px}
-.card h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
-.kpi{position:relative;overflow:hidden}.kpi .v{font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1.15}
-.kpi .l{color:var(--muted);font-size:12px;margin-top:6px}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11.5px;border:1px solid transparent;white-space:nowrap;font-weight:600}
-.st-ok{background:rgba(34,197,94,.14);color:#4ade80;border-color:rgba(34,197,94,.36)}
-.st-warn{background:rgba(245,158,11,.14);color:#fbbf24;border-color:rgba(245,158,11,.36)}
-.st-bad{background:rgba(239,68,68,.14);color:#f87171;border-color:rgba(239,68,68,.36)}
-.st-gray{background:rgba(100,116,139,.18);color:#94a3b8;border-color:rgba(100,116,139,.36)}
-.badge-soft{background:rgba(255,255,255,.055);color:#a9bcdb;border-color:rgba(255,255,255,.09)}
-.bar-row{display:grid;grid-template-columns:1fr 48px;gap:10px;align-items:center;margin:9px 0}
-.bar-row .nm{font-size:12.5px;color:#c3d3ee;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bar-row .pc{font-size:12px;font-weight:800;text-align:left;color:var(--accent)}
-.bar{height:9px;border-radius:99px;background:#16203a;overflow:hidden;margin-top:5px}
-.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#22d3ee,#7c3aed);transition:width .7s}
-.bar.g>i{background:linear-gradient(90deg,#22c55e,#16a34a)}
-.donut-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:center}
-.donut{width:160px;height:160px;border-radius:50%;position:relative;display:grid;place-items:center;flex:0 0 auto}
-.donut::before{content:'';position:absolute;inset:24px;border-radius:50%;background:#0b1120;box-shadow:inset 0 0 22px rgba(0,0,0,.6)}
+.topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;gap:12px;
+  padding:12px 20px;background:#fff;border-bottom:1px solid var(--line);
+}
+.topbar h2{
+  margin:0;font-size:15px;font-weight:700;
+  flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;color:var(--txt);
+}
+.icon-btn{
+  width:36px;height:36px;border-radius:8px;
+  border:1px solid var(--line);background:#fff;color:var(--txt);
+  cursor:pointer;display:none;place-items:center;font-size:16px;flex:0 0 auto;
+}
+.icon-btn:hover{background:var(--gray-bg)}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.content{flex:1;padding:20px;width:100%;min-width:0}
+
+/* ============ COMPONENTS ============ */
+.grid{display:grid;gap:12px;width:100%}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.cols2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px;min-width:0;
+}
+.card h3{
+  margin:0 0 12px;font-size:13px;font-weight:700;
+  color:var(--txt);display:flex;align-items:center;gap:8px;
+}
+.card h3 .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.kpi .v{font-size:26px;font-weight:800;line-height:1.1;color:var(--txt);letter-spacing:-.5px}
+.kpi .l{color:var(--muted);font-size:11.5px;margin-top:5px}
+
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 9px;border-radius:99px;font-size:11px;
+  border:1px solid transparent;white-space:nowrap;font-weight:500;
+}
+.st-ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-border)}
+.st-warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+.st-bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad-border)}
+.st-gray{background:var(--gray-bg);color:var(--gray);border-color:var(--gray-border)}
+.badge-soft{background:var(--gray-bg);color:var(--muted);border-color:var(--gray-border)}
+
+.bar-row{display:grid;grid-template-columns:1fr 48px;gap:10px;align-items:center;margin:8px 0}
+.bar-row .nm{font-size:12px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-row .pc{font-size:11.5px;font-weight:700;text-align:left;color:var(--accent)}
+.bar{height:6px;border-radius:99px;background:var(--gray-bg);overflow:hidden;margin-top:5px}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .5s ease}
+.bar.g>i{background:var(--ok)}
+.bar.w>i{background:var(--warn)}
+.bar.b>i{background:var(--bad)}
+
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center}
+.donut{width:150px;height:150px;border-radius:50%;position:relative;display:grid;place-items:center;flex:0 0 auto}
+.donut::before{content:'';position:absolute;inset:22px;border-radius:50%;background:#fff}
 .donut .mid{position:relative;z-index:2;text-align:center}
-.donut .mid b{display:block;font-size:26px;font-weight:900;line-height:1}
-.donut .mid span{font-size:11px;color:var(--muted)}
-.legend{display:flex;flex-direction:column;gap:9px;min-width:150px}
-.legend div{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#c3d3ee}
-.legend i{width:10px;height:10px;border-radius:3px;flex:0 0 auto}.legend b{margin-right:auto;color:#fff;font-weight:800}
-.toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
-.toolbar input,.toolbar select{padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:#0f1728;color:var(--txt);outline:none;width:100%}
-.toolbar input:focus,.toolbar select:focus{border-color:var(--accent)}
-.list{display:grid;gap:11px}
-.ctrl{background:linear-gradient(180deg,rgba(20,29,49,.92),rgba(13,20,34,.92));border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:.2s;min-width:0}
-.ctrl:hover{border-color:rgba(34,211,238,.5);transform:translateY(-2px)}
-.cc-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
-.cc-no{font-size:11px;color:var(--muted);font-weight:800;background:rgba(255,255,255,.05);padding:2px 8px;border-radius:7px;margin-right:auto}
-.cc-title{font-size:13px;line-height:2;font-weight:700;margin-bottom:8px}
-.cc-ev{font-size:12px;line-height:2;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cc-foot{margin-top:11px;display:flex;align-items:center;gap:10px}.cc-foot .bar{flex:1}
-.pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap}
-.pager .info{color:var(--muted);font-size:12.5px}
-.as-item{background:linear-gradient(180deg,rgba(20,29,49,.92),rgba(13,20,34,.92));border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px}
-.as-item .t{font-size:13px;font-weight:700;line-height:1.95;margin-bottom:10px}
-.as-item .t .n{color:var(--accent);font-weight:900;margin-left:6px}
-.as-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:10px}
-.as-grid label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px}
-.as-grid select,.as-grid input{width:100%;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:#0f1728;color:var(--txt);outline:none}
-input[type=range]{width:100%;accent-color:#22d3ee;margin-top:8px}
-textarea{width:100%;padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:#0f1728;color:var(--txt);outline:none;resize:vertical;min-height:66px;line-height:1.9}
-input[type=file]{width:100%;padding:8px;border-radius:10px;border:1px dashed var(--line);background:rgba(255,255,255,.03);color:var(--muted);font-size:12px;cursor:pointer}
-.as-foot{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
-.saved{color:#4ade80;font-size:12px;font-weight:700}
+.donut .mid b{display:block;font-size:24px;font-weight:800;line-height:1;color:var(--txt)}
+.donut .mid span{font-size:10.5px;color:var(--muted);margin-top:2px;display:block}
+.legend{display:flex;flex-direction:column;gap:8px;min-width:140px}
+.legend div{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt)}
+.legend i{width:8px;height:8px;border-radius:2px;flex:0 0 auto}
+.legend b{margin-right:auto;color:var(--txt);font-weight:700}
+
+.toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:12px}
+.toolbar input,.toolbar select{
+  padding:9px 11px;border-radius:7px;
+  border:1px solid var(--line2);background:#fff;color:var(--txt);
+  outline:none;width:100%;font-size:12.5px;transition:.12s;
+}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+
+.list{display:grid;gap:10px}
+.ctrl{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:10px;padding:13px;
+  cursor:pointer;transition:.15s;min-width:0;
+}
+.ctrl:hover{border-color:var(--line2);box-shadow:0 2px 8px -2px rgba(15,23,42,.08)}
+.cc-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.cc-no{font-size:10.5px;color:var(--muted2);font-weight:700;background:var(--gray-bg);padding:2px 7px;border-radius:5px;margin-right:auto}
+.cc-title{font-size:13px;line-height:1.9;font-weight:600;margin-bottom:7px;color:var(--txt)}
+.cc-ev{font-size:11.5px;line-height:1.9;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cc-foot{margin-top:9px;display:flex;align-items:center;gap:10px}
+.cc-foot .bar{flex:1}
+.pager{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.pager .info{color:var(--muted);font-size:12px;padding:0 6px}
+
+.as-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px}
+.as-item .t{font-size:13px;font-weight:600;line-height:1.85;margin-bottom:10px;color:var(--txt)}
+.as-item .t .n{color:var(--accent);font-weight:700;margin-left:5px}
+.as-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:10px}
+.as-grid label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.as-grid select,.as-grid input{
+  width:100%;padding:8px 10px;border-radius:7px;
+  border:1px solid var(--line2);background:#fff;color:var(--txt);
+  outline:none;font-size:12.5px;
+}
+.as-grid select:focus,.as-grid input:focus{border-color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);margin-top:6px}
+textarea{
+  width:100%;padding:9px 11px;border-radius:8px;
+  border:1px solid var(--line2);background:#fff;color:var(--txt);
+  outline:none;resize:vertical;min-height:64px;line-height:1.8;font-size:12.5px;
+}
+textarea:focus{border-color:var(--accent)}
+input[type=file]{
+  width:100%;padding:7px;border-radius:7px;
+  border:1px dashed var(--line2);background:#fafbfc;
+  color:var(--muted);font-size:11.5px;cursor:pointer;
+}
+.as-foot{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.saved{color:var(--ok);font-size:11.5px;font-weight:600}
+
 .tbl-wrap{overflow-x:auto;width:100%}
-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
-th,td{padding:10px 12px;text-align:right;border-bottom:1px solid rgba(255,255,255,.055)}
-th{color:var(--muted);font-weight:700;font-size:11.5px;background:rgba(255,255,255,.03);white-space:nowrap}
-tbody tr:hover{background:rgba(255,255,255,.03)}
-.modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(2,6,14,.78);backdrop-filter:blur(6px)}
-.modal-box{width:min(820px,100%);max-height:88dvh;overflow:auto;border-radius:20px;border:1px solid var(--line);background:linear-gradient(180deg,#101a2c,#0a1220);padding:22px;box-shadow:0 40px 100px rgba(0,0,0,.75)}
-.modal-box h3{margin:0 0 14px;font-size:15px;font-weight:800;line-height:2}
-.kv{margin-bottom:14px}.kv .k{font-size:11.5px;color:var(--muted);margin-bottom:5px}
-.kv .v{font-size:13px;line-height:2.1;background:rgba(255,255,255,.035);padding:11px 13px;border-radius:11px;border:1px solid rgba(255,255,255,.05)}
-.close-x{position:sticky;top:0;float:left;background:rgba(239,68,68,.16);color:#fca5a5;border:1px solid rgba(239,68,68,.35);width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:16px}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120px);z-index:400;padding:12px 22px;border-radius:13px;background:#12203a;border:1px solid var(--line);color:#fff;font-size:13px;font-weight:700;box-shadow:0 18px 50px rgba(0,0,0,.6);transition:transform .35s}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:11px;background:#fafbfc;white-space:nowrap}
+tbody tr:hover{background:#fafbfc}
+
+.modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);animation:fade .18s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal-box{
+  width:min(760px,100%);max-height:88dvh;overflow:auto;
+  border-radius:12px;border:1px solid var(--line);
+  background:#fff;padding:20px;
+  box-shadow:0 25px 60px -15px rgba(15,23,42,.25);
+  animation:pop .2s ease;
+}
+@keyframes pop{from{transform:scale(.96);opacity:.5}to{transform:scale(1);opacity:1}}
+.modal-box h3{margin:0 0 14px;font-size:15px;font-weight:700;line-height:1.9;color:var(--txt)}
+.kv{margin-bottom:12px}
+.kv .k{font-size:11.5px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.kv .v{font-size:12.5px;line-height:1.95;background:#f8fafc;padding:10px 12px;border-radius:7px;border:1px solid var(--line)}
+.close-x{
+  position:sticky;top:0;float:left;
+  background:#fff;color:var(--muted);border:1px solid var(--line2);
+  width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:14px;
+}
+.close-x:hover{background:var(--gray-bg)}
+
+.toast{
+  position:fixed;bottom:20px;left:50%;
+  transform:translateX(-50%) translateY(100px);z-index:400;
+  padding:11px 20px;border-radius:9px;
+  background:#111827;color:#fff;font-size:12.5px;font-weight:600;
+  box-shadow:0 15px 40px -10px rgba(15,23,42,.4);
+  transition:transform .3s cubic-bezier(.2,.9,.3,1.15);
+}
 .toast.show{transform:translateX(-50%) translateY(0)}
-.toast.ok{border-color:rgba(34,197,94,.5);background:#0f2b1c}
-.toast.err{border-color:rgba(239,68,68,.5);background:#2b1114}
-.empty{text-align:center;padding:44px 16px;color:var(--muted);font-size:13px;line-height:2}
-.spin{width:26px;height:26px;border:3px solid rgba(255,255,255,.14);border-top-color:#22d3ee;border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
+.toast.ok{background:#065f46}
+.toast.err{background:#7f1d1d}
+
+.empty{text-align:center;padding:40px 16px;color:var(--muted);font-size:12.5px;line-height:1.9}
+.spin{width:24px;height:24px;border:2.5px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.mode-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.35)}
-.mode-pill.local{background:rgba(245,158,11,.14);color:#fbbf24;border-color:rgba(245,158,11,.35)}
-@media(max-width:900px){.sidebar{position:fixed;top:0;right:0;height:100dvh;transform:translateX(100%);transition:transform .32s;box-shadow:-24px 0 70px rgba(0,0,0,.7);width:280px;flex-basis:280px}.sidebar.open{transform:translateX(0)}.icon-btn{display:grid}.content{padding:13px}.topbar{padding:10px 13px}.kpi .v{font-size:24px}.card{padding:14px}}
-@media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}.cols2{grid-template-columns:1fr}.topbar h2{font-size:13.5px}.donut{width:140px;height:140px}.donut::before{inset:20px}.modal-box{padding:16px}}
+
+.mode-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:99px;
+  font-size:10.5px;font-weight:600;
+  background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border);
+}
+.mode-pill.local{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:900px){
+  .sidebar{
+    position:fixed;top:0;right:0;
+    height:100dvh;transform:translateX(100%);
+    transition:transform .28s cubic-bezier(.2,.9,.3,1);
+    box-shadow:-10px 0 40px -10px rgba(15,23,42,.2);
+    width:250px;flex-basis:250px;z-index:55;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .icon-btn{display:grid}
+  .content{padding:14px}
+  .topbar{padding:10px 14px}
+  .kpi .v{font-size:22px}
+  .card{padding:14px}
+}
+@media(max-width:560px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .cols2{grid-template-columns:1fr}
+  .topbar h2{font-size:13.5px}
+  .donut{width:130px;height:130px}
+  .donut::before{inset:18px}
+  .donut .mid b{font-size:20px}
+  .modal-box{padding:16px}
+  .cc-ev{-webkit-line-clamp:3}
+}
+@media(max-height:520px){
+  .sidebar{overflow-y:auto}
+  .nav{overflow:visible}
+}
 </style>
 </head>
 <body>
@@ -154,8 +350,6 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 <div id="loginScreen" class="login-wrap">
   <div class="bg-anim">
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
-    <div class="grid-lines"></div>
-    <div id="particles"></div>
   </div>
   <div class="login-card">
     <div class="logo">🛡️</div>
@@ -176,13 +370,11 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
     </form>
 
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-      <button class="btn btn-sm" id="retestBtn" style="flex:1">🔄 تست مجدد اتصال</button>
-      <button class="btn btn-sm" id="localModeBtn" style="flex:1">💾 حالت محلی (بدون Supabase)</button>
+      <button class="btn btn-sm" id="retestBtn" style="flex:1">🔄 تست مجدد</button>
+      <button class="btn btn-sm" id="localModeBtn" style="flex:1">💾 حالت محلی</button>
     </div>
 
-    <div class="hint" style="margin-top:12px;text-align:center;color:var(--muted);font-size:11px;line-height:1.9">
-      کاربر پیش‌فرض: <b>ice</b> / رمز: <b>ice</b>
-    </div>
+    <div class="hint">کاربر پیش‌فرض: <b>ice</b> / رمز: <b>ice</b></div>
   </div>
 </div>
 
@@ -203,7 +395,7 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
       <button class="icon-btn" id="menuBtn">☰</button>
       <h2 id="pageTitle">داشبورد</h2>
       <div class="top-actions">
-        <select id="globalPeriod" style="padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1728;color:var(--txt);max-width:190px"></select>
+        <select id="globalPeriod" style="padding:8px 12px;border-radius:8px;border:1px solid var(--line2);background:#fff;color:var(--txt);max-width:190px;font-size:12.5px;outline:none"></select>
       </div>
     </header>
     <div class="content" id="content"></div>
@@ -216,9 +408,6 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
-/* =========================================================
-   CONFIG
-========================================================= */
 const SUPABASE_URL = 'https://qtpybadjaczlkzkbbcge.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GUfLjO0eaIx_LYNZgfIKzw_GcUsKjHC';
 const BUCKET = 'assessment-files';
@@ -257,9 +446,6 @@ function statusClass(s){
   return 'st-bad';
 }
 
-/* =========================================================
-   MODE: SUPABASE vs LOCAL
-========================================================= */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'supabase';
 let sb = null;
@@ -274,32 +460,26 @@ function setMode(m){
 function updateModeIndicator(){
   const el = $('#modeIndicator');
   if(!el) return;
-  if(MODE === 'local'){
-    el.innerHTML = `<span class="mode-pill local">💾 حالت محلی</span>`;
-  } else {
-    el.innerHTML = `<span class="mode-pill">☁️ Supabase</span>`;
-  }
+  el.innerHTML = MODE === 'local'
+    ? `<span class="mode-pill local">💾 حالت محلی</span>`
+    : `<span class="mode-pill">☁️ Supabase</span>`;
 }
 function updateConnBox(){
   const box = $('#connBox');
   if(!box) return;
   if(MODE === 'local'){
     box.className = 'diag warn';
-    box.innerHTML = `<div><b>حالت محلی فعال است</b> — داده‌ها در مرورگر ذخیره می‌شوند و به Supabase ارسال نمی‌شوند.</div>`;
+    box.innerHTML = `<div><b>حالت محلی فعال</b> — داده‌ها در مرورگر ذخیره می‌شوند.</div>`;
   } else {
     box.innerHTML = `<div><b>وضعیت اتصال:</b> <span id="connTxt">در حال بررسی…</span></div>`;
     testConnection();
   }
 }
 
-/* =========================================================
-   LOCAL DATABASE (fallback)
-========================================================= */
 const LS = {
   read(k){ try { return JSON.parse(localStorage.getItem('kashaf_'+k) || 'null'); } catch(e){ return null; } },
   write(k,v){ localStorage.setItem('kashaf_'+k, JSON.stringify(v)); }
 };
-
 function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
   const r = Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16);
 });}
@@ -310,7 +490,6 @@ const LocalDB = {
     if(!t.users || !t.users.length){
       t.users = [{ id:uuid(), username:'ice', password_hash:null, full_name:'مدیر سامانه', role:'admin' }];
       LS.write('tables', t);
-      // precompute hash async
       sha256('ice').then(h => {
         const x = LS.read('tables') || t;
         x.users[0].password_hash = h;
@@ -320,29 +499,22 @@ const LocalDB = {
     return t;
   },
   save(t){ LS.write('tables', t); },
-  async findUser(username){
-    const t = this.tables();
-    return t.users.find(u => u.username === username) || null;
-  },
+  async findUser(username){ return this.tables().users.find(u => u.username === username) || null; },
   async addUser(u){ const t = this.tables(); t.users.push(u); this.save(t); },
   async delUser(id){ const t = this.tables(); t.users = t.users.filter(u=>u.id!==id); this.save(t); },
   async listUsers(){ return this.tables().users; },
-
   async listControls(){ return this.tables().controls; },
   async setControls(rows){
     const t = this.tables();
     t.controls = rows.map(r => ({ id: uuid(), ...r }));
-    // wipe assessments that reference removed controls
     const ids = new Set(t.controls.map(c=>c.id));
     t.assessments = t.assessments.filter(a => ids.has(a.control_id));
     this.save(t);
   },
   async wipeControls(){ const t = this.tables(); t.controls=[]; t.assessments=[]; this.save(t); },
-
   async listPeriods(){ return this.tables().periods; },
   async addPeriod(p){ const t = this.tables(); const row = { id:uuid(), created_at:new Date().toISOString(), ...p }; t.periods.push(row); this.save(t); return row; },
   async delPeriod(id){ const t=this.tables(); t.periods=t.periods.filter(p=>p.id!==id); t.assessments=t.assessments.filter(a=>a.period_id!==id); this.save(t); },
-
   async listAssessments(pid){
     const t = this.tables();
     return pid ? t.assessments.filter(a=>a.period_id===pid) : t.assessments;
@@ -357,21 +529,13 @@ const LocalDB = {
   }
 };
 
-/* =========================================================
-   CONNECTION TEST
-========================================================= */
 async function testConnection(){
   const box = $('#connBox');
   const txt = document.getElementById('connTxt');
   if(!box || !txt || MODE === 'local') return;
   txt.textContent = 'در حال بررسی…';
   box.className = 'diag';
-
-  if(!sb){
-    txt.innerHTML = 'کتابخانه Supabase بارگذاری نشد.';
-    box.className = 'diag err'; return;
-  }
-
+  if(!sb){ txt.textContent = 'کتابخانه Supabase بارگذاری نشد.'; box.className = 'diag err'; return; }
   const controller = new AbortController();
   const timer = setTimeout(()=> controller.abort(), 9000);
   try{
@@ -381,44 +545,31 @@ async function testConnection(){
       signal: controller.signal
     });
     clearTimeout(timer);
-
-    if(res.ok){
-      txt.innerHTML = '✅ اتصال به Supabase برقرار است.';
-      box.className = 'diag ok';
-      return true;
-    }
-    // Try to read error body
-    let body = '';
-    try{ body = await res.text(); }catch(e){}
+    if(res.ok){ txt.innerHTML = '✅ اتصال به Supabase برقرار است.'; box.className = 'diag ok'; return true; }
+    let body = ''; try{ body = await res.text(); }catch(e){}
     if(res.status === 404 || (body && body.includes('does not exist'))){
       txt.innerHTML = '⚠️ اتصال برقرار شد ولی <b>جداول ساخته نشده‌اند</b>. اسکریپت SQL را در Supabase اجرا کنید.';
       box.className = 'diag warn';
     } else if(res.status === 401 || res.status === 403){
-      txt.innerHTML = '⚠️ کلید Supabase نامعتبر است.';
-      box.className = 'diag err';
+      txt.innerHTML = '⚠️ کلید Supabase نامعتبر است.'; box.className = 'diag err';
     } else {
-      txt.innerHTML = `⚠️ پاسخ سرور: ${res.status} <code>${esc(body.slice(0,120))}</code>`;
-      box.className = 'diag warn';
+      txt.innerHTML = `⚠️ پاسخ سرور: ${res.status}`; box.className = 'diag warn';
     }
   }catch(err){
     clearTimeout(timer);
     const msg = String(err && err.message || err);
-    if(msg.includes('abort') || msg.includes('timeout') || msg.includes('Failed to fetch') || msg.includes('NetworkError')){
-      txt.innerHTML = `❌ <b>اتصال به Supabase برقرار نشد</b>.<br>
-        علت‌های محتمل: (۱) پروژه در داشبورد Supabase <b>Paused</b> است → Restore کنید،
-        یا (۲) دسترسی به <code>supabase.co</code> در شبکه مختل است (مثلاً فیلترینگ داخل ایران).
-        <br>می‌توانید فعلاً روی «حالت محلی» بزنید و بدون اینترنت از سامانه استفاده کنید.`;
+    if(msg.includes('abort') || msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('timeout')){
+      txt.innerHTML = `❌ <b>اتصال برقرار نشد</b>.<br>
+        علت‌ها: (۱) پروژه در Supabase <b>Paused</b> است → Restore کنید،
+        یا (۲) دسترسی به <code>supabase.co</code> مختل است.
+        <br>می‌توانید روی «حالت محلی» بزنید.`;
       box.className = 'diag err';
     } else {
-      txt.innerHTML = `❌ خطا: ${esc(msg)}`;
-      box.className = 'diag err';
+      txt.innerHTML = `❌ خطا: ${esc(msg)}`; box.className = 'diag err';
     }
   }
 }
 
-/* =========================================================
-   STATE
-========================================================= */
 const S = {
   user:null, controls:[], periods:[], periodId:null,
   assessments:{}, allAssessments:[], units:[], cats:[], levels:[],
@@ -437,9 +588,6 @@ const NAV = [
 ];
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
 
-/* =========================================================
-   LOGIN
-========================================================= */
 async function doLogin(username, password){
   const hash = await sha256(password);
   if(MODE === 'local'){
@@ -448,20 +596,16 @@ async function doLogin(username, password){
     if(u.password_hash && u.password_hash !== hash) throw new Error('رمز نادرست است.');
     return u;
   }
-  // Supabase path
   let { data, error } = await sb.from('app_users').select('*').eq('username', username).limit(1);
   if(error){
-    if(String(error.message).includes('does not exist')){
+    if(String(error.message).includes('does not exist'))
       throw new Error('جدول app_users وجود ندارد. اسکریپت SQL را در Supabase اجرا کنید.');
-    }
-    if(String(error.message).includes('Failed to fetch')){
+    if(String(error.message).includes('Failed to fetch'))
       throw new Error('اتصال به Supabase برقرار نشد. پروژه Paused است یا شبکه مسدود است.');
-    }
     throw new Error('خطا در اتصال: ' + error.message);
   }
   if(!data || !data.length){
     if(username === 'ice'){
-      // bootstrap default user
       const { data:d2, error:e2 } = await sb.from('app_users').insert({
         username:'ice', password_hash: await sha256('ice'), full_name:'مدیر سامانه', role:'admin'
       }).select().single();
@@ -491,9 +635,6 @@ function logout(){
   updateConnBox();
 }
 
-/* =========================================================
-   DATA LAYER (abstraction over Supabase/Local)
-========================================================= */
 async function apiListControls(){
   if(MODE === 'local') return LocalDB.listControls();
   const { data, error } = await sb.from('controls').select('*').order('row_no',{ascending:true});
@@ -530,7 +671,6 @@ async function apiSaveAssessment(controlId, payload){
 }
 async function apiUpload(file, controlId){
   if(MODE === 'local'){
-    // convert to data URL (small files only)
     return new Promise((res, rej) => {
       const r = new FileReader();
       r.onload = () => res({ url:r.result, name:file.name });
@@ -568,9 +708,6 @@ async function loadAllAssessments(){
   S.allAssessments = await apiListAssessments(null);
 }
 
-/* =========================================================
-   DERIVED
-========================================================= */
 function controlStatus(c){
   const a = S.assessments[c.id];
   return (a && a.status) || c.status || '—';
@@ -591,9 +728,6 @@ function progressWithMap(c, map){
   return statusWeight((a && a.status) || c.status);
 }
 
-/* =========================================================
-   BOOT
-========================================================= */
 async function bootApp(){
   const content = $('#content');
   content.innerHTML = `<div class="card"><div class="spin"></div><div class="empty">در حال بارگذاری…</div></div>`;
@@ -605,15 +739,12 @@ async function bootApp(){
     renderNav(); renderPeriodSelect(); render();
   }catch(err){
     content.innerHTML = `<div class="card">
-      <h3><span class="dot" style="background:#ef4444;box-shadow:0 0 10px #ef4444"></span> خطا در بارگذاری</h3>
+      <h3><span class="dot" style="background:var(--bad)"></span> خطا در بارگذاری</h3>
       <div class="empty" style="text-align:right">${esc(err.message || err)}</div>
     </div>`;
   }
 }
 
-/* =========================================================
-   NAV / SHELL
-========================================================= */
 function renderNav(){
   $('#nav').innerHTML = NAV.map(n =>
     `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">
@@ -643,9 +774,6 @@ function render(){
   if(S.view==='trend') ensureTrendData();
 }
 
-/* =========================================================
-   VIEW: DASHBOARD
-========================================================= */
 function viewDashboard(){
   const total = S.controls.length;
   const counts = {'پیاده‌سازی':0,'در حال پیاده‌سازی':0,'عدم پیاده‌سازی':0,'غیر قابل احراز':0};
@@ -685,9 +813,9 @@ function viewDashboard(){
   })).sort((a,b)=>b.pct-a.pct);
 
   const segs = [
-    {label:'پیاده‌سازی شده', val:counts['پیاده‌سازی'], color:'#22c55e'},
-    {label:'در حال پیاده‌سازی', val:counts['در حال پیاده‌سازی'], color:'#f59e0b'},
-    {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'#ef4444'},
+    {label:'پیاده‌سازی شده', val:counts['پیاده‌سازی'], color:'#16a34a'},
+    {label:'در حال پیاده‌سازی', val:counts['در حال پیاده‌سازی'], color:'#d97706'},
+    {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'#dc2626'},
     {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'#64748b'}
   ];
   let acc = 0;
@@ -699,27 +827,27 @@ function viewDashboard(){
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
 
-  return `<div class="grid" style="gap:14px">
-    <div class="card" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+  return `<div class="grid" style="gap:12px">
+    <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px">
       <span class="badge badge-soft">دوره: ${esc(periodName)}</span>
       <span class="badge badge-soft">کنترل: ${fa(total)}</span>
       <span class="badge badge-soft">واحد: ${fa(unitRows.length)}</span>
-      <span class="mode-pill ${MODE==='local'?'local':''}">${MODE==='local'?'💾 حالت محلی':'☁️ Supabase'}</span>
+      <span class="mode-pill ${MODE==='local'?'local':''}" style="margin-right:auto">${MODE==='local'?'💾 محلی':'☁️ Supabase'}</span>
     </div>
 
     <div class="grid kpis">
       <div class="card kpi"><div class="v">${fa(avg)}٪</div><div class="l">پیشرفت کل</div>
         <div class="bar g" style="margin-top:10px"><i style="width:${avg}%"></i></div></div>
-      <div class="card kpi"><div class="v" style="color:#4ade80">${fa(counts['پیاده‌سازی'])}</div><div class="l">پیاده‌سازی شده</div></div>
-      <div class="card kpi"><div class="v" style="color:#fbbf24">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال انجام</div></div>
-      <div class="card kpi"><div class="v" style="color:#f87171">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div></div>
+      <div class="card kpi"><div class="v" style="color:var(--ok)">${fa(counts['پیاده‌سازی'])}</div><div class="l">پیاده‌سازی شده</div></div>
+      <div class="card kpi"><div class="v" style="color:var(--warn)">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال انجام</div></div>
+      <div class="card kpi"><div class="v" style="color:var(--bad)">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div></div>
     </div>
 
     <div class="grid cols2">
       <div class="card">
         <h3><span class="dot"></span> توزیع وضعیت</h3>
         <div class="donut-wrap">
-          <div class="donut" style="background:conic-gradient(${grad||'#16203a 0deg 360deg'})">
+          <div class="donut" style="background:conic-gradient(${grad||'#e2e8f0 0deg 360deg'})">
             <div class="mid"><b>${fa(total)}</b><span>کنترل</span></div>
           </div>
           <div class="legend">
@@ -743,14 +871,14 @@ function viewDashboard(){
       ${unitRows.length ? `<div class="tbl-wrap"><table>
         <thead><tr><th>واحد</th><th>کنترل</th><th>پیاده</th><th>در حال</th><th>عدم</th><th>پیشرفت</th></tr></thead>
         <tbody>${unitRows.map(u=>`<tr>
-          <td style="font-weight:700">${esc(u.name)}</td>
+          <td style="font-weight:600">${esc(u.name)}</td>
           <td>${fa(u.n)}</td>
-          <td style="color:#4ade80">${fa(u.ok)}</td>
-          <td style="color:#fbbf24">${fa(u.doing)}</td>
-          <td style="color:#f87171">${fa(u.bad)}</td>
+          <td style="color:var(--ok)">${fa(u.ok)}</td>
+          <td style="color:var(--warn)">${fa(u.doing)}</td>
+          <td style="color:var(--bad)">${fa(u.bad)}</td>
           <td style="min-width:140px"><div style="display:flex;align-items:center;gap:8px">
             <div class="bar" style="flex:1"><i style="width:${u.pct}%"></i></div>
-            <b style="color:#22d3ee;font-size:12px">${fa(u.pct)}٪</b>
+            <b style="color:var(--accent);font-size:11.5px">${fa(u.pct)}٪</b>
           </div></td></tr>`).join('')}</tbody>
       </table></div>` : '<div class="empty">داده‌ای نیست</div>'}
     </div>
@@ -765,9 +893,6 @@ function viewDashboard(){
   </div>`;
 }
 
-/* =========================================================
-   VIEW: CONTROLS
-========================================================= */
 function filteredControls(){
   const f = S.filters;
   return S.controls.filter(c => {
@@ -792,7 +917,7 @@ function viewControls(){
   const opts = (arr,cur)=>arr.map(v=>`<option value="${esc(v)}" ${v===cur?'selected':''}>${esc(v)}</option>`).join('');
 
   return `
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px">
     <div class="toolbar" style="margin-bottom:0">
       <input id="fQ" placeholder="🔍 جستجو…" value="${esc(S.filters.q)}">
       <select id="fUnit"><option value="">همه واحدها</option>${opts(S.units,S.filters.unit)}</select>
@@ -805,7 +930,7 @@ function viewControls(){
       <select id="fSize">${[12,24,48,96].map(n=>`<option value="${n}" ${n===S.pageSize?'selected':''}>${n}/صفحه</option>`).join('')}</select>
     </div>
   </div>
-  <div class="card" style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+  <div class="card" style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:11px 16px">
     <span class="badge badge-soft">${fa(list.length)} کنترل</span>
     <span class="badge badge-soft">صفحه ${fa(S.page)}/${fa(pages)}</span>
     <button class="btn btn-sm" id="clearFilters" style="margin-right:auto">پاک کردن فیلترها</button>
@@ -824,7 +949,7 @@ function viewControls(){
         <div class="cc-title">${esc(c.title)}</div>
         <div class="cc-ev">${esc(c.evidence||'—')}</div>
         <div class="cc-foot"><div class="bar"><i style="width:${pr}%"></i></div>
-          <b style="font-size:12px;color:#22d3ee;min-width:42px;text-align:left">${fa(pr)}٪</b></div>
+          <b style="font-size:11.5px;color:var(--accent);min-width:42px;text-align:left">${fa(pr)}٪</b></div>
       </div>`;
     }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.<br>اگر داده‌ای نیست، از تب «ورود داده» اکسل را بارگذاری کنید.</div></div>`}
   </div>
@@ -838,9 +963,6 @@ function viewControls(){
   `;
 }
 
-/* =========================================================
-   VIEW: ASSESS
-========================================================= */
 function viewAssess(){
   if(!S.periods.length) return `<div class="card"><div class="empty">ابتدا از تب «مدیریت دوره‌ها» یک دوره بسازید.</div></div>`;
   if(!S.assessUnit) S.assessUnit = S.units[0] || '';
@@ -850,13 +972,13 @@ function viewAssess(){
   const avg = list.length ? Math.round(list.reduce((s,c)=>s+controlProgress(c),0)/list.length) : 0;
 
   return `
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px;padding:12px 16px">
     <div class="toolbar" style="margin-bottom:0">
       <select id="asUnit">${opts||'<option value="">—</option>'}</select>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="badge badge-soft">${fa(list.length)} کنترل</span>
         <span class="badge st-ok">${fa(done)} ارزیابی</span>
-        <span class="badge badge-soft">پیشرفت: <b style="color:#22d3ee">${fa(avg)}٪</b></span>
+        <span class="badge badge-soft">پیشرفت: <b style="color:var(--accent)">${fa(avg)}٪</b></span>
       </div>
     </div>
   </div>
@@ -872,21 +994,21 @@ function viewAssess(){
           <span class="badge ${statusClass(c.status)}">پایه: ${esc(normalizeStatus(c.status))}</span>
         </div>
       </div>
-      <details style="margin-bottom:10px"><summary style="cursor:pointer;color:#8ba0c4;font-size:12px">شواهد اولیه</summary>
-        <div class="kv" style="margin-top:8px"><div class="v" style="font-size:12.5px">${esc(c.evidence||'—')}</div></div>
+      <details style="margin-bottom:10px"><summary style="cursor:pointer;color:var(--muted);font-size:11.5px">شواهد اولیه</summary>
+        <div class="kv" style="margin-top:8px"><div class="v" style="font-size:12px">${esc(c.evidence||'—')}</div></div>
       </details>
       <div class="as-grid">
         <div><label>وضعیت این دوره</label>
           <select class="a-status">${['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز']
             .map(v=>`<option value="${v}" ${normalizeStatus(st)===v?'selected':''}>${v}</option>`).join('')}
           </select></div>
-        <div><label>درصد پیشرفت: <b class="p-val" style="color:#22d3ee">${fa(pr)}٪</b></label>
+        <div><label>درصد پیشرفت: <b class="p-val" style="color:var(--accent)">${fa(pr)}٪</b></label>
           <input type="range" class="a-range" min="0" max="100" step="5" value="${pr}"></div>
       </div>
       <label style="display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px">اقدامات این دوره</label>
-      <textarea class="a-actions" placeholder="مثلاً: خط‌مشی تدوین شد، با پیمانکار هماهنگ شد…">${esc(a.actions||'')}</textarea>
+      <textarea class="a-actions" placeholder="مثلاً: خط‌مشی تدوین شد…">${esc(a.actions||'')}</textarea>
       <div class="as-foot">
-        <input type="file" class="a-file" style="max-width:260px">
+        <input type="file" class="a-file" style="max-width:240px">
         <button class="btn btn-sm btn-primary a-save">💾 ذخیره</button>
         ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 پیوست</a>`:''}
         <span class="saved" style="display:none">✔ ذخیره شد</span>
@@ -896,9 +1018,6 @@ function viewAssess(){
   `;
 }
 
-/* =========================================================
-   VIEW: TREND
-========================================================= */
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
@@ -912,17 +1031,17 @@ function viewTrend(){
     return { id:p.id, name:p.name, value: vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0 };
   });
   return `
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px;padding:12px 16px">
     <div class="toolbar" style="margin-bottom:0">
       <select id="trendUnit">${unitOpts}</select>
       <span class="badge badge-soft">${fa(ctrlFiltered.length)} کنترل</span>
     </div>
   </div>
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px">
     <h3><span class="dot"></span> روند ${selected==='__all'?'کل سازمان':esc(selected)}</h3>
     ${lineChart(series)}
   </div>
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px">
     <h3><span class="dot"></span> جدول پیشرفت واحدها</h3>
     <div class="tbl-wrap"><table>
       <thead><tr><th>واحد</th>${S.periods.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr></thead>
@@ -932,9 +1051,10 @@ function viewTrend(){
           const map = assessmentMapFor(p.id);
           const vals = cs.map(c=>progressWithMap(c,map));
           const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
-          return `<td><span style="color:${avg>=70?'#4ade80':avg>=40?'#fbbf24':'#f87171'};font-weight:800">${fa(avg)}٪</span></td>`;
+          const color = avg>=70?'var(--ok)':avg>=40?'var(--warn)':'var(--bad)';
+          return `<td><span style="color:${color};font-weight:700">${fa(avg)}٪</span></td>`;
         }).join('');
-        return `<tr><td style="font-weight:700">${esc(u)}</td>${cells}</tr>`;
+        return `<tr><td style="font-weight:600">${esc(u)}</td>${cells}</tr>`;
       }).join('')}</tbody>
     </table></div>
   </div>
@@ -947,15 +1067,15 @@ function viewTrend(){
         <div class="badge badge-soft" style="margin-bottom:9px">${esc(p.name)} — ${fa(acts.length)} اقدام</div>
         ${acts.slice(0,80).map(a=>{
           const c = S.controls.find(x=>x.id===a.control_id);
-          return `<div style="background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:11px;margin-bottom:8px">
-            <div style="font-size:12px;color:#a9bcdb;margin-bottom:5px">
-              <b style="color:#22d3ee">#${fa(c?.row_no??'')}</b> ${esc(c?.owner_unit||'')} — ${esc((c?.title||'').slice(0,90))}
+          return `<div style="background:#f8fafc;border:1px solid var(--line);border-radius:9px;padding:11px;margin-bottom:8px">
+            <div style="font-size:11.5px;color:var(--muted);margin-bottom:5px">
+              <b style="color:var(--accent)">#${fa(c?.row_no??'')}</b> ${esc(c?.owner_unit||'')} — ${esc((c?.title||'').slice(0,90))}
             </div>
-            <div style="font-size:12.5px;line-height:2">${esc(a.actions)}</div>
-            <div style="margin-top:7px;display:flex;gap:8px;flex-wrap:wrap">
+            <div style="font-size:12px;line-height:1.9;color:var(--txt)">${esc(a.actions)}</div>
+            <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">
               ${a.status?`<span class="badge ${statusClass(a.status)}">${esc(normalizeStatus(a.status))}</span>`:''}
               ${a.progress!=null?`<span class="badge badge-soft">${fa(a.progress)}٪</span>`:''}
-              ${a.file_url?`<a class="badge badge-soft" href="${esc(a.file_url)}" target="_blank" rel="noopener">📎</a>`:''}
+              ${a.file_url?`<a class="badge badge-soft" href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 پیوست</a>`:''}
             </div></div>`;
         }).join('')}
       </div>`;
@@ -972,21 +1092,21 @@ function lineChart(series){
   return `<div style="width:100%;overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:340px;height:auto">
     <defs>
       <linearGradient id="gline" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#22d3ee" stop-opacity=".38"/><stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+        <stop offset="0%" stop-color="#93c5fd" stop-opacity=".45"/><stop offset="100%" stop-color="#93c5fd" stop-opacity="0"/>
       </linearGradient>
       <linearGradient id="stroke" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#7c3aed"/>
+        <stop offset="0%" stop-color="#93c5fd"/><stop offset="100%" stop-color="#2563eb"/>
       </linearGradient>
     </defs>
     ${[0,25,50,75,100].map(v=>`
-      <line x1="${PAD}" y1="${ys(v)}" x2="${W-PAD}" y2="${ys(v)}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
-      <text x="${PAD-8}" y="${ys(v)+4}" fill="#5b6b8c" font-size="10" text-anchor="end">${v}%</text>`).join('')}
+      <line x1="${PAD}" y1="${ys(v)}" x2="${W-PAD}" y2="${ys(v)}" stroke="rgba(15,23,42,.06)" stroke-width="1"/>
+      <text x="${PAD-8}" y="${ys(v)+4}" fill="#94a3b8" font-size="10" text-anchor="end">${v}%</text>`).join('')}
     <path d="${area}" fill="url(#gline)"/>
-    <path d="${path}" fill="none" stroke="url(#stroke)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${path}" fill="none" stroke="url(#stroke)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     ${series.map((s,i)=>`
-      <circle cx="${xs(i)}" cy="${ys(s.value)}" r="5" fill="#0b1120" stroke="#22d3ee" stroke-width="2.5"/>
-      <text x="${xs(i)}" y="${ys(s.value)-13}" fill="#e9f0ff" font-size="11" font-weight="700" text-anchor="middle">${fa(s.value)}٪</text>
-      <text x="${xs(i)}" y="${H-12}" fill="#8ba0c4" font-size="10" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>`).join('')}
+      <circle cx="${xs(i)}" cy="${ys(s.value)}" r="4.5" fill="#fff" stroke="#2563eb" stroke-width="2.5"/>
+      <text x="${xs(i)}" y="${ys(s.value)-13}" fill="#111827" font-size="11" font-weight="700" text-anchor="middle">${fa(s.value)}٪</text>
+      <text x="${xs(i)}" y="${H-12}" fill="#64748b" font-size="10" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>`).join('')}
   </svg></div>`;
 }
 async function ensureTrendData(){
@@ -996,15 +1116,12 @@ async function ensureTrendData(){
   if(S.view==='trend'){ $('#content').innerHTML = viewTrend(); bindView(); }
 }
 
-/* =========================================================
-   VIEW: PERIODS / USERS / IMPORT
-========================================================= */
 function viewPeriods(){
   return `
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px">
     <h3><span class="dot"></span> ایجاد دوره</h3>
-    <div class="toolbar" style="margin-bottom:10px">
-      <input id="pName" placeholder="نام دوره (مثلاً: دوره دوم - بهار ۱۴۰۵)">
+    <div class="toolbar" style="margin-bottom:0">
+      <input id="pName" placeholder="نام دوره (مثلاً: بهار ۱۴۰۵)">
       <input id="pStart" type="date" title="شروع">
       <input id="pEnd" type="date" title="پایان">
       <button class="btn btn-primary" id="addPeriod">➕ ایجاد</button>
@@ -1017,7 +1134,7 @@ function viewPeriods(){
       <tbody>${S.periods.map(p=>{
         const cnt = S.allAssessments.filter(a=>a.period_id===p.id).length;
         return `<tr>
-          <td style="font-weight:700">${esc(p.name)} ${p.id===S.periodId?'<span class="badge st-ok">جاری</span>':''}</td>
+          <td style="font-weight:600">${esc(p.name)} ${p.id===S.periodId?'<span class="badge st-ok">جاری</span>':''}</td>
           <td>${esc(p.start_date||'—')}</td>
           <td>${esc(p.end_date||'—')}</td>
           <td>${fa(cnt)}</td>
@@ -1031,9 +1148,9 @@ function viewPeriods(){
 }
 function viewUsers(){
   return `
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px">
     <h3><span class="dot"></span> افزودن کاربر</h3>
-    <div class="toolbar" style="margin-bottom:10px">
+    <div class="toolbar" style="margin-bottom:0">
       <input id="nuUser" placeholder="نام کاربری">
       <input id="nuPass" type="password" placeholder="رمز">
       <input id="nuName" placeholder="نام کامل">
@@ -1053,10 +1170,10 @@ async function renderUsersList(){
     host.innerHTML = `<div class="tbl-wrap"><table>
       <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th><th>عملیات</th></tr></thead>
       <tbody>${users.map(u=>`<tr>
-        <td style="font-weight:700">${esc(u.username)}</td>
+        <td style="font-weight:600">${esc(u.username)}</td>
         <td>${esc(u.full_name||'—')}</td>
         <td><span class="badge badge-soft">${u.role==='admin'?'مدیر':'کاربر'}</span></td>
-        <td>${u.username==='ice'?'<span style="color:#64748b;font-size:12px">پیش‌فرض</span>':`<button class="btn btn-sm btn-danger" data-deluser="${u.id}">حذف</button>`}</td>
+        <td>${u.username==='ice'?'<span style="color:var(--muted2);font-size:11.5px">پیش‌فرض</span>':`<button class="btn btn-sm btn-danger" data-deluser="${u.id}">حذف</button>`}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
   }catch(err){
@@ -1065,21 +1182,21 @@ async function renderUsersList(){
 }
 function viewImport(){
   return `
-  <div class="card" style="margin-bottom:14px">
+  <div class="card" style="margin-bottom:12px">
     <h3><span class="dot"></span> بارگذاری اکسل کنترل‌ها</h3>
-    <p style="color:#8ba0c4;font-size:12.5px;line-height:2;margin-top:0">
-      فایل اکسل با ستون‌های <b>ردیف</b>، <b>دسته</b>، <b>سطح پیشرفتگی</b>، <b>کنترل</b>، <b>شواهد</b>، <b>وضعیت پیاده‌سازی</b>، <b>واحد مسئول رسیدگی</b>.
+    <p style="color:var(--muted);font-size:12px;line-height:1.9;margin:0 0 12px">
+      ستون‌ها: <b>ردیف</b>، <b>دسته</b>، <b>سطح پیشرفتگی</b>، <b>کنترل</b>، <b>شواهد</b>، <b>وضعیت پیاده‌سازی</b>، <b>واحد مسئول رسیدگی</b>.
     </p>
-    <div class="toolbar">
+    <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
       <button class="btn btn-primary" id="doImport">📥 بارگذاری</button>
       <button class="btn btn-danger" id="wipeControls">🗑️ حذف کنترل‌ها</button>
     </div>
-    <div id="importLog" style="font-size:12.5px;line-height:2;color:#8ba0c4"></div>
+    <div id="importLog" style="font-size:12px;line-height:1.9;color:var(--muted)"></div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> وضعیت داده‌ها</h3>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
       <span class="badge badge-soft">کنترل: ${fa(S.controls.length)}</span>
       <span class="badge badge-soft">واحد: ${fa(S.units.length)}</span>
       <span class="badge badge-soft">دوره: ${fa(S.periods.length)}</span>
@@ -1087,9 +1204,6 @@ function viewImport(){
   </div>`;
 }
 
-/* =========================================================
-   BIND VIEW
-========================================================= */
 function bindView(){
   const c = $('#content');
   if(S.view==='controls'){
@@ -1253,10 +1367,10 @@ function bindView(){
           }
         }
         await loadControls();
-        log.innerHTML = `<span style="color:#4ade80;font-weight:700">✔ ${fa(mapped.length)} کنترل بارگذاری شد.</span>`;
+        log.innerHTML = `<span style="color:var(--ok);font-weight:700">✔ ${fa(mapped.length)} کنترل بارگذاری شد.</span>`;
         toast('بارگذاری کامل شد ✔','ok'); render();
       }catch(err){
-        log.innerHTML = `<span style="color:#f87171">خطا: ${esc(err.message||err)}</span>`;
+        log.innerHTML = `<span style="color:var(--bad)">خطا: ${esc(err.message||err)}</span>`;
         toast('خطا در بارگذاری','err');
       }
     });
@@ -1277,9 +1391,6 @@ function parseSheet(file){
   });
 }
 
-/* =========================================================
-   MODAL
-========================================================= */
 function openControlModal(id){
   const c = S.controls.find(x=>x.id===id); if(!c) return;
   const a = S.assessments[c.id] || {};
@@ -1288,7 +1399,7 @@ function openControlModal(id){
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
     <button class="close-x" id="closeModal">✕</button>
     <h3>#${fa(c.row_no??'')} — ${esc(c.title)}</h3>
-    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
       <span class="badge badge-soft">${esc(c.category||'—')}</span>
       <span class="badge badge-soft">سطح: ${esc(c.level||'—')}</span>
       <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
@@ -1300,7 +1411,7 @@ function openControlModal(id){
       <div class="v" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span class="badge ${statusClass(st)}">${esc(normalizeStatus(st))}</span>
         <div class="bar" style="flex:1;min-width:120px"><i style="width:${pr}%"></i></div>
-        <b style="color:#22d3ee">${fa(pr)}٪</b>
+        <b style="color:var(--accent)">${fa(pr)}٪</b>
       </div></div>
     ${a.actions?`<div class="kv"><div class="k">اقدامات این دوره</div><div class="v">${esc(a.actions)}</div></div>`:''}
     ${a.file_url?`<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">📎 ${esc(a.file_name||'دانلود')}</a></div></div>`:''}
@@ -1312,9 +1423,6 @@ function openControlModal(id){
   $('#goAssess').addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
 }
 
-/* =========================================================
-   GLOBAL EVENTS
-========================================================= */
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('#loginBtn'), err = $('#loginErr');
@@ -1351,22 +1459,6 @@ document.addEventListener('keydown', e => {
   if(e.key==='Escape'){ $('#sidebar').classList.remove('open'); $('#overlay').classList.remove('show'); $('#modalHost').innerHTML=''; }
 });
 
-/* particles */
-(function(){
-  const host = document.getElementById('particles'); if(!host) return;
-  for(let i=0;i<34;i++){
-    const p = document.createElement('span'); p.className = 'pt';
-    const sz = (Math.random()*3+1.5).toFixed(1);
-    p.style.width = sz+'px'; p.style.height = sz+'px';
-    p.style.left = (Math.random()*100)+'%'; p.style.top = (Math.random()*100+20)+'%';
-    p.style.animationDuration = (Math.random()*14+11)+'s';
-    p.style.animationDelay = (-Math.random()*22)+'s';
-    p.style.opacity = (Math.random()*.55+.25);
-    host.appendChild(p);
-  }
-})();
-
-/* boot login */
 updateConnBox();
 </script>
 </body>
