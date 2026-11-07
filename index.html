@@ -15,7 +15,6 @@ a{color:var(--txt);text-decoration:none}
 button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
 
-/* LOGIN */
 .login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px;background:var(--white)}
 .bg-anim{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px);background-size:48px 48px;opacity:.8}
@@ -54,7 +53,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
 
-/* APP */
 #app{height:100vh;height:100dvh;display:block}
 .sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--white);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
 .brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
@@ -85,7 +83,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .overlay{position:fixed;inset:0;background:rgba(9,9,11,.32);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.show{opacity:1;pointer-events:auto}
 
-/* COMPONENTS */
 .grid{display:grid;gap:16px;width:100%}
 .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
@@ -158,11 +155,11 @@ tbody tr:hover{background:var(--faint)}
 tbody td{font-variant-numeric:tabular-nums}
 .modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .18s;overflow-y:auto}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.modal-box{width:min(720px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease;margin:auto}
+.modal-box{width:min(760px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease;margin:auto}
 .modal-box h3{margin:0 0 16px;font-size:13px;font-weight:600;line-height:1.9;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .kv{margin-bottom:14px}
 .kv .k{font-size:9.5px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.14em}
-.kv .v{font-size:12px;line-height:1.95;background:var(--faint);padding:11px 13px;border:1px solid var(--line)}
+.kv .v{font-size:12px;line-height:1.95;background:var(--faint);padding:11px 13px;border:1px solid var(--line);white-space:pre-wrap}
 .close-x{position:sticky;top:0;float:left;background:var(--white);color:var(--txt);border:1px solid var(--txt);width:28px;height:28px;cursor:pointer;font-size:14px;line-height:1}
 .close-x:hover{background:var(--faint)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);z-index:400;padding:10px 20px;background:var(--txt);color:var(--white);font-size:11px;font-weight:500;letter-spacing:.08em;transition:transform .3s cubic-bezier(.2,.9,.3,1.15)}
@@ -200,7 +197,6 @@ tbody td{font-variant-numeric:tabular-nums}
 
 .ro-notice{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:10px;font-weight:600;letter-spacing:.08em;border:1px solid var(--line2);background:var(--faint);color:var(--muted)}
 
-/* ============ USER MODAL (compact, actions sticky) ============ */
 .user-modal{display:flex;flex-direction:column;max-height:90dvh;padding:0 !important;overflow:hidden}
 .um-head{padding:16px 22px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-shrink:0}
 .um-head h3{margin:0 !important;padding:0 !important;border:0 !important;font-size:13px;font-weight:600;flex:1}
@@ -224,6 +220,9 @@ tbody td{font-variant-numeric:tabular-nums}
   .um-body{padding:12px 16px}
   .um-foot{padding:10px 16px}
 }
+
+.info-hint{font-size:10.5px;color:var(--muted);line-height:1.8;margin-top:8px;padding:8px 10px;background:var(--faint);border:1px solid var(--line)}
+.info-hint b{color:var(--txt);font-weight:600}
 
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
@@ -383,7 +382,7 @@ function parseJalali(s){
   if(d > jalaliMonthLength(y, mo)) return null;
   return `${y}/${String(mo).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
 }
-function displayDate(s){ if(!s) return ''; const p = parseJalali(s); return p ? fa(p) : ''; }
+function displayDate(s){ if(!s) return ''; const p = parseJalali(s); return p ? fa(p) : s; }
 
 function openDatePicker(currentValue, onPick){
   const today = todayJalali();
@@ -507,6 +506,29 @@ function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, 
   const r = Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16);
 });}
 
+/* assessment extras (deadline, notes) stored in localStorage keyed by assessment id */
+function getAxExtras(assessmentId){
+  if(!assessmentId) return {};
+  return LS.read('ax_' + assessmentId) || {};
+}
+function setAxExtras(assessmentId, extras){
+  if(!assessmentId) return;
+  const cur = LS.read('ax_' + assessmentId) || {};
+  Object.assign(cur, extras);
+  LS.write('ax_' + assessmentId, cur);
+}
+function mergeAxExtras(a){
+  if(!a) return a;
+  const extras = getAxExtras(a.id);
+  const merged = { ...a };
+  ['deadline','notes'].forEach(k => {
+    if(merged[k] === undefined || merged[k] === null || merged[k] === ''){
+      if(extras[k] !== undefined && extras[k] !== null && extras[k] !== '') merged[k] = extras[k];
+    }
+  });
+  return merged;
+}
+
 const LocalDB = {
   tables(){
     const t = LS.read('tables') || { users:[], controls:[], periods:[], assessments:[] };
@@ -595,48 +617,29 @@ async function testConnection(){
   }
 }
 
-/* ===== PERMISSIONS HELPERS (with localStorage fallback if column missing) ===== */
-function hasUnitsColumn(user){
-  return user && Object.prototype.hasOwnProperty.call(user, 'allowed_units');
-}
+/* ===== UNIT ACCESS ===== */
+function hasUnitsColumn(user){ return user && Object.prototype.hasOwnProperty.call(user, 'allowed_units'); }
 function getUserUnits(user){
   if(MODE === 'local') return user.allowed_units;
   if(hasUnitsColumn(user)) return user.allowed_units;
-  // Column missing - use localStorage fallback
   const v = LS.read('units_' + user.id);
-  return (v === null || v === undefined) ? null : v; // null = all access
+  return (v === null || v === undefined) ? null : v;
 }
 async function saveUserUnits(userId, units){
-  if(MODE === 'local'){
-    await LocalDB.updateUser(userId, { allowed_units: units });
-    return;
-  }
-  // Always back up to localStorage
+  if(MODE === 'local'){ await LocalDB.updateUser(userId, { allowed_units: units }); return; }
   LS.write('units_' + userId, units);
-  // Try to save to column
   const { error } = await sb.from('app_users').update({ allowed_units: units }).eq('id', userId);
-  if(error && !String(error.message || '').toLowerCase().includes('allowed_units')){
-    throw error;
-  }
-  // If error is about missing column, we silently accept (localStorage is our backup)
+  if(error && !String(error.message || '').toLowerCase().includes('allowed_units')) throw error;
 }
 async function updateUserBasic(userId, patch){
-  if(MODE === 'local'){
-    await LocalDB.updateUser(userId, patch);
-    return;
-  }
+  if(MODE === 'local'){ await LocalDB.updateUser(userId, patch); return; }
   const { error } = await sb.from('app_users').update(patch).eq('id', userId);
   if(error) throw error;
 }
 async function createUserRecord(record, units){
-  if(MODE === 'local'){
-    await LocalDB.addUser({ id: uuid(), ...record, allowed_units: units });
-    return;
-  }
-  // Insert without allowed_units first (works whether or not column exists)
+  if(MODE === 'local'){ await LocalDB.addUser({ id: uuid(), ...record, allowed_units: units }); return; }
   const { data: inserted, error } = await sb.from('app_users').insert(record).select().single();
   if(error) throw error;
-  // Then try to save units
   await saveUserUnits(inserted.id, units);
 }
 
@@ -655,7 +658,7 @@ const NAV = [
   {id:'assess',    label:'ارزیابی دوره', adminOnly:true},
   {id:'periods',   label:'مدیریت دوره‌ها', adminOnly:true},
   {id:'users',     label:'کاربران', adminOnly:true},
-  {id:'import',    label:'ورود داده', adminOnly:true}
+  {id:'import',    label:'ورود/خروج داده', adminOnly:true}
 ];
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
 
@@ -668,7 +671,7 @@ function applyUnitAccess(all){
   if(!S.user) return all;
   if(S.user.role === 'admin') return all;
   const allowed = S.user.allowed_units;
-  if(allowed === null || allowed === undefined) return all; // full viewer
+  if(allowed === null || allowed === undefined) return all;
   if(!Array.isArray(allowed)) return [];
   if(allowed.length === 0) return [];
   return all.filter(c => allowed.includes(c.owner_unit));
@@ -702,7 +705,6 @@ async function doLogin(username, password){
   return data[0];
 }
 function startSession(user){
-  // Normalize units
   user.allowed_units = getUserUnits(user);
   S.user = user;
   $('#loginScreen').classList.add('hidden');
@@ -761,21 +763,54 @@ async function apiListAssessments(pid){
   if(pid) q = q.eq('period_id', pid);
   const { data, error } = await q;
   if(error) throw new Error('خطا در خواندن ارزیابی‌ها: '+error.message);
-  return data||[];
+  return (data||[]).map(mergeAxExtras);
 }
-async function apiSaveAssessment(controlId, payload){
-  if(MODE==='local'){
-    return LocalDB.upsertAssessment({ period_id:S.periodId, control_id:controlId, ...payload });
+async function apiSaveAssessmentFor(periodId, controlId, payload){
+  // Handle missing deadline/notes columns via localStorage fallback
+  const extraKeys = ['deadline','notes'];
+  let attempted = { ...payload };
+  const failed = {};
+  
+  for(let i = 0; i < 3; i++){
+    try{
+      let existing = null;
+      if(MODE === 'local'){
+        const t = LocalDB.tables();
+        existing = t.assessments.find(x => x.period_id === periodId && x.control_id === controlId);
+        const result = await LocalDB.upsertAssessment({ period_id: periodId, control_id: controlId, ...attempted });
+        return result;
+      }
+      
+      const q = sb.from('assessments').select('*').eq('period_id', periodId).eq('control_id', controlId).limit(1);
+      const res = await q;
+      if(res.error) throw res.error;
+      existing = res.data && res.data[0];
+      
+      let data, error;
+      if(existing){
+        ({ data, error } = await sb.from('assessments').update(attempted).eq('id', existing.id).select().single());
+      } else {
+        ({ data, error } = await sb.from('assessments').insert({ period_id: periodId, control_id: controlId, ...attempted }).select().single());
+      }
+      if(error) throw error;
+      
+      if(Object.keys(failed).length) setAxExtras(data.id, failed);
+      return mergeAxExtras(data);
+    } catch(err){
+      const msg = String(err.message || '').toLowerCase();
+      let removed = false;
+      for(const k of extraKeys){
+        if(attempted[k] !== undefined && msg.includes(k.toLowerCase())){
+          failed[k] = attempted[k];
+          delete attempted[k];
+          removed = true;
+          break;
+        }
+      }
+      if(!removed) throw err;
+    }
   }
-  const existing = S.assessments[controlId];
-  if(existing){
-    const { data, error } = await sb.from('assessments').update(payload).eq('id', existing.id).select().single();
-    if(error) throw new Error(error.message);
-    return data;
-  }
-  const { data, error } = await sb.from('assessments').insert({ period_id:S.periodId, control_id:controlId, ...payload }).select().single();
-  if(error) throw new Error(error.message);
-  return data;
+  throw new Error('خطا در ذخیره ارزیابی');
 }
 async function apiUpload(file, controlId){
   if(MODE==='local'){
@@ -937,7 +972,7 @@ function viewDashboard(){
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
   const idx = periodIndex();
-  const scopeLabel = isAdmin() ? 'همه واحدها' : (S.user.allowed_units && S.user.allowed_units.length ? `${fa(S.units.length)} واحد مجاز` : `${fa(S.units.length)} واحد`);
+  const scopeLabel = isAdmin() ? 'همه واحدها' : `${fa(S.units.length)} واحد مجاز`;
 
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
@@ -1052,6 +1087,10 @@ function viewControls(){
   <div class="list">
     ${slice.length ? slice.map(c=>{
       const st = controlStatus(c), pr = controlProgress(c);
+      const a = S.assessments[c.id] || {};
+      const actions = a.actions || '';
+      const notes = a.notes || '';
+      const deadline = a.deadline || '';
       return `<div class="ctrl" data-open="${c.id}">
         ${admin ? `<button class="del-btn" data-del="${c.id}" title="حذف">×</button>` : ''}
         <div class="cc-head">
@@ -1063,6 +1102,8 @@ function viewControls(){
         </div>
         <div class="cc-title">${esc(c.title)}</div>
         <div class="cc-ev">${esc(c.evidence||'—')}</div>
+        ${deadline ? `<div style="font-size:10.5px;color:var(--muted);margin-top:8px">مهلت: ${displayDate(deadline)}</div>` : ''}
+        ${actions ? `<div style="font-size:11px;line-height:1.8;margin-top:8px;padding:8px 10px;background:var(--faint);border:1px solid var(--line)">${esc(actions.slice(0,120))}${actions.length>120?'…':''}</div>` : ''}
         <div class="cc-foot"><div class="bar"><i style="width:${pr}%"></i></div>
           <b>${fa(pr)}٪</b></div>
       </div>`;
@@ -1099,47 +1140,21 @@ function viewAssess(){
         <span class="badge badge-soft">${fa(list.length)} کنترل</span>
         <span class="badge st-ok">${fa(done)} ارزیابی</span>
         <span class="badge badge-soft">پیشرفت: ${fa(avg)}٪</span>
-        ${first ? `<span class="badge st-warn">دوره پایه — ثبت وضعیت</span>` : `<span class="badge badge-soft">دوره ${fa(idx+1)} — ثبت درصد</span>`}
+        ${first ? `<span class="badge st-warn">دوره پایه</span>` : `<span class="badge badge-soft">دوره ${fa(idx+1)}</span>`}
       </div>
     </div>
-    ${first ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:10px">
-      وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» قابل ثبت است.
-    </div>` : ''}
+    ${first ? `<div class="info-hint">در دوره پایه، وضعیت پیاده‌سازی را ثبت می‌کنید. در دوره‌های بعد فقط درصد پیشرفت.</div>` : ''}
   </div>
   ${list.length ? list.map(c=>{
     const a = S.assessments[c.id] || {};
     const baseStatus = normalizeStatus(c.status);
     const savedStatus = a.status ? normalizeStatus(a.status) : baseStatus;
     const pr = (a.progress!==null && a.progress!==undefined && a.progress!=='') ? Number(a.progress) : statusWeight(savedStatus);
+    const actionsVal = a.actions || '';
+    const deadlineVal = a.deadline || '';
+    const notesVal = a.notes || '';
 
-    if(first){
-      return `<div class="as-item" data-cid="${c.id}" data-first="1">
-        <div class="t"><span class="n">#${fa(c.row_no??'')}</span>${esc(c.title)}
-          <div style="margin-top:8px">
-            <span class="badge badge-soft">${esc(c.category||'—')}</span>
-            <span class="badge badge-soft">${esc(c.level||'—')}</span>
-            <span class="badge ${statusClass(c.status)}">وضعیت فایل: ${esc(baseStatus)}</span>
-          </div>
-        </div>
-        <details style="margin-bottom:12px"><summary style="cursor:pointer;color:var(--muted);font-size:10.5px;letter-spacing:.12em">شواهد</summary>
-          <div class="kv" style="margin-top:8px"><div class="v" style="font-size:11.5px">${esc(c.evidence||'—')}</div></div>
-        </details>
-        <div class="as-grid">
-          <div><label>وضعیت پیاده‌سازی</label>
-            <select class="a-status">${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
-            </select></div>
-        </div>
-        <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات / یادداشت</label>
-        <textarea class="a-actions">${esc(a.actions||'')}</textarea>
-        <div class="as-foot">
-          <input type="file" class="a-file" style="max-width:220px">
-          <button class="btn btn-sm btn-primary a-save">ذخیره</button>
-          ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
-          <span class="saved" style="display:none">ذخیره شد</span>
-        </div>
-      </div>`;
-    }
-    return `<div class="as-item" data-cid="${c.id}" data-first="0">
+    return `<div class="as-item" data-cid="${c.id}" data-first="${first?1:0}">
       <div class="t"><span class="n">#${fa(c.row_no??'')}</span>${esc(c.title)}
         <div style="margin-top:8px">
           <span class="badge badge-soft">${esc(c.category||'—')}</span>
@@ -1150,19 +1165,36 @@ function viewAssess(){
       <details style="margin-bottom:12px"><summary style="cursor:pointer;color:var(--muted);font-size:10.5px;letter-spacing:.12em">شواهد</summary>
         <div class="kv" style="margin-top:8px"><div class="v" style="font-size:11.5px">${esc(c.evidence||'—')}</div></div>
       </details>
+
       <div class="as-grid">
-        <div><label>درصد پیشرفت (۰ تا ۱۰۰)</label>
+        <div><label>وضعیت${first?'':' (از درصد)'}</label>
+          <select class="a-status" ${first?'':'disabled'}>
+            ${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
+          </select></div>
+        <div><label>درصد پیشرفت</label>
           <div class="prog-row">
-            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}">
-            <input type="number" class="a-num" min="0" max="100" value="${pr}">
+            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}" ${first?'disabled':''}>
+            <input type="number" class="a-num" min="0" max="100" value="${pr}" ${first?'disabled':''}>
           </div>
         </div>
-        <div><label>وضعیت (خودکار)</label>
-          <select class="a-status" disabled>${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
-          </select></div>
       </div>
-      <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات این دوره</label>
-      <textarea class="a-actions">${esc(a.actions||'')}</textarea>
+
+      <div class="as-grid">
+        <div><label>آخرین مهلت اجرای اقدام</label>
+          <div class="date-field">
+            <input class="a-deadline date-input" placeholder="تاریخ شمسی" readonly value="${deadlineVal ? displayDate(deadlineVal) : ''}">
+            <span class="date-icon">📅</span>
+          </div>
+        </div>
+        <div></div>
+      </div>
+
+      <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات انجام شده تاکنون</label>
+      <textarea class="a-actions" placeholder="اقدامات انجام‌شده…">${esc(actionsVal)}</textarea>
+
+      <label style="display:block;font-size:10px;color:var(--muted);margin-top:8px;margin-bottom:5px;letter-spacing:.12em;font-weight:500">توضیحات</label>
+      <textarea class="a-notes" placeholder="توضیحات…" style="min-height:52px">${esc(notesVal)}</textarea>
+
       <div class="as-foot">
         <input type="file" class="a-file" style="max-width:220px">
         <button class="btn btn-sm btn-primary a-save">ذخیره</button>
@@ -1232,6 +1264,7 @@ function viewTrend(){
             <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
               ${a.status?`<span class="badge ${statusClass(a.status)}">${esc(normalizeStatus(a.status))}</span>`:''}
               ${a.progress!=null?`<span class="badge badge-soft">${fa(a.progress)}٪</span>`:''}
+              ${a.deadline?`<span class="badge badge-soft">مهلت: ${displayDate(a.deadline)}</span>`:''}
               ${a.file_url?`<a class="badge badge-soft" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
             </div></div>`;
         }).join('')}
@@ -1281,6 +1314,7 @@ function viewPeriods(){
       </div>
       <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
     </div>
+    <div class="info-hint">اولین دوره‌ای که می‌سازید، دوره <b>پایه</b> است.</div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
@@ -1296,6 +1330,7 @@ function viewPeriods(){
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
+            <button class="btn btn-sm" data-exportperiod="${p.id}">خروجی اکسل</button>
             <button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>
           </td></tr>`;
       }).join('')}</tbody>
@@ -1329,7 +1364,6 @@ async function renderUsersList(){
     let users;
     if(MODE==='local') users = await LocalDB.listUsers();
     else { const {data,error} = await sb.from('app_users').select('*').order('created_at',{ascending:true}); if(error) throw error; users = data||[]; }
-    // normalize allowed_units for display
     users.forEach(u => { u.allowed_units = getUserUnits(u); });
     host.innerHTML = `<div class="tbl-wrap"><table>
       <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th><th>دسترسی</th><th>عملیات</th></tr></thead>
@@ -1357,7 +1391,6 @@ function openUserModal(userToEdit = null){
   const units = S.allUnits.length ? S.allUnits : S.units;
   const currentUnits = isEdit ? userToEdit.allowed_units : null;
   const currentRole = isEdit ? userToEdit.role : 'user';
-  // treatAll default for new user = true
   const treatAll = currentRole === 'admin' || currentUnits === null || currentUnits === undefined;
 
   const unitChecks = units.length
@@ -1433,24 +1466,18 @@ function openUserModal(userToEdit = null){
     const role = $('#mRole').value;
     const fullName = $('#mName').value.trim();
     let allowedUnits;
-    if(role === 'admin'){
-      allowedUnits = null;
-    } else if(allCb.checked){
-      allowedUnits = null;
-    } else {
-      allowedUnits = [...document.querySelectorAll('.u-unit:checked')].map(cb => cb.value);
-    }
+    if(role === 'admin'){ allowedUnits = null; }
+    else if(allCb.checked){ allowedUnits = null; }
+    else { allowedUnits = [...document.querySelectorAll('.u-unit:checked')].map(cb => cb.value); }
 
     try{
       if(isEdit){
         await updateUserBasic(userToEdit.id, { full_name: fullName, role });
         await saveUserUnits(userToEdit.id, allowedUnits);
-        // Update local user object
         userToEdit.allowed_units = allowedUnits;
         userToEdit.role = role;
         userToEdit.full_name = fullName;
         toast('ذخیره شد');
-        // If editing self, refresh
         if(S.user && S.user.id === userToEdit.id){
           S.user.allowed_units = allowedUnits;
           S.user.role = role;
@@ -1473,12 +1500,7 @@ function openUserModal(userToEdit = null){
           const { data: existing } = await sb.from('app_users').select('id').eq('username', username).limit(1);
           if(existing && existing.length) throw new Error('کاربر تکراری است');
         }
-        await createUserRecord({
-          username,
-          password_hash: hash,
-          full_name: fullName,
-          role
-        }, allowedUnits);
+        await createUserRecord({ username, password_hash: hash, full_name: fullName, role }, allowedUnits);
         toast('کاربر اضافه شد');
       }
       close();
@@ -1487,23 +1509,147 @@ function openUserModal(userToEdit = null){
   });
 }
 
+/* ===== EXCEL PARSING / EXPORT ===== */
+function excelRowToRecord(r){
+  const g = (...names) => {
+    for(const n of names){
+      const key = Object.keys(r).find(k => String(k).trim() === n);
+      if(key !== undefined && String(r[key]).trim() !== '') return String(r[key]).trim();
+    }
+    return '';
+  };
+  
+  const deadlineRaw = g('آخرین مهلت اجرای اقدام', 'آخرین مهلت', 'مهلت', 'deadline');
+  const deadline = deadlineRaw ? (parseJalali(deadlineRaw) || deadlineRaw) : '';
+  
+  const progressRaw = g('درصد پیشرفت', 'درصد', 'progress');
+  let progress = null;
+  if(progressRaw){
+    const num = parseInt(toLatin(progressRaw).replace(/[^\d-]/g, ''), 10);
+    if(!isNaN(num)) progress = Math.max(0, Math.min(100, num));
+  }
+  
+  return {
+    category: g('دسته') || null,
+    level: g('سطح پیشرفتگی') || null,
+    title: g('کنترل') || '',
+    evidence: g('شواهد') || '',
+    status: normalizeStatus(g('وضعیت پیاده‌سازی') || ''),
+    owner_unit: g('واحد مسئول رسیدگی') || null,
+    actions: g('اقدامات انجام شده تاکنون', 'اقدامات انجام شده', 'اقدامات') || '',
+    deadline,
+    progress,
+    notes: g('توضیحات', 'توضیح', 'یادداشت') || ''
+  };
+}
+
+function parseSheet(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => {
+      try{
+        const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        res(XLSX.utils.sheet_to_json(ws, { defval:'', raw:false }));
+      }catch(err){ rej(err); }
+    };
+    r.onerror = () => rej(new Error('خواندن فایل ناموفق'));
+    r.readAsArrayBuffer(file);
+  });
+}
+
+function exportPeriodToExcel(periodId){
+  const period = S.periods.find(p => p.id === periodId);
+  if(!period) return toast('دوره یافت نشد');
+  
+  // Load assessments for that period
+  const map = {};
+  // Try from current loaded assessments first
+  if(periodId === S.periodId){
+    Object.entries(S.assessments).forEach(([cid, a]) => { map[cid] = a; });
+  }
+  // Use allAssessments for other periods
+  S.allAssessments.filter(a => a.period_id === periodId).forEach(a => {
+    if(!map[a.control_id]) map[a.control_id] = mergeAxExtras(a);
+  });
+  
+  const rows = S.allControls.map((c, i) => {
+    const a = map[c.id] || {};
+    const prog = (a.progress !== null && a.progress !== undefined && a.progress !== '')
+      ? Number(a.progress)
+      : statusWeight(a.status || c.status || '');
+    return {
+      'ردیف': i + 1,
+      'دسته': c.category || '',
+      'سطح پیشرفتگی': c.level || '',
+      'کنترل': c.title || '',
+      'شواهد': c.evidence || '',
+      'وضعیت پیاده‌سازی': normalizeStatus(a.status || c.status || ''),
+      'واحد مسئول رسیدگی': c.owner_unit || '',
+      'اقدامات انجام شده تاکنون': a.actions || '',
+      'آخرین مهلت اجرای اقدام': a.deadline || '',
+      'درصد پیشرفت': prog,
+      'توضیحات': a.notes || ''
+    };
+  });
+  
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [
+    { wch: 6 }, { wch: 18 }, { wch: 12 }, { wch: 50 }, { wch: 50 },
+    { wch: 18 }, { wch: 25 }, { wch: 40 }, { wch: 18 }, { wch: 10 }, { wch: 30 }
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'کنترل‌ها');
+  const safeName = period.name.replace(/[\\/:*?"<>|]/g, '-');
+  XLSX.writeFile(wb, `کاشف-${safeName}-${todayJalali().replace(/\//g,'-')}.xlsx`);
+  toast('اکسل دانلود شد');
+}
+
 /* ===== IMPORT ===== */
 function viewImport(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
+  const noPeriods = S.periods.length === 0;
+  const noControls = S.allControls.length === 0;
+  
   return `
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> بارگذاری اکسل کنترل‌ها</h3>
+    <h3><span class="dot"></span> ${noPeriods ? 'بارگذاری اولیه (دوره اول)' : 'بارگذاری اکسل برای دوره'}</h3>
     <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
-      ستون‌های مورد نیاز: <b style="color:var(--txt)">دسته</b>، <b style="color:var(--txt)">سطح پیشرفتگی</b>، <b style="color:var(--txt)">کنترل</b>، <b style="color:var(--txt)">شواهد</b>، <b style="color:var(--txt)">وضعیت پیاده‌سازی</b>، <b style="color:var(--txt)">واحد مسئول رسیدگی</b>. ستون «ردیف» لازم نیست.
+      ستون‌ها: <b style="color:var(--txt)">دسته، سطح پیشرفتگی، کنترل، شواهد، وضعیت پیاده‌سازی، واحد مسئول رسیدگی، اقدامات انجام شده تاکنون، آخرین مهلت اجرای اقدام، درصد پیشرفت، توضیحات</b>.
+      ${noPeriods ? 'اولین بارگذاری به‌عنوان <b style="color:var(--txt)">دوره اول</b> ثبت می‌شود.' : 'ردیف‌ها بر اساس عنوان «کنترل» با رکوردهای موجود تطبیق داده می‌شوند.'}
     </p>
+    ${noPeriods ? `
+      <div class="field"><label>نام دوره اول</label>
+        <input id="firstPeriodName" value="دوره اول - ${todayJalali()}">
+      </div>
+    ` : `
+      <div class="field"><label>دوره هدف</label>
+        <select id="importPeriod">
+          ${S.periods.map(p => `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${p.name}${p.id===S.periodId?' (جاری)':''}</option>`).join('')}
+        </select>
+      </div>
+    `}
     <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
-      <button class="btn btn-primary" id="doImport">بارگذاری اکسل</button>
-      <button class="btn" id="wipeControls">حذف همه</button>
-      <button class="btn" id="addCtrlFromImport">+ افزودن دستی</button>
+      <button class="btn btn-primary" id="doImport">${noPeriods ? 'بارگذاری و ایجاد دوره اول' : 'بارگذاری برای این دوره'}</button>
+      <button class="btn" id="addCtrlFromImport">+ افزودن کنترل دستی</button>
+      ${!noControls ? `<button class="btn" id="wipeControls">حذف همه کنترل‌ها</button>` : ''}
     </div>
     <div id="importLog" style="font-size:11px;line-height:1.9;color:var(--muted)"></div>
   </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3><span class="dot"></span> خروجی اکسل دوره‌ها</h3>
+    ${S.periods.length ? `
+      <div class="toolbar" style="margin-bottom:0">
+        <select id="exportPeriodSel">
+          ${S.periods.map(p => `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${p.name}</option>`).join('')}
+        </select>
+        <button class="btn btn-primary" id="doExport">📥 دانلود اکسل</button>
+      </div>
+    ` : `<div class="empty">دوره‌ای برای خروجی وجود ندارد.</div>`}
+  </div>
+
   <div class="card">
     <h3><span class="dot"></span> وضعیت داده‌ها</h3>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1562,6 +1708,7 @@ function bindView(){
       const range = item.querySelector('.a-range');
       const num = item.querySelector('.a-num');
       const statusSel = item.querySelector('.a-status');
+      
       if(!isFirst && range && num && statusSel){
         const sync = v => {
           v = Math.max(0, Math.min(100, Math.round(Number(v)||0)));
@@ -1570,25 +1717,46 @@ function bindView(){
         };
         range.addEventListener('input', () => sync(range.value));
         num.addEventListener('input', () => sync(num.value));
+        statusSel.addEventListener('change', () => {
+          const w = statusWeight(statusSel.value);
+          range.value = w; num.value = w;
+        });
       }
+      
       item.querySelector('.a-save')?.addEventListener('click', async ev => {
         const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'ذخیره…';
         try{
-          let payload;
+          const deadlineInput = item.querySelector('.a-deadline');
+          const deadlineVal = deadlineInput.value ? (parseJalali(deadlineInput.value) || deadlineInput.value) : '';
+          
+          let statusVal, progressVal;
           if(isFirst){
-            const st = statusSel.value;
-            payload = { status: st, progress: statusWeight(st), actions: item.querySelector('.a-actions').value.trim(), updated_by: S.user?.username||'', updated_at: new Date().toISOString() };
+            statusVal = statusSel.value;
+            progressVal = statusWeight(statusVal);
           } else {
-            const pr = Math.max(0, Math.min(100, Math.round(Number(num.value)||0)));
-            payload = { status: statusFromProgress(pr), progress: pr, actions: item.querySelector('.a-actions').value.trim(), updated_by: S.user?.username||'', updated_at: new Date().toISOString() };
+            progressVal = Math.max(0, Math.min(100, Math.round(Number(num.value)||0)));
+            statusVal = statusFromProgress(progressVal);
           }
+          
+          const payload = {
+            status: statusVal,
+            progress: progressVal,
+            actions: item.querySelector('.a-actions').value.trim(),
+            deadline: deadlineVal,
+            notes: item.querySelector('.a-notes').value.trim(),
+            updated_by: S.user?.username || '',
+            updated_at: new Date().toISOString()
+          };
+          
           const fi = item.querySelector('.a-file');
           if(fi && fi.files && fi.files[0]){
             const up = await apiUpload(fi.files[0], cid);
             payload.file_url = up.url; payload.file_name = up.name;
           }
-          const saved = await apiSaveAssessment(cid, payload);
+          
+          const saved = await apiSaveAssessmentFor(S.periodId, cid, payload);
           S.assessments[cid] = saved;
+          
           const s = item.querySelector('.saved'); if(s){ s.style.display='inline'; setTimeout(()=>s.style.display='none',2000); }
           toast('ذخیره شد');
         }catch(err){ toast('خطا: '+err.message); }
@@ -1619,6 +1787,10 @@ function bindView(){
     c.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
       S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
       toast('دوره انتخاب شد'); c.innerHTML = viewPeriods(); bindView();
+    }));
+    c.querySelectorAll('[data-exportperiod]').forEach(b => b.addEventListener('click', async () => {
+      if(!S.allAssessments.length) await loadAllAssessments();
+      exportPeriodToExcel(b.dataset.exportperiod);
     }));
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
@@ -1658,71 +1830,142 @@ function bindView(){
       try{
         if(MODE==='local') await LocalDB.wipeControls();
         else { const { error } = await sb.from('controls').delete().not('id','is',null); if(error) throw error; }
-        await loadControls(); toast('حذف شد'); c.innerHTML = viewImport(); bindView();
+        await loadControls(); toast('حذف شد'); render();
       }catch(err){ toast('خطا: '+err.message); }
     });
+    $('#doExport')?.addEventListener('click', async () => {
+      const pid = $('#exportPeriodSel').value;
+      if(!pid) return toast('دوره را انتخاب کنید');
+      if(!S.allAssessments.length) await loadAllAssessments();
+      exportPeriodToExcel(pid);
+    });
+    
     $('#doImport')?.addEventListener('click', async () => {
       const file = $('#xlsFile').files[0]; const log = $('#importLog');
       if(!file) return toast('فایل را انتخاب کنید');
-      log.textContent = 'در حال خواندن…';
+      log.textContent = 'در حال خواندن فایل…';
       try{
         const rows = await parseSheet(file);
         if(!rows.length) throw new Error('فایل خالی است');
-        const mapped = rows.map(r => {
-          const g = (...names) => {
-            for(const n of names){
-              const key = Object.keys(r).find(k => String(k).trim()===n);
-              if(key!==undefined && String(r[key]).trim()!=='') return String(r[key]).trim();
+        const parsed = rows.map(excelRowToRecord).filter(r => r.title);
+        if(!parsed.length) throw new Error('ستون «کنترل» در فایل شناسایی نشد.');
+        
+        const isFirstUpload = S.periods.length === 0;
+        
+        if(isFirstUpload){
+          // Create first period
+          const periodName = ($('#firstPeriodName')?.value || '').trim() || `دوره اول - ${todayJalali()}`;
+          log.textContent = `ایجاد دوره «${periodName}»…`;
+          const period = await apiAddPeriod({ name: periodName });
+          S.periodId = period.id;
+          
+          // Create controls
+          log.textContent = `ایجاد ${fa(parsed.length)} کنترل…`;
+          if(MODE === 'local'){
+            await LocalDB.setControls(parsed.map(r => ({
+              category: r.category, level: r.level, title: r.title,
+              evidence: r.evidence, status: r.status, owner_unit: r.owner_unit
+            })));
+          } else {
+            const del = await sb.from('controls').delete().not('id','is',null);
+            if(del.error) throw del.error;
+            const CH = 100;
+            for(let i = 0; i < parsed.length; i += CH){
+              const part = parsed.slice(i, i+CH).map((r,idx) => ({
+                row_no: i+idx+1,
+                category: r.category, level: r.level, title: r.title,
+                evidence: r.evidence, status: r.status, owner_unit: r.owner_unit
+              }));
+              const { error } = await sb.from('controls').insert(part);
+              if(error) throw error;
+              log.textContent = `کنترل‌ها: ${fa(Math.min(i+CH, parsed.length))} از ${fa(parsed.length)}`;
             }
-            return '';
-          };
-          return {
-            category: g('دسته')||null,
-            level: g('سطح پیشرفتگی')||null,
-            title: g('کنترل')||'',
-            evidence: g('شواهد')||'',
-            status: normalizeStatus(g('وضعیت پیاده‌سازی')||''),
-            owner_unit: g('واحد مسئول رسیدگی')||null
-          };
-        }).filter(x=>x.title);
-        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند.');
-        log.textContent = `${fa(mapped.length)} رکورد…`;
-        if(MODE==='local'){
-          await LocalDB.setControls(mapped);
-        } else {
-          const del = await sb.from('controls').delete().not('id','is',null);
-          if(del.error) throw del.error;
-          const CH = 100;
-          for(let i = 0; i < mapped.length; i += CH){
-            const part = mapped.slice(i, i+CH).map((r,idx) => ({ row_no: i+idx+1, ...r }));
-            const { error } = await sb.from('controls').insert(part);
-            if(error) throw error;
-            log.textContent = `${fa(Math.min(i+CH, mapped.length))} از ${fa(mapped.length)}`;
           }
+          
+          await loadPeriods();
+          await loadControls();
+          S.periodId = period.id;
+          renderPeriodSelect();
+          
+          // Create assessments for first period
+          log.textContent = `ثبت ارزیابی دوره اول…`;
+          for(let i = 0; i < parsed.length; i++){
+            const r = parsed[i];
+            const ctrl = S.allControls.find(c => c.title === r.title);
+            if(!ctrl) continue;
+            const progress = r.progress !== null ? r.progress : statusWeight(r.status);
+            await apiSaveAssessmentFor(period.id, ctrl.id, {
+              status: r.status,
+              progress: progress,
+              actions: r.actions,
+              deadline: r.deadline,
+              notes: r.notes,
+              updated_by: S.user?.username || '',
+              updated_at: new Date().toISOString()
+            });
+            if(i % 20 === 0) log.textContent = `ارزیابی: ${fa(i+1)} از ${fa(parsed.length)}`;
+          }
+          
+          await loadAssessments();
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره اول با ${fa(parsed.length)} کنترل و ارزیابی ایجاد شد.</span>`;
+          toast('دوره اول ایجاد شد');
+          
+        } else {
+          // Upload for existing period
+          const targetPid = $('#importPeriod').value;
+          if(!targetPid) throw new Error('دوره هدف را انتخاب کنید');
+          const targetPeriod = S.periods.find(p => p.id === targetPid);
+          if(!targetPeriod) throw new Error('دوره یافت نشد');
+          
+          log.textContent = `بارگذاری برای دوره «${targetPeriod.name}»…`;
+          
+          let createdCount = 0;
+          for(let i = 0; i < parsed.length; i++){
+            const r = parsed[i];
+            let ctrl = S.allControls.find(c => c.title === r.title);
+            
+            if(!ctrl){
+              // Create new control
+              await apiAddControl({
+                row_no: S.allControls.length + 1,
+                category: r.category, level: r.level, title: r.title,
+                evidence: r.evidence, status: r.status, owner_unit: r.owner_unit
+              });
+              await loadControls();
+              ctrl = S.allControls.find(c => c.title === r.title);
+              createdCount++;
+            }
+            
+            if(!ctrl) continue;
+            
+            const progress = r.progress !== null ? r.progress : statusWeight(r.status);
+            await apiSaveAssessmentFor(targetPid, ctrl.id, {
+              status: r.status,
+              progress: progress,
+              actions: r.actions,
+              deadline: r.deadline,
+              notes: r.notes,
+              updated_by: S.user?.username || '',
+              updated_at: new Date().toISOString()
+            });
+            
+            if(i % 20 === 0) log.textContent = `ثبت: ${fa(i+1)} از ${fa(parsed.length)}`;
+          }
+          
+          if(targetPid === S.periodId) await loadAssessments();
+          await loadAllAssessments();
+          
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${fa(parsed.length)} ردیف در دوره «${esc(targetPeriod.name)}» ثبت شد${createdCount>0?` — ${fa(createdCount)} کنترل جدید اضافه شد`:''}.</span>`;
+          toast('بارگذاری کامل شد');
         }
-        await loadControls();
-        log.innerHTML = `<span style="color:var(--txt);font-weight:600">بارگذاری کامل شد — ${fa(mapped.length)} کنترل</span>`;
-        toast('بارگذاری کامل شد'); render();
+        
+        render();
       }catch(err){
         log.innerHTML = `<span style="color:var(--txt)">خطا: ${esc(err.message||err)}</span>`;
         toast('خطا در بارگذاری');
       }
     });
   }
-}
-function parseSheet(file){
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = e => {
-      try{
-        const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        res(XLSX.utils.sheet_to_json(ws, { defval:'', raw:false }));
-      }catch(err){ rej(err); }
-    };
-    r.onerror = () => rej(new Error('خواندن فایل ناموفق'));
-    r.readAsArrayBuffer(file);
-  });
 }
 
 /* ===== ADD CONTROL MODAL ===== */
@@ -1731,22 +1974,14 @@ function openAddControlModal(){
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
     <button class="close-x" id="closeModal">×</button>
     <h3>افزودن کنترل جدید</h3>
-    <div class="field"><label>دسته</label>
-      <input id="mCat" placeholder="مثلاً: امنیت شبکه"></div>
+    <div class="field"><label>دسته</label><input id="mCat" placeholder="مثلاً: امنیت شبکه"></div>
     <div class="field"><label>سطح پیشرفتگی</label>
-      <select id="mLevel">
-        <option value="پایه">پایه</option>
-        <option value="مقدماتی">مقدماتی</option>
-        <option value="پیشرفته">پیشرفته</option>
-      </select></div>
-    <div class="field"><label>متن کنترل</label>
-      <textarea id="mTitle"></textarea></div>
-    <div class="field"><label>شواهد</label>
-      <textarea id="mEvidence"></textarea></div>
-    <div class="field"><label>وضعیت پیاده‌سازی (اولیه)</label>
+      <select id="mLevel"><option value="پایه">پایه</option><option value="مقدماتی">مقدماتی</option><option value="پیشرفته">پیشرفته</option></select></div>
+    <div class="field"><label>متن کنترل</label><textarea id="mTitle"></textarea></div>
+    <div class="field"><label>شواهد</label><textarea id="mEvidence"></textarea></div>
+    <div class="field"><label>وضعیت پیاده‌سازی</label>
       <select id="mStatus">${STATUS_OPTS.map(v=>`<option value="${v}">${v}</option>`).join('')}</select></div>
-    <div class="field"><label>واحد مسئول رسیدگی</label>
-      <input id="mUnit" placeholder="مثلاً: واحد مدیریت زیرساخت و شبکه"></div>
+    <div class="field"><label>واحد مسئول رسیدگی</label><input id="mUnit" placeholder="واحد"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
       <button class="btn btn-primary" id="mSave">افزودن</button>
       <button class="btn" id="mCancel">انصراف</button>
@@ -1805,7 +2040,9 @@ function openControlModal(id){
         <div class="bar" style="flex:1;min-width:120px;margin:0"><i style="width:${pr}%"></i></div>
         <b>${fa(pr)}٪</b>
       </div></div>
-    ${a.actions?`<div class="kv"><div class="k">اقدامات این دوره</div><div class="v">${esc(a.actions)}</div></div>`:''}
+    ${a.deadline?`<div class="kv"><div class="k">آخرین مهلت اجرای اقدام</div><div class="v">${displayDate(a.deadline)}</div></div>`:''}
+    ${a.actions?`<div class="kv"><div class="k">اقدامات انجام شده تاکنون</div><div class="v">${esc(a.actions)}</div></div>`:''}
+    ${a.notes?`<div class="kv"><div class="k">توضیحات</div><div class="v">${esc(a.notes)}</div></div>`:''}
     ${a.file_url?`<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">${esc(a.file_name||'دانلود فایل')}</a></div></div>`:''}
     ${admin?`<button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">فرم ارزیابی این واحد</button>`:''}
   </div></div>`;
@@ -1815,7 +2052,7 @@ function openControlModal(id){
   $('#goAssess')?.addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
 }
 
-/* ===== GLOBAL ===== */
+/* ===== GLOBAL EVENTS ===== */
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('#loginBtn'), err = $('#loginErr');
