@@ -147,7 +147,6 @@ input[type=range]{width:100%;accent-color:var(--txt);margin-top:8px}
 input[type=range]:disabled{opacity:.5;cursor:not-allowed}
 textarea{width:100%;padding:10px 12px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;resize:vertical;min-height:66px;line-height:1.8;font-size:11.5px}
 textarea:focus{background:var(--faint)}
-textarea:disabled{background:var(--faint);color:var(--muted);cursor:not-allowed;border-color:var(--line2)}
 input[type=file]{width:100%;padding:7px;border:1px dashed var(--line2);background:var(--white);color:var(--muted);font-size:10.5px;cursor:pointer}
 .as-foot{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
 .saved{color:var(--txt);font-size:10.5px;font-weight:600;letter-spacing:.12em}
@@ -201,15 +200,30 @@ tbody td{font-variant-numeric:tabular-nums}
 
 .ro-notice{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:10px;font-weight:600;letter-spacing:.08em;border:1px solid var(--line2);background:var(--faint);color:var(--muted)}
 
-/* unit access checkboxes */
-.unit-box{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding:2px}
-.unit-check{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--line2);cursor:pointer;font-size:11.5px;background:var(--white);transition:.12s}
-.unit-check:hover{background:var(--faint);border-color:var(--txt)}
-.unit-check.all{border-color:var(--txt);background:var(--faint);font-weight:600}
-.unit-check input{cursor:pointer;flex-shrink:0}
+/* ============ USER MODAL (compact, actions sticky) ============ */
+.user-modal{display:flex;flex-direction:column;max-height:90dvh;padding:0 !important;overflow:hidden}
+.um-head{padding:16px 22px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.um-head h3{margin:0 !important;padding:0 !important;border:0 !important;font-size:13px;font-weight:600;flex:1}
+.um-head .close-x{position:static !important;float:none !important;margin-right:auto;flex-shrink:0}
+.um-body{padding:14px 22px;overflow-y:auto;flex:1;min-height:0}
+.um-body .field{margin-bottom:10px}
+.um-body .field label{font-size:9.5px;margin-bottom:4px}
+.um-body .field input,.um-body .field select{padding:8px 10px;font-size:12px}
+.um-foot{padding:10px 22px;border-top:1px solid var(--line);display:flex;gap:8px;flex-shrink:0;background:var(--white)}
+.unit-box{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;max-height:180px;overflow-y:auto;padding:2px;border:1px solid var(--line2)}
+.unit-check{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid transparent;cursor:pointer;font-size:10.5px;background:var(--white);transition:.1s;line-height:1.3}
+.unit-check:hover{background:var(--faint);border-color:var(--line)}
+.unit-check.all{grid-column:1/-1;background:var(--faint);border-color:var(--line);font-weight:600}
+.unit-check input{cursor:pointer;flex-shrink:0;margin:0}
 .unit-check input:disabled{cursor:not-allowed}
-.unit-check.disabled{opacity:.55;cursor:not-allowed}
-.unit-check.disabled:hover{background:var(--white);border-color:var(--line2)}
+.unit-check.disabled{opacity:.5;cursor:not-allowed}
+.unit-check.disabled:hover{background:var(--white);border-color:transparent}
+@media(max-width:480px){
+  .unit-box{grid-template-columns:1fr}
+  .um-head{padding:14px 16px 10px}
+  .um-body{padding:12px 16px}
+  .um-foot{padding:10px 16px}
+}
 
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
@@ -320,7 +334,7 @@ async function sha256(str){
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-/* ============ JALALI ============ */
+/* ===== JALALI ===== */
 const JALALI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 const JALALI_WEEKDAYS = ['ش','ی','د','س','چ','پ','ج'];
 function g2j(gy, gm, gd){
@@ -431,7 +445,7 @@ function openDatePicker(currentValue, onPick){
   render();
 }
 
-/* ============ STATUS ============ */
+/* ===== STATUS ===== */
 const STATUS_OPTS = ['عدم پیاده‌سازی','در حال پیاده‌سازی','پیاده‌سازی کامل'];
 function normalizeStatus(s){
   s = String(s||'').trim();
@@ -463,7 +477,7 @@ function statusClass(s){
   return 'st-bad';
 }
 
-/* ============ MODE ============ */
+/* ===== MODE ===== */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'online';
 let sb = null;
@@ -486,7 +500,8 @@ function updateConnBox(){
 }
 const LS = {
   read(k){ try { return JSON.parse(localStorage.getItem('kashaf_'+k)||'null'); } catch(e){ return null; } },
-  write(k,v){ localStorage.setItem('kashaf_'+k, JSON.stringify(v)); }
+  write(k,v){ localStorage.setItem('kashaf_'+k, JSON.stringify(v)); },
+  del(k){ localStorage.removeItem('kashaf_'+k); }
 };
 function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
   const r = Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16);
@@ -508,6 +523,7 @@ const LocalDB = {
   },
   save(t){ LS.write('tables', t); },
   async findUser(u){ return this.tables().users.find(x => x.username === u) || null; },
+  async findUserById(id){ return this.tables().users.find(x => x.id === id) || null; },
   async addUser(u){ const t = this.tables(); t.users.push(u); this.save(t); },
   async delUser(id){ const t = this.tables(); t.users = t.users.filter(u=>u.id!==id); this.save(t); },
   async updateUser(id, patch){ const t = this.tables(); const u = t.users.find(x=>x.id===id); if(u){ Object.assign(u, patch); this.save(t); } },
@@ -579,7 +595,52 @@ async function testConnection(){
   }
 }
 
-/* ============ STATE ============ */
+/* ===== PERMISSIONS HELPERS (with localStorage fallback if column missing) ===== */
+function hasUnitsColumn(user){
+  return user && Object.prototype.hasOwnProperty.call(user, 'allowed_units');
+}
+function getUserUnits(user){
+  if(MODE === 'local') return user.allowed_units;
+  if(hasUnitsColumn(user)) return user.allowed_units;
+  // Column missing - use localStorage fallback
+  const v = LS.read('units_' + user.id);
+  return (v === null || v === undefined) ? null : v; // null = all access
+}
+async function saveUserUnits(userId, units){
+  if(MODE === 'local'){
+    await LocalDB.updateUser(userId, { allowed_units: units });
+    return;
+  }
+  // Always back up to localStorage
+  LS.write('units_' + userId, units);
+  // Try to save to column
+  const { error } = await sb.from('app_users').update({ allowed_units: units }).eq('id', userId);
+  if(error && !String(error.message || '').toLowerCase().includes('allowed_units')){
+    throw error;
+  }
+  // If error is about missing column, we silently accept (localStorage is our backup)
+}
+async function updateUserBasic(userId, patch){
+  if(MODE === 'local'){
+    await LocalDB.updateUser(userId, patch);
+    return;
+  }
+  const { error } = await sb.from('app_users').update(patch).eq('id', userId);
+  if(error) throw error;
+}
+async function createUserRecord(record, units){
+  if(MODE === 'local'){
+    await LocalDB.addUser({ id: uuid(), ...record, allowed_units: units });
+    return;
+  }
+  // Insert without allowed_units first (works whether or not column exists)
+  const { data: inserted, error } = await sb.from('app_users').insert(record).select().single();
+  if(error) throw error;
+  // Then try to save units
+  await saveUserUnits(inserted.id, units);
+}
+
+/* ===== STATE ===== */
 const S = {
   user:null, controls:[], allControls:[], periods:[], periodId:null,
   assessments:{}, allAssessments:[], units:[], allUnits:[], cats:[], levels:[],
@@ -599,24 +660,21 @@ const NAV = [
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
 
 function isAdmin(){ return S.user && S.user.role === 'admin'; }
-function visibleNav(){
-  if(isAdmin()) return NAV;
-  return NAV.filter(n => !n.adminOnly);
-}
+function visibleNav(){ return isAdmin() ? NAV : NAV.filter(n => !n.adminOnly); }
 function periodIndex(){ return S.periods.findIndex(p => p.id === S.periodId); }
 function isFirstPeriod(){ return periodIndex() === 0; }
 
-/* apply unit access to a list of controls */
 function applyUnitAccess(all){
   if(!S.user) return all;
   if(S.user.role === 'admin') return all;
   const allowed = S.user.allowed_units;
+  if(allowed === null || allowed === undefined) return all; // full viewer
   if(!Array.isArray(allowed)) return [];
   if(allowed.length === 0) return [];
   return all.filter(c => allowed.includes(c.owner_unit));
 }
 
-/* ============ AUTH ============ */
+/* ===== AUTH ===== */
 async function doLogin(username, password){
   const hash = await sha256(password);
   if(MODE==='local'){
@@ -644,6 +702,8 @@ async function doLogin(username, password){
   return data[0];
 }
 function startSession(user){
+  // Normalize units
+  user.allowed_units = getUserUnits(user);
   S.user = user;
   $('#loginScreen').classList.add('hidden');
   $('#app').classList.remove('hidden');
@@ -661,7 +721,7 @@ function logout(){
   updateConnBox();
 }
 
-/* ============ API ============ */
+/* ===== API ===== */
 async function apiListControls(){
   if(MODE==='local') return LocalDB.listControls();
   const { data, error } = await sb.from('controls').select('*').order('row_no',{ascending:true});
@@ -734,12 +794,12 @@ async function apiUpload(file, controlId){
   return { url: data.publicUrl, name: file.name };
 }
 
-/* ============ LOADERS ============ */
+/* ===== LOADERS ===== */
 async function loadControls(){
   const all = await apiListControls();
   S.allControls = all;
-  S.controls = applyUnitAccess(all);
   S.allUnits = [...new Set(all.map(c=>c.owner_unit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
+  S.controls = applyUnitAccess(all);
   S.units = [...new Set(S.controls.map(c=>c.owner_unit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
   S.cats = [...new Set(S.controls.map(c=>c.category).filter(Boolean))];
   S.levels = [...new Set(S.controls.map(c=>c.level).filter(Boolean))];
@@ -778,7 +838,7 @@ function progressWithMap(c, map){
   return statusWeight((a && a.status) || c.status);
 }
 
-/* ============ BOOT ============ */
+/* ===== BOOT ===== */
 async function bootApp(){
   const content = $('#content');
   content.innerHTML = `<div class="card"><div class="spin"></div><div class="empty">در حال بارگذاری…</div></div>`;
@@ -824,7 +884,7 @@ function render(){
   if(S.view==='trend') ensureTrendData();
 }
 
-/* ============ DASHBOARD ============ */
+/* ===== DASHBOARD ===== */
 function viewDashboard(){
   const total = S.controls.length;
   const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی کامل':0,'غیر قابل احراز':0};
@@ -877,7 +937,7 @@ function viewDashboard(){
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
   const idx = periodIndex();
-  const scopeLabel = isAdmin() ? 'همه واحدها' : `${fa(S.units.length)} واحد`;
+  const scopeLabel = isAdmin() ? 'همه واحدها' : (S.user.allowed_units && S.user.allowed_units.length ? `${fa(S.units.length)} واحد مجاز` : `${fa(S.units.length)} واحد`);
 
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
@@ -945,7 +1005,7 @@ function viewDashboard(){
   </div>`;
 }
 
-/* ============ CONTROLS ============ */
+/* ===== CONTROLS ===== */
 function filteredControls(){
   const f = S.filters;
   return S.controls.filter(c => {
@@ -1018,7 +1078,7 @@ function viewControls(){
   `;
 }
 
-/* ============ ASSESS ============ */
+/* ===== ASSESS ===== */
 function viewAssess(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   if(!S.periods.length) return `<div class="card"><div class="empty">ابتدا از تب «مدیریت دوره‌ها» یک دوره بسازید.</div></div>`;
@@ -1043,7 +1103,7 @@ function viewAssess(){
       </div>
     </div>
     ${first ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:10px">
-      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است.
+      وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» قابل ثبت است.
     </div>` : ''}
   </div>
   ${list.length ? list.map(c=>{
@@ -1114,7 +1174,7 @@ function viewAssess(){
   `;
 }
 
-/* ============ TREND ============ */
+/* ===== TREND ===== */
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
@@ -1203,7 +1263,7 @@ async function ensureTrendData(){
   if(S.view==='trend'){ $('#content').innerHTML = viewTrend(); bindView(); }
 }
 
-/* ============ PERIODS ============ */
+/* ===== PERIODS ===== */
 function viewPeriods(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
@@ -1243,26 +1303,21 @@ function viewPeriods(){
   </div>`;
 }
 
-/* ============ USERS ============ */
+/* ===== USERS ===== */
 function userAccessText(u){
-  if(u.role === 'admin') return 'همه واحدها (مدیر)';
-  if(!Array.isArray(u.allowed_units)){
-    return u.allowed_units === null || u.allowed_units === undefined ? 'همه واحدها' : '—';
-  }
-  if(u.allowed_units.length === 0) return 'بدون دسترسی';
-  if(u.allowed_units.length > 2){
-    return u.allowed_units.slice(0,2).join('، ') + ` +${u.allowed_units.length - 2}`;
-  }
-  return u.allowed_units.join('، ');
+  if(u.role === 'admin') return 'همه (مدیر)';
+  const units = u.allowed_units;
+  if(units === null || units === undefined) return 'همه واحدها';
+  if(!Array.isArray(units)) return '—';
+  if(units.length === 0) return 'بدون دسترسی';
+  if(units.length > 2) return units.slice(0,2).join('، ') + ` +${units.length-2}`;
+  return units.join('، ');
 }
 function viewUsers(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
   <div class="card" style="margin-bottom:16px;padding:14px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-    <div style="flex:1;min-width:0">
-      <div style="font-size:12px;font-weight:600;margin-bottom:2px">مدیریت کاربران</div>
-      <div style="font-size:10.5px;color:var(--muted);line-height:1.7">برای هر کاربر می‌توانید واحدهای تحت مسئولیت را تعیین کنید — کاربر عادی فقط به کنترل‌های همان واحدها دسترسی دارد.</div>
-    </div>
+    <div style="flex:1;min-width:0;font-size:12px;font-weight:600">مدیریت کاربران</div>
     <button class="btn btn-primary" id="addUserBtn">+ افزودن کاربر</button>
   </div>
   <div class="card"><h3><span class="dot"></span> کاربران</h3><div id="usersList"><div class="spin"></div></div></div>`;
@@ -1274,6 +1329,8 @@ async function renderUsersList(){
     let users;
     if(MODE==='local') users = await LocalDB.listUsers();
     else { const {data,error} = await sb.from('app_users').select('*').order('created_at',{ascending:true}); if(error) throw error; users = data||[]; }
+    // normalize allowed_units for display
+    users.forEach(u => { u.allowed_units = getUserUnits(u); });
     host.innerHTML = `<div class="tbl-wrap"><table>
       <thead><tr><th>نام کاربری</th><th>نام</th><th>نقش</th><th>دسترسی</th><th>عملیات</th></tr></thead>
       <tbody>${users.map(u=>`<tr>
@@ -1298,15 +1355,14 @@ function openUserModal(userToEdit = null){
   if(!isAdmin()) return;
   const isEdit = !!userToEdit;
   const units = S.allUnits.length ? S.allUnits : S.units;
-  const currentAllowed = isEdit ? userToEdit.allowed_units : null;
+  const currentUnits = isEdit ? userToEdit.allowed_units : null;
   const currentRole = isEdit ? userToEdit.role : 'user';
-  const isAll = !currentAllowed || (Array.isArray(currentAllowed) && currentAllowed.length === 0 && currentRole !== 'user');
-  // determine all-state: null → all, admin → all
-  const treatAll = currentRole === 'admin' || currentAllowed === null || currentAllowed === undefined;
+  // treatAll default for new user = true
+  const treatAll = currentRole === 'admin' || currentUnits === null || currentUnits === undefined;
 
   const unitChecks = units.length
     ? units.map(u => {
-        const checked = !treatAll && Array.isArray(currentAllowed) && currentAllowed.includes(u) ? 'checked' : '';
+        const checked = !treatAll && Array.isArray(currentUnits) && currentUnits.includes(u) ? 'checked' : '';
         const dis = treatAll ? 'disabled' : '';
         const cls = treatAll ? 'unit-check disabled' : 'unit-check';
         return `<label class="${cls}">
@@ -1314,37 +1370,40 @@ function openUserModal(userToEdit = null){
           <span>${esc(u)}</span>
         </label>`;
       }).join('')
-    : `<div style="padding:10px;font-size:10.5px;color:var(--dim);text-align:center">واحدی در سامانه ثبت نشده است</div>`;
+    : `<div style="padding:10px;font-size:10.5px;color:var(--dim);text-align:center;grid-column:1/-1">واحدی ثبت نشده</div>`;
 
-  $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
-    <button class="close-x" id="closeModal">×</button>
-    <h3>${isEdit ? 'ویرایش کاربر' : 'افزودن کاربر جدید'}</h3>
-    <div class="field"><label>نام کاربری</label>
-      <input id="mUser" value="${isEdit ? esc(userToEdit.username) : ''}" ${isEdit ? 'disabled style="background:var(--faint);color:var(--muted)"' : ''} placeholder="username"></div>
-    ${!isEdit ? `<div class="field"><label>رمز عبور</label>
-      <input id="mPass" type="password" placeholder="رمز"></div>` : ''}
-    <div class="field"><label>نام کامل</label>
-      <input id="mName" value="${isEdit ? esc(userToEdit.full_name||'') : ''}" placeholder="نام و نام خانوادگی"></div>
-    <div class="field"><label>نقش</label>
-      <select id="mRole">
-        <option value="user" ${currentRole==='user'?'selected':''}>کاربر عادی — محدود به واحدهای انتخابی</option>
-        <option value="admin" ${currentRole==='admin'?'selected':''}>مدیر سامانه — دسترسی کامل</option>
-      </select></div>
-
-    <div id="unitsBox" style="${currentRole==='admin' ? 'display:none' : ''}">
-      <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:.12em;font-weight:500">دسترسی به واحدها</label>
-      <label class="unit-check all" style="margin-bottom:6px">
-        <input type="checkbox" id="allUnits" ${treatAll?'checked':''}>
-        <b>همه واحدها (مشاهده همه)</b>
-      </label>
-      <div class="unit-box" id="unitsList">${unitChecks}</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.7">
-        کاربر عادی فقط کنترل‌های واحدهای انتخاب‌شده را در داشبورد، لیست کنترل‌ها و روند مشاهده خواهد کرد.
+  $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box user-modal">
+    <div class="um-head">
+      <h3>${isEdit ? 'ویرایش کاربر' : 'افزودن کاربر جدید'}</h3>
+      <button class="close-x" id="closeModal">×</button>
+    </div>
+    <div class="um-body">
+      <div class="field"><label>نام کاربری</label>
+        <input id="mUser" value="${isEdit ? esc(userToEdit.username) : ''}" ${isEdit ? 'disabled style="background:var(--faint);color:var(--muted)"' : ''} placeholder="username"></div>
+      ${!isEdit ? `<div class="field"><label>رمز عبور</label>
+        <input id="mPass" type="password" placeholder="رمز"></div>` : ''}
+      <div class="field"><label>نام کامل</label>
+        <input id="mName" value="${isEdit ? esc(userToEdit.full_name||'') : ''}" placeholder="نام و نام خانوادگی"></div>
+      <div class="field"><label>نقش</label>
+        <select id="mRole">
+          <option value="user" ${currentRole==='user'?'selected':''}>کاربر عادی</option>
+          <option value="admin" ${currentRole==='admin'?'selected':''}>مدیر سامانه</option>
+        </select></div>
+      <div id="unitsBox" style="${currentRole==='admin' ? 'display:none' : ''}">
+        <div class="field" style="margin-bottom:0">
+          <label>دسترسی به واحدها</label>
+          <div class="unit-box">
+            <label class="unit-check all">
+              <input type="checkbox" id="allUnits" ${treatAll?'checked':''}>
+              <span>همه واحدها</span>
+            </label>
+            ${unitChecks}
+          </div>
+        </div>
       </div>
     </div>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
-      <button class="btn btn-primary" id="mSave">${isEdit ? 'ذخیره تغییرات' : 'افزودن'}</button>
+    <div class="um-foot">
+      <button class="btn btn-primary" id="mSave">${isEdit ? 'ذخیره' : 'افزودن'}</button>
       <button class="btn" id="mCancel">انصراف</button>
     </div>
   </div></div>`;
@@ -1373,25 +1432,36 @@ function openUserModal(userToEdit = null){
   $('#mSave').addEventListener('click', async () => {
     const role = $('#mRole').value;
     const fullName = $('#mName').value.trim();
-    let allowedUnits = null;
-    if(role !== 'admin' && !allCb.checked){
+    let allowedUnits;
+    if(role === 'admin'){
+      allowedUnits = null;
+    } else if(allCb.checked){
+      allowedUnits = null;
+    } else {
       allowedUnits = [...document.querySelectorAll('.u-unit:checked')].map(cb => cb.value);
     }
-    // role === 'admin'  → null (full)
-    // role === 'user' + allUnits checked → null (full read)
-    // role === 'user' + specific checked → array
-    // role === 'user' + nothing checked → []
 
     try{
       if(isEdit){
-        const patch = { full_name: fullName, role, allowed_units: allowedUnits };
-        if(MODE==='local'){
-          await LocalDB.updateUser(userToEdit.id, patch);
-        } else {
-          const { error } = await sb.from('app_users').update(patch).eq('id', userToEdit.id);
-          if(error) throw error;
-        }
+        await updateUserBasic(userToEdit.id, { full_name: fullName, role });
+        await saveUserUnits(userToEdit.id, allowedUnits);
+        // Update local user object
+        userToEdit.allowed_units = allowedUnits;
+        userToEdit.role = role;
+        userToEdit.full_name = fullName;
         toast('ذخیره شد');
+        // If editing self, refresh
+        if(S.user && S.user.id === userToEdit.id){
+          S.user.allowed_units = allowedUnits;
+          S.user.role = role;
+          S.user.full_name = fullName;
+          $('#uName').textContent = fullName || userToEdit.username;
+          $('#uRole').textContent = role==='admin' ? 'MANAGER' : 'VIEWER';
+          await loadControls();
+          render();
+          close();
+          return;
+        }
       } else {
         const username = $('#mUser').value.trim();
         const password = $('#mPass').value.trim();
@@ -1399,17 +1469,16 @@ function openUserModal(userToEdit = null){
         const hash = await sha256(password);
         if(MODE==='local'){
           if(await LocalDB.findUser(username)) throw new Error('کاربر تکراری است');
-          await LocalDB.addUser({ id:uuid(), username, password_hash:hash, full_name:fullName, role, allowed_units:allowedUnits });
         } else {
-          const record = { username, password_hash:hash, full_name:fullName, role, allowed_units:allowedUnits };
-          const { error } = await sb.from('app_users').insert(record);
-          if(error){
-            if(String(error.message).includes('allowed_units')){
-              throw new Error('ستون allowed_units در پایگاه داده وجود ندارد. با مدیر فنی تماس بگیرید.');
-            }
-            throw error;
-          }
+          const { data: existing } = await sb.from('app_users').select('id').eq('username', username).limit(1);
+          if(existing && existing.length) throw new Error('کاربر تکراری است');
         }
+        await createUserRecord({
+          username,
+          password_hash: hash,
+          full_name: fullName,
+          role
+        }, allowedUnits);
         toast('کاربر اضافه شد');
       }
       close();
@@ -1418,7 +1487,7 @@ function openUserModal(userToEdit = null){
   });
 }
 
-/* ============ IMPORT ============ */
+/* ===== IMPORT ===== */
 function viewImport(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
@@ -1438,14 +1507,14 @@ function viewImport(){
   <div class="card">
     <h3><span class="dot"></span> وضعیت داده‌ها</h3>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <span class="badge badge-soft">کنترل: ${fa(S.controls.length)}</span>
+      <span class="badge badge-soft">کنترل: ${fa(S.allControls.length)}</span>
       <span class="badge badge-soft">واحد: ${fa(S.allUnits.length)}</span>
       <span class="badge badge-soft">دوره: ${fa(S.periods.length)}</span>
     </div>
   </div>`;
 }
 
-/* ============ BIND ============ */
+/* ===== BIND ===== */
 function bindView(){
   const c = $('#content');
   const admin = isAdmin();
@@ -1571,6 +1640,7 @@ function bindView(){
         try{
           if(MODE==='local') await LocalDB.delUser(b.dataset.deluser);
           else { const { error } = await sb.from('app_users').delete().eq('id', b.dataset.deluser); if(error) throw error; }
+          LS.del('units_' + b.dataset.deluser);
           toast('حذف شد'); renderUsersList();
         }catch(err){ toast('خطا: '+err.message); }
       }));
@@ -1655,7 +1725,7 @@ function parseSheet(file){
   });
 }
 
-/* ============ ADD CONTROL MODAL ============ */
+/* ===== ADD CONTROL MODAL ===== */
 function openAddControlModal(){
   if(!isAdmin()) return;
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
@@ -1711,7 +1781,7 @@ function openAddControlModal(){
   });
 }
 
-/* ============ CONTROL DETAIL MODAL ============ */
+/* ===== CONTROL DETAIL MODAL ===== */
 function openControlModal(id){
   const c = S.controls.find(x=>x.id===id); if(!c) return;
   const a = S.assessments[c.id] || {};
@@ -1745,7 +1815,7 @@ function openControlModal(id){
   $('#goAssess')?.addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
 }
 
-/* ============ GLOBAL ============ */
+/* ===== GLOBAL ===== */
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('#loginBtn'), err = $('#loginErr');
