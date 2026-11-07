@@ -8,7 +8,7 @@
 <style>
 :root{--white:#fff;--line:#e4e4e7;--line2:#d4d4d8;--txt:#09090b;--txt2:#3f3f46;--muted:#71717a;--dim:#a1a1aa;--faint:#f4f4f5}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;min-height:100%}
+html,body{margin:0;padding:0;height:100%;height:100dvh;overflow:hidden}
 body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--white);color:var(--txt);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line2)}
 a{color:var(--txt);text-decoration:none}
@@ -55,9 +55,9 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
 
-/* APP - sidebar fixed, main scrolls */
-#app{display:block;min-height:100dvh}
-.sidebar{position:fixed;top:0;right:0;width:220px;height:100dvh;z-index:50;background:var(--white);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
+/* APP - Fixed sidebar, main column scrolls internally */
+#app{height:100vh;height:100dvh;display:block}
+.sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--white);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
 .brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
 .brand b{display:block;font-size:13px;font-weight:600;letter-spacing:.16em;margin-bottom:4px}
 .brand span{display:block;font-size:10px;color:var(--muted);letter-spacing:.06em}
@@ -75,14 +75,14 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-line.local::before{background:var(--dim)}
 .side-foot .btn{padding:7px;font-size:11px;letter-spacing:.08em}
 
-.main{margin-right:220px;min-height:100dvh;display:flex;flex-direction:column}
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--txt)}
+.main{margin-right:220px;height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:0}
+.topbar{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--txt);z-index:30}
 .topbar h2{margin:0;font-size:13px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.06em}
 .icon-btn{width:34px;height:34px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;display:none;place-items:center;font-size:15px;flex:0 0 auto}
 .icon-btn:hover{background:var(--faint)}
 .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .top-actions select{padding:8px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:200px;font-variant-numeric:tabular-nums}
-.content{flex:1;padding:24px;width:100%;min-width:0}
+.content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:24px;width:100%;min-width:0}
 .overlay{position:fixed;inset:0;background:rgba(9,9,11,.32);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.show{opacity:1;pointer-events:auto}
 
@@ -155,9 +155,9 @@ th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
 th{color:var(--muted);font-weight:600;font-size:9.5px;background:var(--faint);white-space:nowrap;letter-spacing:.14em;border-bottom:1px solid var(--txt)}
 tbody tr:hover{background:var(--faint)}
 tbody td{font-variant-numeric:tabular-nums}
-.modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .18s}
+.modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .18s;overflow-y:auto}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.modal-box{width:min(760px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease}
+.modal-box{width:min(760px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease;margin:auto}
 .modal-box h3{margin:0 0 16px;font-size:13px;font-weight:600;line-height:1.9;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .kv{margin-bottom:14px}
 .kv .k{font-size:9.5px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.14em}
@@ -169,6 +169,35 @@ tbody td{font-variant-numeric:tabular-nums}
 .empty{text-align:center;padding:48px 16px;color:var(--muted);font-size:11.5px;line-height:1.9;letter-spacing:.04em}
 .spin{width:22px;height:22px;border:1.5px solid var(--line);border-top-color:var(--txt);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
 @keyframes sp{to{transform:rotate(360deg)}}
+
+/* Date input */
+.date-field{position:relative}
+.date-input{padding-left:36px !important;cursor:pointer;caret-color:transparent}
+.date-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;color:var(--muted)}
+
+/* Jalali Date Picker */
+.date-picker{position:fixed;inset:0;z-index:600;display:grid;place-items:center;padding:16px;background:rgba(9,9,11,.4);animation:fade .15s}
+.date-picker-box{width:min(340px,100%);background:var(--white);border:1px solid var(--txt);padding:20px;animation:pop .2s ease;max-height:92dvh;overflow-y:auto}
+.dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);gap:8px}
+.dp-title{font-size:12.5px;font-weight:600;letter-spacing:.02em;text-align:center;flex:1;white-space:nowrap}
+.dp-nav{display:flex;gap:3px;flex-shrink:0}
+.dp-nav button{width:26px;height:26px;border:1px solid var(--line2);background:var(--white);cursor:pointer;font-size:12px;display:grid;place-items:center;color:var(--txt);font-family:inherit}
+.dp-nav button:hover{background:var(--faint);border-color:var(--txt)}
+.dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px}
+.dp-weekdays span{text-align:center;font-size:9.5px;color:var(--muted);font-weight:600;padding:4px 0;letter-spacing:.06em}
+.dp-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dp-day{aspect-ratio:1;border:1px solid transparent;background:var(--white);cursor:pointer;font-size:11.5px;display:grid;place-items:center;font-variant-numeric:tabular-nums;color:var(--txt);font-family:inherit;padding:0}
+.dp-day:hover{background:var(--faint);border-color:var(--line2)}
+.dp-day.today{font-weight:700;border-color:var(--line2)}
+.dp-day.selected{background:var(--txt);color:var(--white);border-color:var(--txt);font-weight:600}
+.dp-day.selected:hover{background:var(--txt2)}
+.dp-day.empty{cursor:default;background:transparent;border-color:transparent}
+.dp-day.empty:hover{background:transparent;border-color:transparent}
+.dp-foot{display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.dp-foot button{flex:1;padding:8px;border:1px solid var(--txt);background:var(--white);cursor:pointer;font-size:11px;font-weight:500;font-family:inherit;color:var(--txt)}
+.dp-foot button:hover{background:var(--faint)}
+.dp-foot button.primary{background:var(--txt);color:var(--white)}
+.dp-foot button.primary:hover{background:var(--txt2)}
 
 /* RESPONSIVE */
 @media(max-width:900px){
@@ -258,6 +287,7 @@ tbody td{font-variant-numeric:tabular-nums}
 </div>
 
 <div id="modalHost"></div>
+<div id="datePickerHost"></div>
 <div id="toast" class="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -285,33 +315,51 @@ async function sha256(str){
 }
 
 /* =========================================================
-   JALALI
+   JALALI CALENDAR
 ========================================================= */
+const JALALI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const JALALI_WEEKDAYS = ['ش','ی','د','س','چ','پ','ج'];
+
 function g2j(gy, gm, gd){
   const gdm = [0,31,59,90,120,151,181,212,243,273,304,334];
   let jy = (gy <= 1600) ? 0 : 979;
   gy -= (gy <= 1600) ? 621 : 1600;
   const gy2 = (gm > 2) ? (gy + 1) : gy;
-  let days = (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) - 80 + gd + gdm[gm - 1];
-  jy += 33 * Math.floor(days / 12053); days %= 12053;
-  jy += 4 * Math.floor(days / 1461); days %= 1461;
-  if (days > 365) { jy += Math.floor((days - 1) / 365); days = (days - 1) % 365; }
-  const jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
-  const jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+  let days = (365*gy) + Math.floor((gy2+3)/4) - Math.floor((gy2+99)/100) + Math.floor((gy2+399)/400) - 80 + gd + gdm[gm-1];
+  jy += 33*Math.floor(days/12053); days %= 12053;
+  jy += 4*Math.floor(days/1461); days %= 1461;
+  if (days > 365) { jy += Math.floor((days-1)/365); days = (days-1)%365; }
+  const jm = (days < 186) ? 1 + Math.floor(days/31) : 7 + Math.floor((days-186)/30);
+  const jd = 1 + ((days < 186) ? (days%31) : ((days-186)%30));
   return [jy, jm, jd];
 }
 function j2g(jy, jm, jd){
   let gy = (jy <= 979) ? 621 : 1600;
   jy -= (jy <= 979) ? 0 : 979;
-  let days = (365 * jy) + (Math.floor(jy / 33) * 8) + Math.floor(((jy % 33) + 3) / 4) + 78 + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
-  gy += 400 * Math.floor(days / 146097); days %= 146097;
-  if (days >= 36525) { days--; gy += 100 * Math.floor(days / 36524); days %= 36524; if (days >= 365) days++; }
-  gy += 4 * Math.floor(days / 1461); days %= 1461;
-  if (days >= 366) { gy += Math.floor((days - 1) / 365); days = (days - 1) % 365; }
+  let days = (365*jy) + (Math.floor(jy/33)*8) + Math.floor(((jy%33)+3)/4) + 78 + jd + ((jm<7) ? (jm-1)*31 : ((jm-7)*30)+186);
+  gy += 400*Math.floor(days/146097); days %= 146097;
+  if (days >= 36525) { days--; gy += 100*Math.floor(days/36524); days %= 36524; if (days >= 365) days++; }
+  gy += 4*Math.floor(days/1461); days %= 1461;
+  if (days >= 366) { gy += Math.floor((days-1)/365); days = (days-1)%365; }
   let gd = days + 1;
-  const sa = [0,31,((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0)) ? 29 : 28,31,30,31,30,31,31,30,31,30,31];
-  let gm; for (gm = 1; gm <= 12; gm++) { if (gd <= sa[gm]) break; gd -= sa[gm]; }
+  const sa = [0,31,((gy%4===0 && gy%100!==0) || (gy%400===0)) ? 29 : 28,31,30,31,30,31,31,30,31,30,31];
+  let gm; for (gm=1; gm<=12; gm++) { if (gd <= sa[gm]) break; gd -= sa[gm]; }
   return [gy, gm, gd];
+}
+function isLeapJalali(jy){
+  const a = jy % 33;
+  return [1,5,9,13,17,22,26,30].includes(a);
+}
+function jalaliMonthLength(jy, jm){
+  if (jm <= 6) return 31;
+  if (jm <= 11) return 30;
+  return isLeapJalali(jy) ? 30 : 29;
+}
+function firstWeekdayOfJalaliMonth(jy, jm){
+  const [gy, gm, gd] = j2g(jy, jm, 1);
+  const d = new Date(gy, gm-1, gd);
+  // JS: 0=Sun..6=Sat. Persian week starts Saturday(0).
+  return (d.getDay() + 1) % 7;
 }
 function todayJalali(){
   const n = new Date();
@@ -322,13 +370,111 @@ function parseJalali(s){
   const m = toLatin(String(s||'').trim()).match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
   if(!m) return null;
   const y = +m[1], mo = +m[2], d = +m[3];
-  if(y<1300||y>1500||mo<1||mo>12||d<1||d>31) return null;
-  const [gy,gm,gd] = j2g(y,mo,d);
-  const [jy2,jm2,jd2] = g2j(gy,gm,gd);
-  if(jy2!==y||jm2!==mo||jd2!==d) return null;
+  if(y<1200||y>1600||mo<1||mo>12||d<1||d>31) return null;
+  const maxD = jalaliMonthLength(y, mo);
+  if(d > maxD) return null;
   return `${y}/${String(mo).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
 }
-function displayDate(s){ return s ? fa(toLatin(s)) : '—'; }
+function displayDate(s){
+  if(!s) return '';
+  const p = parseJalali(s);
+  return p ? fa(p) : '';
+}
+
+/* =========================================================
+   JALALI DATE PICKER
+========================================================= */
+function openDatePicker(currentValue, onPick){
+  const today = todayJalali();
+  const parsed = currentValue ? parseJalali(currentValue) : null;
+  let viewParts = (parsed || today).split('/').map(Number);
+  let jy = viewParts[0], jm = viewParts[1];
+  let selected = parsed;
+
+  const host = document.getElementById('datePickerHost');
+
+  function render(){
+    const monthLen = jalaliMonthLength(jy, jm);
+    const firstWd = firstWeekdayOfJalaliMonth(jy, jm);
+    const cells = [];
+    for(let i=0; i<firstWd; i++) cells.push(null);
+    for(let d=1; d<=monthLen; d++) cells.push(d);
+    while(cells.length % 7 !== 0) cells.push(null);
+
+    const daysHtml = cells.map(d => {
+      if(d === null) return `<span class="dp-day empty"></span>`;
+      const full = `${jy}/${String(jm).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
+      const isToday = full === today;
+      const isSel = selected === full;
+      const cls = ['dp-day'];
+      if(isToday) cls.push('today');
+      if(isSel) cls.push('selected');
+      return `<button type="button" class="${cls.join(' ')}" data-day="${d}">${fa(d)}</button>`;
+    }).join('');
+
+    host.innerHTML = `<div class="date-picker" id="dpBg">
+      <div class="date-picker-box">
+        <div class="dp-header">
+          <div class="dp-nav">
+            <button type="button" data-nav="py" title="سال قبل">««</button>
+            <button type="button" data-nav="pm" title="ماه قبل">«</button>
+          </div>
+          <div class="dp-title">${JALALI_MONTHS[jm-1]} ${fa(jy)}</div>
+          <div class="dp-nav">
+            <button type="button" data-nav="nm" title="ماه بعد">»</button>
+            <button type="button" data-nav="ny" title="سال بعد">»»</button>
+          </div>
+        </div>
+        <div class="dp-weekdays">${JALALI_WEEKDAYS.map(w=>`<span>${w}</span>`).join('')}</div>
+        <div class="dp-days">${daysHtml}</div>
+        <div class="dp-foot">
+          <button type="button" data-act="today" class="primary">امروز</button>
+          <button type="button" data-act="clear">پاک</button>
+          <button type="button" data-act="close">بستن</button>
+        </div>
+      </div>
+    </div>`;
+
+    host.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', () => {
+      const n = b.dataset.nav;
+      if(n === 'py') jy--;
+      if(n === 'ny') jy++;
+      if(n === 'pm') { jm--; if(jm<1){ jm=12; jy--; } }
+      if(n === 'nm') { jm++; if(jm>12){ jm=1; jy++; } }
+      render();
+    }));
+
+    host.querySelectorAll('[data-day]').forEach(b => b.addEventListener('click', () => {
+      const d = Number(b.dataset.day);
+      const full = `${jy}/${String(jm).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
+      selected = full;
+      onPick(full);
+      close();
+    }));
+
+    host.querySelector('[data-act="today"]').addEventListener('click', () => {
+      const p = today.split('/').map(Number);
+      jy = p[0]; jm = p[1]; selected = today;
+      onPick(today);
+      close();
+    });
+
+    host.querySelector('[data-act="clear"]').addEventListener('click', () => {
+      onPick(null);
+      close();
+    });
+
+    host.querySelector('[data-act="close"]').addEventListener('click', close);
+
+    host.querySelector('#dpBg').addEventListener('click', e => {
+      if(e.target.id === 'dpBg') close();
+    });
+  }
+
+  function close(){ host.innerHTML = ''; }
+
+  render();
+}
 
 /* =========================================================
    STATUS
@@ -365,7 +511,7 @@ function statusClass(s){
 }
 
 /* =========================================================
-   MODE / SUPABASE / LOCAL
+   MODE
 ========================================================= */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'supabase';
@@ -373,21 +519,17 @@ let sb = null;
 if(window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function setMode(m){
-  MODE = m;
-  localStorage.setItem(MODE_KEY, m);
-  updateModeIndicator();
-  updateConnBox();
+  MODE = m; localStorage.setItem(MODE_KEY, m);
+  updateModeIndicator(); updateConnBox();
 }
 function updateModeIndicator(){
-  const el = $('#modeIndicator');
-  if(!el) return;
+  const el = $('#modeIndicator'); if(!el) return;
   el.innerHTML = MODE==='local'
     ? `<div class="mode-line local">LOCAL</div>`
     : `<div class="mode-line">SUPABASE</div>`;
 }
 function updateConnBox(){
-  const box = $('#connBox');
-  if(!box) return;
+  const box = $('#connBox'); if(!box) return;
   if(MODE==='local'){
     box.className = 'diag warn';
     box.innerHTML = `<div><b>حالت محلی فعال</b><br>داده‌ها در مرورگر ذخیره می‌شوند.</div>`;
@@ -564,7 +706,7 @@ function logout(){
 }
 
 /* =========================================================
-   API LAYER
+   API
 ========================================================= */
 async function apiListControls(){
   if(MODE==='local') return LocalDB.listControls();
@@ -727,6 +869,7 @@ function render(){
     case 'users':     c.innerHTML = viewUsers(); break;
     case 'import':    c.innerHTML = viewImport(); break;
   }
+  c.scrollTop = 0;
   bindView();
   if(S.view==='trend') ensureTrendData();
 }
@@ -854,7 +997,7 @@ function viewDashboard(){
 }
 
 /* =========================================================
-   CONTROLS LIST + add/delete
+   CONTROLS
 ========================================================= */
 function filteredControls(){
   const f = S.filters;
@@ -950,12 +1093,12 @@ function viewAssess(){
         <span class="badge st-ok">${fa(done)} ارزیابی</span>
         <span class="badge badge-soft">پیشرفت: ${fa(avg)}٪</span>
         ${first
-          ? `<span class="badge st-warn">دوره پایه — ثبت وضعیت (فقط یک‌بار)</span>`
-          : `<span class="badge badge-soft">دوره ${fa(idx+1)} — ثبت درصد پیشرفت</span>`}
+          ? `<span class="badge st-warn">دوره پایه — ثبت وضعیت</span>`
+          : `<span class="badge badge-soft">دوره ${fa(idx+1)} — ثبت درصد</span>`}
       </div>
     </div>
-    ${first ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;letter-spacing:.02em;border-top:1px solid var(--line);padding-top:10px">
-      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است. در دوره‌های بعدی صرفاً درصد پیشرفت ثبت می‌شود و وضعیت به‌صورت خودکار از درصد استنتاج می‌گردد.
+    ${first ? `<div style="margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:10px">
+      توجه: وضعیت پیاده‌سازی فقط در دوره «${esc(firstPeriodName)}» (دوره پایه) قابل ثبت است. در دوره‌های بعدی صرفاً درصد پیشرفت ثبت می‌شود و وضعیت از درصد استنتاج می‌گردد.
     </div>` : ''}
   </div>
   ${list.length ? list.map(c=>{
@@ -970,7 +1113,7 @@ function viewAssess(){
           <div style="margin-top:8px">
             <span class="badge badge-soft">${esc(c.category||'—')}</span>
             <span class="badge badge-soft">${esc(c.level||'—')}</span>
-            <span class="badge ${statusClass(c.status)}">وضعیت اولیه فایل: ${esc(baseStatus)}</span>
+            <span class="badge ${statusClass(c.status)}">وضعیت فایل: ${esc(baseStatus)}</span>
           </div>
         </div>
         <details style="margin-bottom:12px"><summary style="cursor:pointer;color:var(--muted);font-size:10.5px;letter-spacing:.12em">شواهد</summary>
@@ -981,8 +1124,8 @@ function viewAssess(){
             <select class="a-status">${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
             </select></div>
         </div>
-        <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات / یادداشت این دوره</label>
-        <textarea class="a-actions" placeholder="اقدامات انجام‌شده را ثبت کنید…">${esc(a.actions||'')}</textarea>
+        <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات / یادداشت</label>
+        <textarea class="a-actions" placeholder="اقدامات انجام‌شده…">${esc(a.actions||'')}</textarea>
         <div class="as-foot">
           <input type="file" class="a-file" style="max-width:220px">
           <button class="btn btn-sm btn-primary a-save">ذخیره</button>
@@ -1009,12 +1152,12 @@ function viewAssess(){
             <input type="number" class="a-num" min="0" max="100" value="${pr}">
           </div>
         </div>
-        <div><label>وضعیت (از درصد استنتاج می‌شود)</label>
+        <div><label>وضعیت (خودکار)</label>
           <select class="a-status" disabled>${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
           </select></div>
       </div>
       <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات این دوره</label>
-      <textarea class="a-actions" placeholder="اقدامات انجام‌شده در این دوره…">${esc(a.actions||'')}</textarea>
+      <textarea class="a-actions" placeholder="اقدامات انجام‌شده…">${esc(a.actions||'')}</textarea>
       <div class="as-foot">
         <input type="file" class="a-file" style="max-width:220px">
         <button class="btn btn-sm btn-primary a-save">ذخیره</button>
@@ -1125,13 +1268,18 @@ function viewPeriods(){
     <h3><span class="dot"></span> ایجاد دوره جدید</h3>
     <div class="toolbar" style="margin-bottom:0">
       <input id="pName" placeholder="نام دوره (مثلاً: بهار ۱۴۰۵)">
-      <input id="pStart" placeholder="شروع ۱۴۰۵/۰۱/۰۱">
-      <input id="pEnd" placeholder="پایان ۱۴۰۵/۰۳/۳۱">
+      <div class="date-field">
+        <input id="pStart" class="date-input" placeholder="انتخاب تاریخ شروع" readonly value="${displayDate(todayJalali())}">
+        <span class="date-icon">📅</span>
+      </div>
+      <div class="date-field">
+        <input id="pEnd" class="date-input" placeholder="انتخاب تاریخ پایان" readonly>
+        <span class="date-icon">📅</span>
+      </div>
       <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
-      <button class="btn" id="fillToday">پر کردن با امروز</button>
     </div>
     <div style="font-size:10.5px;color:var(--muted);margin-top:10px;line-height:1.8">
-      تاریخ‌ها شمسی و به صورت <b style="color:var(--txt)">YYYY/MM/DD</b>. اولین دوره‌ای که می‌سازید، دوره <b style="color:var(--txt)">پایه</b> است (ثبت وضعیت) — در دوره‌های بعد فقط درصد پیشرفت ثبت می‌شود.
+      روی فیلد تاریخ بزنید تا تقویم شمسی باز شود. اولین دوره <b style="color:var(--txt)">پایه</b> است (ثبت وضعیت) — در دوره‌های بعد فقط درصد پیشرفت ثبت می‌شود.
     </div>
   </div>
   <div class="card">
@@ -1143,8 +1291,8 @@ function viewPeriods(){
         return `<tr>
           <td>${fa(i+1)}</td>
           <td style="font-weight:600">${esc(p.name)} ${p.id===S.periodId?'<span class="badge st-ok">جاری</span>':''}${i===0?' <span class="badge badge-soft">پایه</span>':''}</td>
-          <td>${displayDate(p.start_date)}</td>
-          <td>${displayDate(p.end_date)}</td>
+          <td>${displayDate(p.start_date) || '—'}</td>
+          <td>${displayDate(p.end_date) || '—'}</td>
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
@@ -1203,7 +1351,7 @@ function viewImport(){
     <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
       ستون‌های مورد نیاز (به همین ترتیب):<br>
       <b style="color:var(--txt)">دسته</b> — <b style="color:var(--txt)">سطح پیشرفتگی</b> — <b style="color:var(--txt)">کنترل</b> — <b style="color:var(--txt)">شواهد</b> — <b style="color:var(--txt)">وضعیت پیاده‌سازی</b> — <b style="color:var(--txt)">واحد مسئول رسیدگی</b>
-      <br>ستون «ردیف» لازم نیست — شماره‌ها به‌صورت خودکار (۱، ۲، ۳ …) اختصاص می‌یابند.
+      <br>ستون «ردیف» لازم نیست — شماره‌ها خودکار (۱، ۲، ۳ …) اختصاص می‌یابند.
     </p>
     <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
@@ -1228,6 +1376,16 @@ function viewImport(){
 ========================================================= */
 function bindView(){
   const c = $('#content');
+
+  // date inputs (open picker on click)
+  document.querySelectorAll('.date-input').forEach(inp => {
+    inp.addEventListener('click', () => {
+      openDatePicker(inp.value, v => {
+        inp.value = v ? fa(v) : '';
+      });
+    });
+  });
+
   if(S.view==='controls'){
     const rebind = () => { c.innerHTML = viewControls(); bindView(); };
     $('#fQ')?.addEventListener('input', e => { S.filters.q = e.target.value; S.page = 1; c.innerHTML = viewControls(); bindView(); const el = $('#fQ'); el.focus(); el.setSelectionRange(el.value.length, el.value.length); });
@@ -1238,7 +1396,7 @@ function bindView(){
     $('#fSize')?.addEventListener('change', e => { S.pageSize = Number(e.target.value); S.page = 1; rebind(); });
     $('#clearFilters')?.addEventListener('click', () => { S.filters = {q:'',unit:'',status:'',cat:'',level:''}; S.page = 1; rebind(); });
     $('#addControlBtn')?.addEventListener('click', () => openAddControlModal());
-    c.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => { S.page = Number(b.dataset.page); rebind(); window.scrollTo({top:0,behavior:'smooth'}); }));
+    c.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => { S.page = Number(b.dataset.page); rebind(); c.scrollTop = 0; }));
     c.querySelectorAll('[data-open]').forEach(el => {
       el.addEventListener('click', (ev) => {
         if(ev.target.closest('[data-del]')) return;
@@ -1250,10 +1408,8 @@ function bindView(){
       if(!confirm('این کنترل و ارزیابی‌هایش حذف شود؟')) return;
       try{
         await apiDelControl(b.dataset.del);
-        await loadControls();
-        await loadAssessments();
-        toast('حذف شد');
-        render();
+        await loadControls(); await loadAssessments();
+        toast('حذف شد'); render();
       }catch(err){ toast('خطا: '+err.message); }
     }));
   }
@@ -1283,8 +1439,7 @@ function bindView(){
           if(isFirst){
             const st = statusSel.value;
             payload = {
-              status: st,
-              progress: statusWeight(st),
+              status: st, progress: statusWeight(st),
               actions: item.querySelector('.a-actions').value.trim(),
               updated_by: S.user?.username || '',
               updated_at: new Date().toISOString()
@@ -1292,8 +1447,7 @@ function bindView(){
           } else {
             const pr = Math.max(0, Math.min(100, Math.round(Number(num.value)||0)));
             payload = {
-              status: statusFromProgress(pr),
-              progress: pr,
+              status: statusFromProgress(pr), progress: pr,
               actions: item.querySelector('.a-actions').value.trim(),
               updated_by: S.user?.username || '',
               updated_at: new Date().toISOString()
@@ -1317,27 +1471,15 @@ function bindView(){
     $('#trendUnit')?.addEventListener('change', e => { S._trendUnit = e.target.value; c.innerHTML = viewTrend(); bindView(); });
   }
   if(S.view==='periods'){
-    $('#fillToday')?.addEventListener('click', () => {
-      const t = todayJalali();
-      if($('#pStart')) $('#pStart').value = t;
-      if($('#pEnd')) $('#pEnd').value = t;
-    });
     $('#addPeriod')?.addEventListener('click', async () => {
       const name = ($('#pName').value||'').trim();
       if(!name) return toast('نام دوره را وارد کنید');
-      const sRaw = ($('#pStart').value||'').trim();
-      const eRaw = ($('#pEnd').value||'').trim();
-      let startJ = null, endJ = null;
-      if(sRaw){
-        startJ = parseJalali(sRaw);
-        if(!startJ) return toast('تاریخ شروع نامعتبر است (نمونه: ۱۴۰۵/۰۱/۰۱)');
-      }
-      if(eRaw){
-        endJ = parseJalali(eRaw);
-        if(!endJ) return toast('تاریخ پایان نامعتبر است');
-      }
+      const sVal = parseJalali($('#pStart').value);
+      const eVal = parseJalali($('#pEnd').value);
+      if($('#pStart').value && !sVal) return toast('تاریخ شروع نامعتبر');
+      if($('#pEnd').value && !eVal) return toast('تاریخ پایان نامعتبر');
       try{
-        const row = await apiAddPeriod({ name, start_date: startJ, end_date: endJ });
+        const row = await apiAddPeriod({ name, start_date: sVal, end_date: eVal });
         await loadPeriods();
         S.periodId = row.id;
         renderPeriodSelect(); await loadAssessments();
@@ -1426,7 +1568,7 @@ function bindView(){
             owner_unit: g('واحد مسئول رسیدگی')||null
           };
         }).filter(x=>x.title);
-        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند. سرستون‌های فایل را بررسی کنید.');
+        if(!mapped.length) throw new Error('ستون‌ها شناسایی نشدند. سرستون‌ها را بررسی کنید.');
         log.textContent = `${fa(mapped.length)} رکورد. حذف داده قبلی…`;
         if(MODE==='local'){
           await LocalDB.setControls(mapped);
@@ -1526,7 +1668,7 @@ function openAddControlModal(){
 }
 
 /* =========================================================
-   CONTROL MODAL
+   CONTROL DETAIL MODAL
 ========================================================= */
 function openControlModal(id){
   const c = S.controls.find(x=>x.id===id); if(!c) return;
@@ -1576,9 +1718,7 @@ $('#loginForm').addEventListener('submit', async e => {
 $('#retestBtn').addEventListener('click', async () => {
   if(MODE==='local'){ setMode('supabase'); } else { await testConnection(); }
 });
-$('#localModeBtn').addEventListener('click', () => {
-  setMode('local'); toast('حالت محلی فعال شد');
-});
+$('#localModeBtn').addEventListener('click', () => { setMode('local'); toast('حالت محلی فعال شد'); });
 $('#nav').addEventListener('click', e => {
   const b = e.target.closest('button[data-view]'); if(!b) return;
   S.view = b.dataset.view;
@@ -1594,7 +1734,12 @@ $('#menuBtn').addEventListener('click', () => { $('#sidebar').classList.add('ope
 $('#overlay').addEventListener('click', () => { $('#sidebar').classList.remove('open'); $('#overlay').classList.remove('show'); });
 $('#logoutBtn').addEventListener('click', logout);
 document.addEventListener('keydown', e => {
-  if(e.key==='Escape'){ $('#sidebar').classList.remove('open'); $('#overlay').classList.remove('show'); $('#modalHost').innerHTML=''; }
+  if(e.key==='Escape'){
+    $('#sidebar').classList.remove('open');
+    $('#overlay').classList.remove('show');
+    $('#modalHost').innerHTML='';
+    $('#datePickerHost').innerHTML='';
+  }
 });
 
 updateConnBox();
