@@ -78,7 +78,7 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .icon-btn{width:34px;height:34px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;display:none;place-items:center;font-size:15px;flex:0 0 auto}
 .icon-btn:hover{background:var(--faint)}
 .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.top-actions select{padding:8px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:200px;font-variant-numeric:tabular-nums}
+.top-actions select{padding:8px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:220px;font-variant-numeric:tabular-nums}
 .content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:24px;width:100%;min-width:0}
 .overlay{position:fixed;inset:0;background:rgba(9,9,11,.32);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.show{opacity:1;pointer-events:auto}
@@ -97,6 +97,7 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .st-bad{background:var(--white);color:var(--muted);border-color:var(--line2);border-style:dashed}
 .st-gray{background:transparent;color:var(--dim);border-color:var(--line)}
 .badge-soft{background:var(--faint);color:var(--muted);border-color:var(--line)}
+.badge-first{background:var(--txt);color:var(--white);border-color:var(--txt);letter-spacing:.1em}
 .bar-row{display:grid;grid-template-columns:1fr 42px;gap:12px;align-items:center;margin:10px 0}
 .bar-row .nm{font-size:11.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bar-row .pc{font-size:11px;font-weight:600;text-align:left}
@@ -130,23 +131,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .del-btn:hover{background:var(--faint);border-color:var(--txt);color:var(--txt)}
 .pager{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;flex-wrap:wrap}
 .pager .info{color:var(--muted);font-size:10.5px;padding:0 8px;letter-spacing:.06em}
-
-.as-item{background:var(--white);border:1px solid var(--line2);padding:16px;margin-bottom:10px}
-.as-item .t{font-size:12.5px;font-weight:500;line-height:1.9;margin-bottom:12px}
-.as-item .t .n{color:var(--muted);font-weight:600;margin-left:6px;font-size:11px;letter-spacing:.06em}
-.as-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px}
-.as-grid label{display:block;font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:500;letter-spacing:.12em}
-.as-grid select,.as-grid input{width:100%;padding:8px 10px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;font-variant-numeric:tabular-nums}
-.as-grid select:focus,.as-grid input:focus{background:var(--faint)}
-.as-grid select:disabled,.as-grid input:disabled{background:var(--faint);color:var(--muted);cursor:not-allowed;border-color:var(--line2)}
-.prog-row{display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:center}
-input[type=range]{width:100%;accent-color:var(--txt);margin-top:8px}
-input[type=range]:disabled{opacity:.5;cursor:not-allowed}
-textarea{width:100%;padding:10px 12px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;resize:vertical;min-height:66px;line-height:1.8;font-size:11.5px}
-textarea:focus{background:var(--faint)}
-input[type=file]{width:100%;padding:7px;border:1px dashed var(--line2);background:var(--white);color:var(--muted);font-size:10.5px;cursor:pointer}
-.as-foot{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
-.saved{color:var(--txt);font-size:10.5px;font-weight:600;letter-spacing:.12em}
 .tbl-wrap{overflow-x:auto;width:100%}
 table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:520px}
 th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
@@ -223,6 +207,11 @@ tbody td{font-variant-numeric:tabular-nums}
 
 .info-hint{font-size:10.5px;color:var(--muted);line-height:1.8;margin-top:8px;padding:8px 10px;background:var(--faint);border:1px solid var(--line)}
 .info-hint b{color:var(--txt);font-weight:600}
+
+.trend-toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+.trend-toolbar select,.trend-toolbar input{padding:9px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;width:100%;font-size:11.5px;font-variant-numeric:tabular-nums}
+.trend-toolbar select:focus,.trend-toolbar input:focus{background:var(--faint)}
+.trend-toolbar input::placeholder{color:var(--dim)}
 
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
@@ -506,7 +495,6 @@ function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, 
   const r = Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16);
 });}
 
-/* assessment extras (deadline, notes) stored in localStorage keyed by assessment id */
 function getAxExtras(assessmentId){
   if(!assessmentId) return {};
   return LS.read('ax_' + assessmentId) || {};
@@ -545,7 +533,6 @@ const LocalDB = {
   },
   save(t){ LS.write('tables', t); },
   async findUser(u){ return this.tables().users.find(x => x.username === u) || null; },
-  async findUserById(id){ return this.tables().users.find(x => x.id === id) || null; },
   async addUser(u){ const t = this.tables(); t.users.push(u); this.save(t); },
   async delUser(id){ const t = this.tables(); t.users = t.users.filter(u=>u.id!==id); this.save(t); },
   async updateUser(id, patch){ const t = this.tables(); const u = t.users.find(x=>x.id===id); if(u){ Object.assign(u, patch); this.save(t); } },
@@ -649,23 +636,26 @@ const S = {
   assessments:{}, allAssessments:[], units:[], allUnits:[], cats:[], levels:[],
   view:'dashboard', page:1, pageSize:12,
   filters:{q:'',unit:'',status:'',cat:'',level:''},
-  assessUnit:'', _trendLoaded:false
+  _trendLoaded:false,
+  _trendUnit:'__all', _trendCat:'__all', _trendLevel:'__all',
+  _trendGroupBy:'unit', _trendPage:1, _trendSearch:''
 };
 const NAV = [
   {id:'dashboard', label:'داشبورد'},
   {id:'controls',  label:'کنترل‌ها'},
   {id:'trend',     label:'روند پیشرفت'},
-  {id:'assess',    label:'ارزیابی دوره', adminOnly:true},
   {id:'periods',   label:'مدیریت دوره‌ها', adminOnly:true},
   {id:'users',     label:'کاربران', adminOnly:true},
   {id:'import',    label:'ورود/خروج داده', adminOnly:true}
 ];
 const TITLES = Object.fromEntries(NAV.map(n=>[n.id,n.label]));
+const TREND_PAGE_SIZE = 25;
 
 function isAdmin(){ return S.user && S.user.role === 'admin'; }
 function visibleNav(){ return isAdmin() ? NAV : NAV.filter(n => !n.adminOnly); }
 function periodIndex(){ return S.periods.findIndex(p => p.id === S.periodId); }
-function isFirstPeriod(){ return periodIndex() === 0; }
+function isFirstPeriodById(id){ return S.periods.length && S.periods[0].id === id; }
+function isLastPeriodById(id){ return S.periods.length && S.periods[S.periods.length - 1].id === id; }
 
 function applyUnitAccess(all){
   if(!S.user) return all;
@@ -707,6 +697,7 @@ async function doLogin(username, password){
 function startSession(user){
   user.allowed_units = getUserUnits(user);
   S.user = user;
+  S.periodId = null; // reset — will default to last period
   $('#loginScreen').classList.add('hidden');
   $('#app').classList.remove('hidden');
   $('#uName').textContent = user.full_name || user.username;
@@ -717,6 +708,7 @@ function startSession(user){
 }
 function logout(){
   S.user = null;
+  S.periodId = null;
   $('#app').classList.add('hidden');
   $('#loginScreen').classList.remove('hidden');
   $('#content').innerHTML = '';
@@ -766,7 +758,6 @@ async function apiListAssessments(pid){
   return (data||[]).map(mergeAxExtras);
 }
 async function apiSaveAssessmentFor(periodId, controlId, payload){
-  // Handle missing deadline/notes columns via localStorage fallback
   const extraKeys = ['deadline','notes'];
   let attempted = { ...payload };
   const failed = {};
@@ -812,22 +803,6 @@ async function apiSaveAssessmentFor(periodId, controlId, payload){
   }
   throw new Error('خطا در ذخیره ارزیابی');
 }
-async function apiUpload(file, controlId){
-  if(MODE==='local'){
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res({ url:r.result, name:file.name });
-      r.onerror = () => rej(new Error('خواندن فایل ممکن نشد'));
-      r.readAsDataURL(file);
-    });
-  }
-  const safe = file.name.replace(/[^\w.\-آ-ی]/g, '_');
-  const path = `${S.periodId}/${controlId}/${Date.now()}_${safe}`;
-  const { error } = await sb.storage.from(BUCKET).upload(path, file, { upsert:true });
-  if(error) throw new Error('آپلود فایل ناموفق: '+error.message);
-  const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
-  return { url: data.publicUrl, name: file.name };
-}
 
 /* ===== LOADERS ===== */
 async function loadControls(){
@@ -841,7 +816,10 @@ async function loadControls(){
 }
 async function loadPeriods(){
   S.periods = await apiListPeriods();
-  if(S.periods.length && !S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[0].id;
+  if(S.periods.length && !S.periods.find(p=>p.id===S.periodId)){
+    // Default: LAST period (most recent)
+    S.periodId = S.periods[S.periods.length - 1].id;
+  }
 }
 async function loadAssessments(){
   S.assessments = {};
@@ -897,7 +875,7 @@ function renderPeriodSelect(){
   if(!S.periods.length){ sel.innerHTML = `<option value="">— بدون دوره —</option>`; sel.disabled = true; return; }
   sel.disabled = false;
   sel.innerHTML = S.periods.map((p,i) =>
-    `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}${i===0?' (پایه)':''}</option>`).join('');
+    `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${esc(p.name)}${i===0?' — اول':''}</option>`).join('');
 }
 function render(){
   const allowedViews = visibleNav().map(n=>n.id);
@@ -908,7 +886,6 @@ function render(){
   switch(S.view){
     case 'dashboard': c.innerHTML = viewDashboard(); break;
     case 'controls':  c.innerHTML = viewControls(); break;
-    case 'assess':    c.innerHTML = viewAssess(); break;
     case 'trend':     c.innerHTML = viewTrend(); break;
     case 'periods':   c.innerHTML = viewPeriods(); break;
     case 'users':     c.innerHTML = viewUsers(); break;
@@ -971,12 +948,13 @@ function viewDashboard(){
   }).join(',');
 
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
-  const idx = periodIndex();
+  const isLatest = isLastPeriodById(S.periodId);
+  const isFirst = isFirstPeriodById(S.periodId);
   const scopeLabel = isAdmin() ? 'همه واحدها' : `${fa(S.units.length)} واحد مجاز`;
 
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
-      <span class="badge badge-soft">دوره: ${esc(periodName)}${idx===0?' (پایه)':''}</span>
+      <span class="badge badge-soft">دوره: ${esc(periodName)}${isFirst?' — اول':''}${isLatest?' — آخرین':''}</span>
       <span class="badge badge-soft">کنترل: ${fa(total)}</span>
       <span class="badge badge-soft">${scopeLabel}</span>
       <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'محلی':'آنلاین'}</span>
@@ -1089,7 +1067,6 @@ function viewControls(){
       const st = controlStatus(c), pr = controlProgress(c);
       const a = S.assessments[c.id] || {};
       const actions = a.actions || '';
-      const notes = a.notes || '';
       const deadline = a.deadline || '';
       return `<div class="ctrl" data-open="${c.id}">
         ${admin ? `<button class="del-btn" data-del="${c.id}" title="حذف">×</button>` : ''}
@@ -1119,141 +1096,178 @@ function viewControls(){
   `;
 }
 
-/* ===== ASSESS ===== */
-function viewAssess(){
-  if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
-  if(!S.periods.length) return `<div class="card"><div class="empty">ابتدا از تب «مدیریت دوره‌ها» یک دوره بسازید.</div></div>`;
-  if(!S.assessUnit) S.assessUnit = S.units[0] || '';
-  const list = S.controls.filter(c => (c.owner_unit||'')===S.assessUnit);
-  const opts = S.units.map(u=>`<option value="${esc(u)}" ${u===S.assessUnit?'selected':''}>${esc(u)}</option>`).join('');
-  const done = list.filter(c=>S.assessments[c.id]).length;
-  const avg = list.length ? Math.round(list.reduce((s,c)=>s+controlProgress(c),0)/list.length) : 0;
-  const first = isFirstPeriod();
-  const idx = periodIndex();
-  const firstPeriodName = S.periods[0]?.name || '';
-
-  return `
-  <div class="card" style="margin-bottom:16px;padding:16px 20px">
-    <div class="toolbar" style="margin-bottom:0">
-      <select id="asUnit">${opts||'<option value="">—</option>'}</select>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span class="badge badge-soft">${fa(list.length)} کنترل</span>
-        <span class="badge st-ok">${fa(done)} ارزیابی</span>
-        <span class="badge badge-soft">پیشرفت: ${fa(avg)}٪</span>
-        ${first ? `<span class="badge st-warn">دوره پایه</span>` : `<span class="badge badge-soft">دوره ${fa(idx+1)}</span>`}
-      </div>
-    </div>
-    ${first ? `<div class="info-hint">در دوره پایه، وضعیت پیاده‌سازی را ثبت می‌کنید. در دوره‌های بعد فقط درصد پیشرفت.</div>` : ''}
-  </div>
-  ${list.length ? list.map(c=>{
-    const a = S.assessments[c.id] || {};
-    const baseStatus = normalizeStatus(c.status);
-    const savedStatus = a.status ? normalizeStatus(a.status) : baseStatus;
-    const pr = (a.progress!==null && a.progress!==undefined && a.progress!=='') ? Number(a.progress) : statusWeight(savedStatus);
-    const actionsVal = a.actions || '';
-    const deadlineVal = a.deadline || '';
-    const notesVal = a.notes || '';
-
-    return `<div class="as-item" data-cid="${c.id}" data-first="${first?1:0}">
-      <div class="t"><span class="n">#${fa(c.row_no??'')}</span>${esc(c.title)}
-        <div style="margin-top:8px">
-          <span class="badge badge-soft">${esc(c.category||'—')}</span>
-          <span class="badge badge-soft">${esc(c.level||'—')}</span>
-          <span class="badge ${statusClass(baseStatus)}">پایه: ${esc(baseStatus)}</span>
-        </div>
-      </div>
-      <details style="margin-bottom:12px"><summary style="cursor:pointer;color:var(--muted);font-size:10.5px;letter-spacing:.12em">شواهد</summary>
-        <div class="kv" style="margin-top:8px"><div class="v" style="font-size:11.5px">${esc(c.evidence||'—')}</div></div>
-      </details>
-
-      <div class="as-grid">
-        <div><label>وضعیت${first?'':' (از درصد)'}</label>
-          <select class="a-status" ${first?'':'disabled'}>
-            ${STATUS_OPTS.map(v=>`<option value="${v}" ${savedStatus===v?'selected':''}>${v}</option>`).join('')}
-          </select></div>
-        <div><label>درصد پیشرفت</label>
-          <div class="prog-row">
-            <input type="range" class="a-range" min="0" max="100" step="1" value="${pr}" ${first?'disabled':''}>
-            <input type="number" class="a-num" min="0" max="100" value="${pr}" ${first?'disabled':''}>
-          </div>
-        </div>
-      </div>
-
-      <div class="as-grid">
-        <div><label>آخرین مهلت اجرای اقدام</label>
-          <div class="date-field">
-            <input class="a-deadline date-input" placeholder="تاریخ شمسی" readonly value="${deadlineVal ? displayDate(deadlineVal) : ''}">
-            <span class="date-icon">📅</span>
-          </div>
-        </div>
-        <div></div>
-      </div>
-
-      <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.12em;font-weight:500">اقدامات انجام شده تاکنون</label>
-      <textarea class="a-actions" placeholder="اقدامات انجام‌شده…">${esc(actionsVal)}</textarea>
-
-      <label style="display:block;font-size:10px;color:var(--muted);margin-top:8px;margin-bottom:5px;letter-spacing:.12em;font-weight:500">توضیحات</label>
-      <textarea class="a-notes" placeholder="توضیحات…" style="min-height:52px">${esc(notesVal)}</textarea>
-
-      <div class="as-foot">
-        <input type="file" class="a-file" style="max-width:220px">
-        <button class="btn btn-sm btn-primary a-save">ذخیره</button>
-        ${a.file_url?`<a class="btn btn-sm" href="${esc(a.file_url)}" target="_blank" rel="noopener">پیوست</a>`:''}
-        <span class="saved" style="display:none">ذخیره شد</span>
-      </div>
-    </div>`;
-  }).join('') : `<div class="card"><div class="empty">برای این واحد کنترلی ثبت نشده.</div></div>`}
-  `;
-}
-
-/* ===== TREND ===== */
+/* ===== TREND (multi-dimensional) ===== */
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
+  
+  // filters
+  const fUnit = S._trendUnit || '__all';
+  const fCat = S._trendCat || '__all';
+  const fLevel = S._trendLevel || '__all';
+  const groupBy = S._trendGroupBy || 'unit';
+  const search = (S._trendSearch || '').trim().toLowerCase();
+  const page = S._trendPage || 1;
+  
+  let ctrlFiltered = S.controls;
+  if(fUnit !== '__all') ctrlFiltered = ctrlFiltered.filter(c => c.owner_unit === fUnit);
+  if(fCat !== '__all') ctrlFiltered = ctrlFiltered.filter(c => c.category === fCat);
+  if(fLevel !== '__all') ctrlFiltered = ctrlFiltered.filter(c => c.level === fLevel);
+  if(groupBy === 'control' && search){
+    ctrlFiltered = ctrlFiltered.filter(c => (c.title||'').toLowerCase().includes(search));
+  }
+  
   const unitOpts = ['<option value="__all">همه واحدها</option>']
-    .concat(S.units.map(u=>`<option value="${esc(u)}" ${S._trendUnit===u?'selected':''}>${esc(u)}</option>`)).join('');
-  const selected = S._trendUnit || '__all';
-  const ctrlFiltered = selected==='__all' ? S.controls : S.controls.filter(c=>c.owner_unit===selected);
+    .concat(S.units.map(u=>`<option value="${esc(u)}" ${fUnit===u?'selected':''}>${esc(u)}</option>`)).join('');
+  const catOpts = ['<option value="__all">همه دسته‌ها</option>']
+    .concat(S.cats.map(u=>`<option value="${esc(u)}" ${fCat===u?'selected':''}>${esc(u)}</option>`)).join('');
+  const levelOpts = ['<option value="__all">همه سطوح</option>']
+    .concat(S.levels.map(u=>`<option value="${esc(u)}" ${fLevel===u?'selected':''}>${esc(u)}</option>`)).join('');
+  
+  // overall chart series
   const series = S.periods.map(p => {
     const map = assessmentMapFor(p.id);
-    const vals = ctrlFiltered.map(c=>progressWithMap(c,map));
+    const vals = ctrlFiltered.map(c => progressWithMap(c, map));
     return { id:p.id, name:p.name, value: vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0 };
   });
+  
+  // group
+  const groups = {};
+  if(groupBy === 'control'){
+    ctrlFiltered.forEach(c => {
+      const key = c.id;
+      groups[key] = {
+        name: c.title || '',
+        meta: { row_no: c.row_no, owner_unit: c.owner_unit, category: c.category, level: c.level },
+        controls: [c]
+      };
+    });
+  } else {
+    ctrlFiltered.forEach(c => {
+      const key = groupBy === 'unit' ? (c.owner_unit || 'نامشخص')
+        : groupBy === 'category' ? (c.category || 'نامشخص')
+        : (c.level || 'نامشخص');
+      if(!groups[key]) groups[key] = { name: key, controls: [] };
+      groups[key].controls.push(c);
+    });
+  }
+  
+  const groupsArr = Object.values(groups).map(g => {
+    const perPeriod = S.periods.map(p => {
+      const map = assessmentMapFor(p.id);
+      const vals = g.controls.map(c => progressWithMap(c, map));
+      return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+    });
+    return { ...g, perPeriod, lastVal: perPeriod[perPeriod.length - 1] || 0 };
+  }).sort((a,b) => b.lastVal - a.lastVal);
+  
+  // pagination (only control-level)
+  const isControlMode = groupBy === 'control';
+  const total = groupsArr.length;
+  const pages = isControlMode ? Math.max(1, Math.ceil(total / TREND_PAGE_SIZE)) : 1;
+  const curPage = Math.min(page, pages);
+  const start = (curPage - 1) * TREND_PAGE_SIZE;
+  const itemsToShow = isControlMode ? groupsArr.slice(start, start + TREND_PAGE_SIZE) : groupsArr;
+  
+  const groupLabel = { unit:'واحد', category:'دسته', level:'سطح', control:'کنترل' }[groupBy];
+  
+  const tableHeader = isControlMode
+    ? `<tr>
+        <th>#</th><th>کنترل</th><th>واحد</th><th>دسته</th><th>سطح</th>
+        ${S.periods.map(p=>`<th>${esc(p.name)}</th>`).join('')}
+      </tr>`
+    : `<tr>
+        <th>${groupLabel}</th><th>تعداد</th>
+        ${S.periods.map(p=>`<th>${esc(p.name)}</th>`).join('')}
+      </tr>`;
+  
+  const tableBody = itemsToShow.length
+    ? itemsToShow.map(g => {
+        if(isControlMode){
+          const m = g.meta || {};
+          return `<tr>
+            <td>${fa(m.row_no ?? '')}</td>
+            <td style="font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(g.name)}">${esc(g.name)}</td>
+            <td style="font-size:10.5px;color:var(--muted)">${esc(m.owner_unit || '—')}</td>
+            <td style="font-size:10.5px;color:var(--muted)">${esc(m.category || '—')}</td>
+            <td style="font-size:10.5px;color:var(--muted)">${esc(m.level || '—')}</td>
+            ${g.perPeriod.map(v=>`<td style="font-weight:600">${fa(v)}٪</td>`).join('')}
+          </tr>`;
+        }
+        return `<tr>
+          <td style="font-weight:600">${esc(g.name)}</td>
+          <td>${fa(g.controls.length)}</td>
+          ${g.perPeriod.map(v=>`<td style="font-weight:600">${fa(v)}٪</td>`).join('')}
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="${isControlMode?5+S.periods.length:2+S.periods.length}" class="empty" style="text-align:center;padding:32px">داده‌ای برای نمایش نیست</td></tr>`;
+  
   return `
   <div class="card" style="margin-bottom:16px;padding:16px 20px">
-    <div class="toolbar" style="margin-bottom:0">
+    <div class="trend-toolbar" style="margin-bottom:8px">
       <select id="trendUnit">${unitOpts}</select>
+      <select id="trendCat">${catOpts}</select>
+      <select id="trendLevel">${levelOpts}</select>
+      <select id="trendGroupBy">
+        <option value="unit" ${groupBy==='unit'?'selected':''}>گزارش بر اساس: واحد</option>
+        <option value="category" ${groupBy==='category'?'selected':''}>گزارش بر اساس: دسته</option>
+        <option value="level" ${groupBy==='level'?'selected':''}>گزارش بر اساس: سطح</option>
+        <option value="control" ${groupBy==='control'?'selected':''}>گزارش بر اساس: کنترل</option>
+      </select>
+      ${isControlMode ? `<input id="trendSearch" placeholder="جستجوی عنوان کنترل…" value="${esc(S._trendSearch || '')}">` : ''}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:8px;border-top:1px solid var(--line)">
       <span class="badge badge-soft">${fa(ctrlFiltered.length)} کنترل</span>
+      <span class="badge badge-soft">${fa(total)} گروه</span>
+      ${isControlMode && pages > 1 ? `<span class="badge badge-soft">صفحه ${fa(curPage)} / ${fa(pages)}</span>` : ''}
+      <button class="btn btn-sm" id="trendClearFilters" style="margin-right:auto">پاک کردن فیلترها</button>
     </div>
   </div>
+
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> روند ${selected==='__all'?'کل':esc(selected)}</h3>
+    <h3><span class="dot"></span> روند کلی
+      ${fUnit!=='__all'?` — ${esc(fUnit)}`:''}
+      ${fCat!=='__all'?` — ${esc(fCat)}`:''}
+      ${fLevel!=='__all'?` — ${esc(fLevel)}`:''}
+    </h3>
     ${lineChart(series)}
   </div>
+
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> جدول پیشرفت واحدها</h3>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>واحد</th>${S.periods.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr></thead>
-      <tbody>${S.units.map(u=>{
-        const cs = S.controls.filter(c=>c.owner_unit===u);
-        const cells = S.periods.map(p=>{
-          const map = assessmentMapFor(p.id);
-          const vals = cs.map(c=>progressWithMap(c,map));
-          const avg = vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
-          return `<td>${fa(avg)}٪</td>`;
-        }).join('');
-        return `<tr><td style="font-weight:600">${esc(u)}</td>${cells}</tr>`;
-      }).join('')}</tbody>
-    </table></div>
+    <h3><span class="dot"></span> جدول پیشرفت (بر اساس ${groupLabel})</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>${tableHeader}</thead>
+        <tbody>${tableBody}</tbody>
+      </table>
+    </div>
+    ${isControlMode && pages > 1 ? `
+      <div class="pager">
+        <button class="btn btn-sm" data-trendpage="1" ${curPage===1?'disabled':''}>«</button>
+        <button class="btn btn-sm" data-trendpage="${curPage-1}" ${curPage===1?'disabled':''}>قبلی</button>
+        <span class="info">${fa(start+1)}—${fa(Math.min(start+TREND_PAGE_SIZE,total))} از ${fa(total)}</span>
+        <button class="btn btn-sm" data-trendpage="${curPage+1}" ${curPage===pages?'disabled':''}>بعدی</button>
+        <button class="btn btn-sm" data-trendpage="${pages}" ${curPage===pages?'disabled':''}>»</button>
+      </div>
+    ` : ''}
   </div>
+
   <div class="card">
     <h3><span class="dot"></span> سابقه اقدامات</h3>
     ${S.periods.slice().reverse().map(p=>{
       const acts = S.allAssessments.filter(a=>a.period_id===p.id && (a.actions||'').trim());
-      if(!acts.length) return '';
+      const filteredActs = acts.filter(a => {
+        const c = S.controls.find(x => x.id === a.control_id);
+        if(!c) return false;
+        if(fUnit!=='__all' && c.owner_unit !== fUnit) return false;
+        if(fCat!=='__all' && c.category !== fCat) return false;
+        if(fLevel!=='__all' && c.level !== fLevel) return false;
+        return true;
+      });
+      if(!filteredActs.length) return '';
       return `<div style="margin-bottom:20px">
-        <div class="badge badge-soft" style="margin-bottom:10px">${esc(p.name)} — ${fa(acts.length)} اقدام</div>
-        ${acts.slice(0,80).map(a=>{
+        <div class="badge badge-soft" style="margin-bottom:10px">${esc(p.name)} — ${fa(filteredActs.length)} اقدام</div>
+        ${filteredActs.slice(0,50).map(a=>{
           const c = S.controls.find(x=>x.id===a.control_id);
           if(!c) return '';
           return `<div style="background:var(--faint);border:1px solid var(--line);padding:12px;margin-bottom:8px">
@@ -1303,7 +1317,7 @@ function viewPeriods(){
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> ایجاد دوره جدید</h3>
     <div class="toolbar" style="margin-bottom:0">
-      <input id="pName" placeholder="نام دوره (مثلاً: بهار ۱۴۰۵)">
+      <input id="pName" placeholder="نام دوره">
       <div class="date-field">
         <input id="pStart" class="date-input" placeholder="تاریخ شروع" readonly value="${displayDate(todayJalali())}">
         <span class="date-icon">📅</span>
@@ -1314,7 +1328,7 @@ function viewPeriods(){
       </div>
       <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
     </div>
-    <div class="info-hint">اولین دوره‌ای که می‌سازید، دوره <b>پایه</b> است.</div>
+    <div class="info-hint">دوره <b>اول</b> قابل حذف نیست و داده‌های آن از اولین بارگذاری اکسل محافظت می‌شوند.</div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
@@ -1322,16 +1336,26 @@ function viewPeriods(){
       <thead><tr><th>#</th><th>نام</th><th>شروع</th><th>پایان</th><th>ارزیابی</th><th>عملیات</th></tr></thead>
       <tbody>${S.periods.map((p,i)=>{
         const cnt = S.allAssessments.filter(a=>a.period_id===p.id).length;
+        const isFirst = i === 0;
+        const isCurrent = p.id === S.periodId;
+        const isLatest = i === S.periods.length - 1;
         return `<tr>
           <td>${fa(i+1)}</td>
-          <td style="font-weight:600">${esc(p.name)} ${p.id===S.periodId?'<span class="badge st-ok">جاری</span>':''}${i===0?' <span class="badge badge-soft">پایه</span>':''}</td>
+          <td style="font-weight:600">
+            ${esc(p.name)}
+            ${isFirst?'<span class="badge badge-first">اول</span>':''}
+            ${isCurrent?'<span class="badge st-ok">جاری</span>':''}
+            ${isLatest && !isFirst?'<span class="badge badge-soft">آخرین</span>':''}
+          </td>
           <td>${displayDate(p.start_date) || '—'}</td>
           <td>${displayDate(p.end_date) || '—'}</td>
           <td>${fa(cnt)}</td>
           <td style="white-space:nowrap">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
             <button class="btn btn-sm" data-exportperiod="${p.id}">خروجی اکسل</button>
-            <button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>
+            ${isFirst
+              ? `<button class="btn btn-sm" disabled title="دوره اول قابل حذف نیست" style="opacity:.4">حذف</button>`
+              : `<button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>`}
           </td></tr>`;
       }).join('')}</tbody>
     </table></div>` : '<div class="empty">دوره‌ای نیست.</div>'}
@@ -1562,13 +1586,10 @@ function exportPeriodToExcel(periodId){
   const period = S.periods.find(p => p.id === periodId);
   if(!period) return toast('دوره یافت نشد');
   
-  // Load assessments for that period
   const map = {};
-  // Try from current loaded assessments first
   if(periodId === S.periodId){
     Object.entries(S.assessments).forEach(([cid, a]) => { map[cid] = a; });
   }
-  // Use allAssessments for other periods
   S.allAssessments.filter(a => a.period_id === periodId).forEach(a => {
     if(!map[a.control_id]) map[a.control_id] = mergeAxExtras(a);
   });
@@ -1613,14 +1634,14 @@ function viewImport(){
   
   return `
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> ${noPeriods ? 'بارگذاری اولیه (دوره اول)' : 'بارگذاری اکسل برای دوره'}</h3>
+    <h3><span class="dot"></span> ${noPeriods ? 'بارگذاری اولیه — دوره اول' : 'بارگذاری اکسل برای دوره'}</h3>
     <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
       ستون‌ها: <b style="color:var(--txt)">دسته، سطح پیشرفتگی، کنترل، شواهد، وضعیت پیاده‌سازی، واحد مسئول رسیدگی، اقدامات انجام شده تاکنون، آخرین مهلت اجرای اقدام، درصد پیشرفت، توضیحات</b>.
       ${noPeriods ? 'اولین بارگذاری به‌عنوان <b style="color:var(--txt)">دوره اول</b> ثبت می‌شود.' : 'ردیف‌ها بر اساس عنوان «کنترل» با رکوردهای موجود تطبیق داده می‌شوند.'}
     </p>
     ${noPeriods ? `
       <div class="field"><label>نام دوره اول</label>
-        <input id="firstPeriodName" value="دوره اول - ${todayJalali()}">
+        <input id="firstPeriodName" value="دوره اول — ${todayJalali()}">
       </div>
     ` : `
       <div class="field"><label>دوره هدف</label>
@@ -1700,73 +1721,44 @@ function bindView(){
       });
     });
   }
-  if(S.view==='assess' && admin){
-    $('#asUnit')?.addEventListener('change', e => { S.assessUnit = e.target.value; c.innerHTML = viewAssess(); bindView(); });
-    c.querySelectorAll('.as-item').forEach(item => {
-      const cid = item.dataset.cid;
-      const isFirst = item.dataset.first === '1';
-      const range = item.querySelector('.a-range');
-      const num = item.querySelector('.a-num');
-      const statusSel = item.querySelector('.a-status');
-      
-      if(!isFirst && range && num && statusSel){
-        const sync = v => {
-          v = Math.max(0, Math.min(100, Math.round(Number(v)||0)));
-          range.value = v; num.value = v;
-          statusSel.value = statusFromProgress(v);
-        };
-        range.addEventListener('input', () => sync(range.value));
-        num.addEventListener('input', () => sync(num.value));
-        statusSel.addEventListener('change', () => {
-          const w = statusWeight(statusSel.value);
-          range.value = w; num.value = w;
-        });
-      }
-      
-      item.querySelector('.a-save')?.addEventListener('click', async ev => {
-        const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'ذخیره…';
-        try{
-          const deadlineInput = item.querySelector('.a-deadline');
-          const deadlineVal = deadlineInput.value ? (parseJalali(deadlineInput.value) || deadlineInput.value) : '';
-          
-          let statusVal, progressVal;
-          if(isFirst){
-            statusVal = statusSel.value;
-            progressVal = statusWeight(statusVal);
-          } else {
-            progressVal = Math.max(0, Math.min(100, Math.round(Number(num.value)||0)));
-            statusVal = statusFromProgress(progressVal);
-          }
-          
-          const payload = {
-            status: statusVal,
-            progress: progressVal,
-            actions: item.querySelector('.a-actions').value.trim(),
-            deadline: deadlineVal,
-            notes: item.querySelector('.a-notes').value.trim(),
-            updated_by: S.user?.username || '',
-            updated_at: new Date().toISOString()
-          };
-          
-          const fi = item.querySelector('.a-file');
-          if(fi && fi.files && fi.files[0]){
-            const up = await apiUpload(fi.files[0], cid);
-            payload.file_url = up.url; payload.file_name = up.name;
-          }
-          
-          const saved = await apiSaveAssessmentFor(S.periodId, cid, payload);
-          S.assessments[cid] = saved;
-          
-          const s = item.querySelector('.saved'); if(s){ s.style.display='inline'; setTimeout(()=>s.style.display='none',2000); }
-          toast('ذخیره شد');
-        }catch(err){ toast('خطا: '+err.message); }
-        finally{ btn.disabled = false; btn.textContent = 'ذخیره'; }
-      });
-    });
-  }
+
   if(S.view==='trend'){
-    $('#trendUnit')?.addEventListener('change', e => { S._trendUnit = e.target.value; c.innerHTML = viewTrend(); bindView(); });
+    $('#trendUnit')?.addEventListener('change', e => {
+      S._trendUnit = e.target.value; S._trendPage = 1;
+      c.innerHTML = viewTrend(); bindView();
+    });
+    $('#trendCat')?.addEventListener('change', e => {
+      S._trendCat = e.target.value; S._trendPage = 1;
+      c.innerHTML = viewTrend(); bindView();
+    });
+    $('#trendLevel')?.addEventListener('change', e => {
+      S._trendLevel = e.target.value; S._trendPage = 1;
+      c.innerHTML = viewTrend(); bindView();
+    });
+    $('#trendGroupBy')?.addEventListener('change', e => {
+      S._trendGroupBy = e.target.value; S._trendPage = 1;
+      c.innerHTML = viewTrend(); bindView();
+    });
+    $('#trendSearch')?.addEventListener('input', e => {
+      S._trendSearch = e.target.value; S._trendPage = 1;
+      // re-render only table body would be complex; just re-render whole view and refocus
+      const val = e.target.value;
+      c.innerHTML = viewTrend(); bindView();
+      const inp = $('#trendSearch');
+      if(inp){ inp.focus(); inp.setSelectionRange(val.length, val.length); }
+    });
+    $('#trendClearFilters')?.addEventListener('click', () => {
+      S._trendUnit = '__all'; S._trendCat = '__all'; S._trendLevel = '__all';
+      S._trendSearch = ''; S._trendPage = 1;
+      c.innerHTML = viewTrend(); bindView();
+    });
+    c.querySelectorAll('[data-trendpage]').forEach(b => b.addEventListener('click', () => {
+      S._trendPage = Number(b.dataset.trendpage);
+      c.innerHTML = viewTrend(); bindView();
+      c.scrollTop = 0;
+    }));
   }
+
   if(S.view==='periods' && admin){
     $('#addPeriod')?.addEventListener('click', async () => {
       const name = ($('#pName').value||'').trim();
@@ -1786,23 +1778,28 @@ function bindView(){
     });
     c.querySelectorAll('[data-selperiod]').forEach(b => b.addEventListener('click', async () => {
       S.periodId = b.dataset.selperiod; renderPeriodSelect(); await loadAssessments();
-      toast('دوره انتخاب شد'); c.innerHTML = viewPeriods(); bindView();
+      toast('دوره انتخاب شد'); render();
     }));
     c.querySelectorAll('[data-exportperiod]').forEach(b => b.addEventListener('click', async () => {
       if(!S.allAssessments.length) await loadAllAssessments();
       exportPeriodToExcel(b.dataset.exportperiod);
     }));
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
+      const pid = b.dataset.delperiod;
+      if(isFirstPeriodById(pid)){
+        return toast('دوره اول قابل حذف نیست');
+      }
       if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
       try{
-        await apiDelPeriod(b.dataset.delperiod);
+        await apiDelPeriod(pid);
         await loadPeriods();
-        if(!S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[0]?.id || null;
+        if(!S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[S.periods.length - 1]?.id || null;
         renderPeriodSelect(); await loadAssessments();
-        toast('حذف شد'); c.innerHTML = viewPeriods(); bindView();
+        toast('حذف شد'); render();
       }catch(err){ toast('خطا: '+err.message); }
     }));
   }
+
   if(S.view==='users' && admin){
     renderUsersList().then(() => {
       const host = document.getElementById('usersList');
@@ -1823,6 +1820,7 @@ function bindView(){
     });
     $('#addUserBtn')?.addEventListener('click', () => openUserModal());
   }
+
   if(S.view==='import' && admin){
     $('#addCtrlFromImport')?.addEventListener('click', () => openAddControlModal());
     $('#wipeControls')?.addEventListener('click', async () => {
@@ -1853,13 +1851,11 @@ function bindView(){
         const isFirstUpload = S.periods.length === 0;
         
         if(isFirstUpload){
-          // Create first period
-          const periodName = ($('#firstPeriodName')?.value || '').trim() || `دوره اول - ${todayJalali()}`;
+          const periodName = ($('#firstPeriodName')?.value || '').trim() || `دوره اول — ${todayJalali()}`;
           log.textContent = `ایجاد دوره «${periodName}»…`;
           const period = await apiAddPeriod({ name: periodName });
           S.periodId = period.id;
           
-          // Create controls
           log.textContent = `ایجاد ${fa(parsed.length)} کنترل…`;
           if(MODE === 'local'){
             await LocalDB.setControls(parsed.map(r => ({
@@ -1887,7 +1883,6 @@ function bindView(){
           S.periodId = period.id;
           renderPeriodSelect();
           
-          // Create assessments for first period
           log.textContent = `ثبت ارزیابی دوره اول…`;
           for(let i = 0; i < parsed.length; i++){
             const r = parsed[i];
@@ -1895,23 +1890,17 @@ function bindView(){
             if(!ctrl) continue;
             const progress = r.progress !== null ? r.progress : statusWeight(r.status);
             await apiSaveAssessmentFor(period.id, ctrl.id, {
-              status: r.status,
-              progress: progress,
-              actions: r.actions,
-              deadline: r.deadline,
-              notes: r.notes,
-              updated_by: S.user?.username || '',
-              updated_at: new Date().toISOString()
+              status: r.status, progress, actions: r.actions, deadline: r.deadline, notes: r.notes,
+              updated_by: S.user?.username || '', updated_at: new Date().toISOString()
             });
             if(i % 20 === 0) log.textContent = `ارزیابی: ${fa(i+1)} از ${fa(parsed.length)}`;
           }
           
           await loadAssessments();
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره اول با ${fa(parsed.length)} کنترل و ارزیابی ایجاد شد.</span>`;
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره اول با ${fa(parsed.length)} کنترل ایجاد شد.</span>`;
           toast('دوره اول ایجاد شد');
           
         } else {
-          // Upload for existing period
           const targetPid = $('#importPeriod').value;
           if(!targetPid) throw new Error('دوره هدف را انتخاب کنید');
           const targetPeriod = S.periods.find(p => p.id === targetPid);
@@ -1925,7 +1914,6 @@ function bindView(){
             let ctrl = S.allControls.find(c => c.title === r.title);
             
             if(!ctrl){
-              // Create new control
               await apiAddControl({
                 row_no: S.allControls.length + 1,
                 category: r.category, level: r.level, title: r.title,
@@ -1935,27 +1923,24 @@ function bindView(){
               ctrl = S.allControls.find(c => c.title === r.title);
               createdCount++;
             }
-            
             if(!ctrl) continue;
             
             const progress = r.progress !== null ? r.progress : statusWeight(r.status);
             await apiSaveAssessmentFor(targetPid, ctrl.id, {
-              status: r.status,
-              progress: progress,
-              actions: r.actions,
-              deadline: r.deadline,
-              notes: r.notes,
-              updated_by: S.user?.username || '',
-              updated_at: new Date().toISOString()
+              status: r.status, progress, actions: r.actions, deadline: r.deadline, notes: r.notes,
+              updated_by: S.user?.username || '', updated_at: new Date().toISOString()
             });
             
             if(i % 20 === 0) log.textContent = `ثبت: ${fa(i+1)} از ${fa(parsed.length)}`;
           }
           
-          if(targetPid === S.periodId) await loadAssessments();
+          // Set target as current period
+          S.periodId = targetPid;
+          renderPeriodSelect();
+          await loadAssessments();
           await loadAllAssessments();
           
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${fa(parsed.length)} ردیف در دوره «${esc(targetPeriod.name)}» ثبت شد${createdCount>0?` — ${fa(createdCount)} کنترل جدید اضافه شد`:''}.</span>`;
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${fa(parsed.length)} ردیف در دوره «${esc(targetPeriod.name)}» ثبت شد${createdCount>0?` — ${fa(createdCount)} کنترل جدید`:''}.</span>`;
           toast('بارگذاری کامل شد');
         }
         
@@ -2022,7 +2007,6 @@ function openControlModal(id){
   const a = S.assessments[c.id] || {};
   const st = controlStatus(c), pr = controlProgress(c);
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || '—';
-  const admin = isAdmin();
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
     <button class="close-x" id="closeModal">×</button>
     <h3>#${fa(c.row_no??'')} — ${esc(c.title)}</h3>
@@ -2044,12 +2028,10 @@ function openControlModal(id){
     ${a.actions?`<div class="kv"><div class="k">اقدامات انجام شده تاکنون</div><div class="v">${esc(a.actions)}</div></div>`:''}
     ${a.notes?`<div class="kv"><div class="k">توضیحات</div><div class="v">${esc(a.notes)}</div></div>`:''}
     ${a.file_url?`<div class="kv"><div class="k">پیوست</div><div class="v"><a href="${esc(a.file_url)}" target="_blank" rel="noopener">${esc(a.file_name||'دانلود فایل')}</a></div></div>`:''}
-    ${admin?`<button class="btn btn-primary btn-full" id="goAssess" style="margin-top:8px">فرم ارزیابی این واحد</button>`:''}
   </div></div>`;
   const close = () => $('#modalHost').innerHTML='';
   $('#closeModal').addEventListener('click', close);
   $('#modalBg').addEventListener('click', e => { if(e.target.id==='modalBg') close(); });
-  $('#goAssess')?.addEventListener('click', () => { S.assessUnit = c.owner_unit||''; S.view = 'assess'; close(); render(); });
 }
 
 /* ===== GLOBAL EVENTS ===== */
