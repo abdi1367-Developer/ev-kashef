@@ -6,6 +6,7 @@
 <title>کاشف ۴۹۵ | پایش کنترل‌های امنیتی</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
+/* ===== THEMES ===== */
 :root{--white:#fff;--line:#e4e4e7;--line2:#d4d4d8;--txt:#09090b;--txt2:#3f3f46;--muted:#71717a;--dim:#a1a1aa;--faint:#f4f4f5;--bg-main:#fff;--bg-side:#fff;--bg-top:#fff;--donut-1:#18181b;--donut-2:#71717a;--donut-3:#d4d4d8;--donut-4:#f4f4f5;--bar-fill:#18181b;--bar-ok:#18181b;--bar-warn:#71717a;--bar-bad:#d4d4d8;--blob-1:#e4e4e7;--blob-2:#f4f4f5;--blob-3:#d4d4d8;--accent:#18181b;--overlay-bg:rgba(9,9,11,.32);--ctrl-border:var(--line2);--ctrl-hover:var(--txt);--th-bg:var(--faint);--th-border:var(--txt);--tr-hover:var(--faint);--toast-bg:var(--txt);--st-ok-bg:#18181b;--st-ok-fg:#fff;--st-ok-border:#18181b;--st-warn-bg:#fff;--st-warn-fg:#09090b;--st-warn-border:#09090b;--st-bad-bg:#fff;--st-bad-fg:#71717a;--st-bad-border:#d4d4d8;--st-gray-bg:transparent;--st-gray-fg:#a1a1aa;--st-gray-border:#e4e4e7;--badge-first-bg:#18181b;--badge-first-fg:#fff;--delta-pos:#15803d;--delta-neg:#b91c1c}
 body.theme-rose{--white:#fffbfc;--line:#f0dfe3;--line2:#e5ccd2;--txt:#4a2a35;--txt2:#5e3542;--muted:#96707c;--dim:#c9a5b1;--faint:#fdf3f5;--bg-main:#fdf6f8;--bg-side:#faeef2;--bg-top:#fdf6f8;--donut-1:#e8a5b6;--donut-2:#f2c4d0;--donut-3:#f7dbe3;--donut-4:#fceef2;--bar-fill:#d98099;--bar-ok:#e8a5b6;--bar-warn:#f2c4d0;--bar-bad:#f7dbe3;--blob-1:#f4c8d4;--blob-2:#f7dde5;--blob-3:#fceef2;--accent:#d98099;--overlay-bg:rgba(74,42,53,.3);--ctrl-border:#ecdbdf;--ctrl-hover:#d98099;--th-bg:#fceef2;--th-border:#e8a5b6;--tr-hover:#fdf3f5;--toast-bg:#d98099;--st-ok-bg:#f5d5dc;--st-ok-fg:#8a3a4e;--st-ok-border:#e8a5b6;--st-warn-bg:#fce5d2;--st-warn-fg:#8a5535;--st-warn-border:#f2c4a8;--st-bad-bg:#f0e0e8;--st-bad-fg:#7a5568;--st-bad-border:#dcbfcd;--st-gray-bg:#fbeef1;--st-gray-fg:#a17284;--st-gray-border:#ecd2da;--badge-first-bg:#d98099;--badge-first-fg:#fff;--delta-pos:#2d7d4f;--delta-neg:#a13048}
 body.theme-lavender{--white:#fdfbff;--line:#e8ddf2;--line2:#dcc9ea;--txt:#40305c;--txt2:#503d70;--muted:#8570a3;--dim:#b9a8cf;--faint:#f7f1fc;--bg-main:#faf5ff;--bg-side:#f5ecfd;--bg-top:#faf5ff;--donut-1:#b89ad6;--donut-2:#d4bde7;--donut-3:#e8daf2;--donut-4:#f5ecfd;--bar-fill:#a887d3;--bar-ok:#b89ad6;--bar-warn:#d4bde7;--bar-bad:#e8daf2;--blob-1:#dcc9ea;--blob-2:#e8daf2;--blob-3:#f5ecfd;--accent:#a887d3;--overlay-bg:rgba(64,48,92,.3);--ctrl-border:#e0d2ee;--ctrl-hover:#a887d3;--th-bg:#f5ecfd;--th-border:#c9b3e3;--tr-hover:#faf5ff;--toast-bg:#a887d3;--st-ok-bg:#e0d3f0;--st-ok-fg:#5a3d8a;--st-ok-border:#c9b3e3;--st-warn-bg:#fce5d2;--st-warn-fg:#8a5535;--st-warn-border:#f2c4a8;--st-bad-bg:#f0e0e8;--st-bad-fg:#7a5568;--st-bad-border:#dcbfcd;--st-gray-bg:#f2ecfa;--st-gray-fg:#8878a5;--st-gray-border:#dfd4ee;--badge-first-bg:#a887d3;--badge-first-fg:#fff;--delta-pos:#2d7d4f;--delta-neg:#a13048}
@@ -25,7 +26,9 @@ body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg-main);colo
 a{color:var(--txt);text-decoration:none}
 button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
-.login-wrap{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;z-index:200;padding:16px;background:var(--bg-main)}
+
+/* ===== LOGIN ===== */
+.login-wrap{position:fixed;inset:0;overflow-y:auto;z-index:200;padding:24px 16px;background:var(--bg-main);display:flex;flex-direction:column}
 .bg-anim{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px);background-size:48px 48px;opacity:.8}
 .rotor{position:absolute;border:1px solid var(--faint);top:50%;left:50%;pointer-events:none}
@@ -36,10 +39,14 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
 .b1{width:44vw;height:44vw;min-width:300px;min-height:300px;background:var(--blob-1);top:-10%;right:-8%;animation:float 19s ease-in-out infinite}
 .b2{width:38vw;height:38vw;min-width:280px;min-height:280px;background:var(--blob-2);bottom:-12%;left:-8%;animation:float 23s ease-in-out infinite reverse}
-.b3{width:30vw;height:30vw;min-width:240px;min-height:240px;background:var(--blob-3);top:42%;left:38%;opacity:.4;animation:float 27s ease-in-out infinite}
+.b3{width:30vw;height:30vw;min-width:240px;height:30vw;background:var(--blob-3);top:42%;left:38%;opacity:.4;animation:float 27s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(-7%,9%,0) scale(1.1)}66%{transform:translate3d(9%,-7%,0) scale(.95)}}
-.login-card{position:relative;z-index:3;width:min(380px,94vw);padding:36px 28px 28px;background:var(--white);border:1px solid var(--txt);animation:pop .5s ease}
+.login-stack{margin:auto 0;width:100%;max-width:400px;align-self:center;display:flex;flex-direction:column;gap:22px;position:relative;z-index:3;animation:pop .5s ease}
 @keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.login-logos{display:flex;align-items:center;justify-content:center;gap:24px;padding:4px 8px;flex-wrap:wrap}
+.login-logo{height:52px;width:auto;max-width:130px;object-fit:contain;display:block}
+.login-logo-mid{height:68px;max-width:150px}
+.login-card{position:relative;padding:36px 28px 26px;background:var(--white);border:1px solid var(--txt);width:100%}
 .login-theme{position:absolute;top:12px;left:12px;padding:5px 10px;border:1px solid var(--txt);background:transparent;color:var(--txt);cursor:pointer;font-size:10px;font-weight:500;letter-spacing:.06em;font-family:inherit}
 .login-theme:hover{background:var(--faint)}
 .kashaf{font-size:11px;font-weight:600;letter-spacing:.32em;text-align:center;text-transform:uppercase;margin-bottom:14px}
@@ -63,12 +70,12 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .diag.err{background:var(--white);border-color:var(--txt);border-style:dashed}
 .diag.warn{background:var(--white);border-color:var(--line2)}
 .diag b{color:var(--txt);font-weight:600}
-.hint{text-align:center;color:var(--dim);font-size:10.5px;margin-top:16px;letter-spacing:.06em;padding-top:16px;border-top:1px solid var(--line)}
-.hint b{color:var(--txt);font-weight:600}
 .mode-toggle{display:flex;margin-top:12px;border:1px solid var(--txt)}
 .mode-toggle button{flex:1;padding:8px 6px;font-size:10.5px;background:var(--white);color:var(--txt);border:none;cursor:pointer;letter-spacing:.05em;font-weight:500}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
+
+/* ===== APP ===== */
 #app{height:100vh;height:100dvh;display:block}
 .sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--bg-side);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
 .brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
@@ -88,19 +95,24 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-line.local::before{background:var(--dim)}
 .side-foot .btn{padding:7px;font-size:11px;letter-spacing:.08em}
 .main{margin-right:220px;height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:0}
-.topbar{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--bg-top);border-bottom:1px solid var(--txt);z-index:30}
-.topbar h2{margin:0;font-size:13px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.06em}
+.topbar{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:14px 20px;background:var(--bg-top);border-bottom:1px solid var(--txt);z-index:30;flex-wrap:wrap}
+.topbar h2{margin:0;font-size:13px;font-weight:600;flex:1;min-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.06em}
 .icon-btn{width:34px;height:34px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;display:none;place-items:center;font-size:15px;flex:0 0 auto}
 .icon-btn:hover{background:var(--faint)}
-.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.top-actions select{padding:8px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:200px;font-variant-numeric:tabular-nums}
-.theme-btn{padding:8px 12px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;font-size:11px;font-weight:500;letter-spacing:.04em;font-family:inherit;transition:.12s;display:inline-flex;align-items:center;gap:6px}
+.top-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0}
+.top-actions select{padding:7px 10px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;font-size:11.5px;max-width:180px;font-variant-numeric:tabular-nums;min-width:0}
+.theme-btn{padding:7px 10px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;font-size:11px;font-weight:500;letter-spacing:.04em;font-family:inherit;transition:.12s;display:inline-flex;align-items:center;gap:5px;flex-shrink:0}
 .theme-btn:hover{background:var(--faint)}
 .theme-btn::after{content:'▾';font-size:9px;opacity:.7}
-.theme-btn::before{content:'';width:12px;height:12px;border-radius:2px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent) 50%,var(--bg-main) 50%,var(--bg-main) 100%);border:1px solid var(--line2)}
+.theme-btn::before{content:'';width:11px;height:11px;border-radius:2px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent) 50%,var(--bg-main) 50%,var(--bg-main) 100%);border:1px solid var(--line2)}
+.print-btn{padding:7px 10px;border:1px solid var(--txt);background:var(--white);color:var(--txt);cursor:pointer;font-size:11px;font-weight:500;font-family:inherit;transition:.12s;flex-shrink:0;display:inline-flex;align-items:center;gap:5px}
+.print-btn:hover{background:var(--faint)}
+.print-btn .print-label{display:inline}
 .content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:24px;width:100%;min-width:0}
 .overlay{position:fixed;inset:0;background:var(--overlay-bg);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.show{opacity:1;pointer-events:auto}
+
+/* ===== COMPONENTS ===== */
 .grid{display:grid;gap:16px;width:100%}
 .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
@@ -111,7 +123,6 @@ body[class*="theme-"] .card{border-color:var(--ctrl-border)}
 body[class*="theme-"] .card h3 .dot{background:var(--accent)}
 .kpi .v{font-size:32px;font-weight:600;line-height:1;letter-spacing:-.02em}
 .kpi .l{color:var(--muted);font-size:10px;margin-top:8px;letter-spacing:.14em;font-weight:500}
-.kpi .sublbl{color:var(--dim);font-size:9px;margin-top:4px}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-size:10px;white-space:nowrap;font-weight:500;letter-spacing:.06em;border:1px solid transparent}
 .st-ok{background:var(--st-ok-bg);color:var(--st-ok-fg);border-color:var(--st-ok-border)}
 .st-warn{background:var(--st-warn-bg);color:var(--st-warn-fg);border-color:var(--st-warn-border)}
@@ -144,17 +155,12 @@ body[class*="theme-"] .card h3 .dot{background:var(--accent)}
 .cc-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding-left:30px}
 .cc-no{font-size:10px;color:var(--muted);font-weight:500;margin-right:auto;letter-spacing:.08em}
 .cc-title{font-size:12.5px;line-height:1.85;font-weight:500;margin-bottom:8px}
-.cc-ev{font-size:11px;line-height:1.85;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.cc-foot{margin-top:12px;display:flex;align-items:center;gap:12px}
-.cc-foot .bar{flex:1;margin:0}
-.cc-foot b{font-size:10.5px;min-width:38px;text-align:left;font-weight:600}
+.cc-ev{font-size:11px;line-height:1.85;color:var(--muted)}
 .ctrl-4cols{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
 .c4-item{min-width:0}
 .c4-lbl{font-size:9px;color:var(--muted);letter-spacing:.1em;font-weight:500;margin-bottom:4px}
-.c4-val{font-size:11px;line-height:1.7;color:var(--txt);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.c4-val{font-size:11px;line-height:1.7;color:var(--txt);word-break:break-word}
 .c4-val.dim{color:var(--dim)}
-@media(max-width:900px){.ctrl-4cols{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.ctrl-4cols{grid-template-columns:1fr}}
 .del-btn{position:absolute;top:12px;left:12px;width:22px;height:22px;border:1px solid var(--line2);background:var(--white);cursor:pointer;font-size:12px;line-height:1;color:var(--muted);display:grid;place-items:center}
 .del-btn:hover{background:var(--faint);border-color:var(--txt);color:var(--txt)}
 .pager{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;flex-wrap:wrap}
@@ -165,16 +171,13 @@ th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
 th{color:var(--muted);font-weight:600;font-size:9.5px;background:var(--th-bg);white-space:nowrap;letter-spacing:.14em;border-bottom:1px solid var(--th-border)}
 tbody tr:hover{background:var(--tr-hover)}
 tbody td{font-variant-numeric:tabular-nums}
-/* Comparison table with fixed layout */
 .cmp-table{table-layout:fixed;width:100%;font-size:11.5px;border-collapse:collapse}
-.cmp-table th,.cmp-table td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--line);overflow:hidden;text-overflow:ellipsis}
+.cmp-table th,.cmp-table td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--line);overflow:hidden;text-overflow:ellipsis;word-wrap:break-word}
 .cmp-table th:first-child,.cmp-table td:first-child{text-align:right;font-weight:600}
 .cmp-table th{background:var(--th-bg);border-bottom:1px solid var(--th-border);font-size:9.5px;letter-spacing:.1em;white-space:nowrap}
 .cmp-table td.null{color:var(--dim)}
 .cmp-table .cell-val{font-weight:600;font-size:13px}
 .cmp-table .cell-delta{font-size:10px;margin-top:2px;font-weight:600}
-.cmp-card-title{font-size:10px;color:var(--muted);letter-spacing:.14em;font-weight:600;margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
-.cmp-card-title::before{content:'';width:4px;height:4px;background:var(--accent);flex-shrink:0}
 .modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:var(--overlay-bg);animation:fade .18s;overflow-y:auto}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .modal-box{width:min(900px,100%);max-height:88dvh;overflow:auto;border:1px solid var(--txt);background:var(--white);padding:24px;animation:pop .2s ease;margin:auto}
@@ -231,9 +234,6 @@ tbody td{font-variant-numeric:tabular-nums}
 .unit-check.disabled{opacity:.5;cursor:not-allowed}
 .unit-check.disabled:hover{background:var(--white);border-color:transparent}
 input[type=checkbox],input[type=range]{accent-color:var(--accent)}
-@media(max-width:480px){.unit-box{grid-template-columns:1fr}.um-head{padding:14px 16px 10px}.um-body{padding:12px 16px}.um-foot{padding:10px 16px}}
-.info-hint{font-size:10.5px;color:var(--muted);line-height:1.8;margin-top:8px;padding:8px 10px;background:var(--faint);border:1px solid var(--line)}
-.info-hint b{color:var(--txt);font-weight:600}
 .trend-toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}
 .trend-toolbar select,.trend-toolbar input{padding:9px 11px;border:1px solid var(--txt);background:var(--white);color:var(--txt);outline:none;width:100%;font-size:11.5px;font-variant-numeric:tabular-nums}
 .trend-toolbar select:focus,.trend-toolbar input:focus{background:var(--faint)}
@@ -256,33 +256,105 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 .ts-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ts-opt.active .ts-name::after{content:' ✓';font-size:10px;color:var(--accent);font-weight:700}
 @media(max-width:480px){.ts-grid{grid-template-columns:1fr}.theme-switcher{min-width:240px}}
+
+/* ===== PRINT ===== */
+.print-header{display:none}
+@media print{
+  @page{margin:10mm;size:A4}
+  html,body{height:auto !important;overflow:visible !important;background:#fff !important}
+  body[class*="theme-"]{background:#fff !important}
+  #app{display:block !important;height:auto !important}
+  .sidebar,.overlay,.topbar{display:none !important}
+  .main{margin:0 !important;height:auto !important;display:block !important}
+  .content{padding:0 !important;overflow:visible !important;height:auto !important}
+  .print-header{display:block !important}
+  .btn,.del-btn,.theme-btn,.icon-btn,.print-btn,.pager,.toolbar,.no-print,.theme-switcher,.mode-toggle,.ro-notice{display:none !important}
+  .card{box-shadow:none !important;break-inside:avoid;page-break-inside:avoid;padding:12px !important}
+  .ctrl{break-inside:avoid;page-break-inside:avoid}
+  /* Force light colors for print */
+  :root,body[class*="theme-"]{
+    --white:#fff!important;--bg-main:#fff!important;--bg-side:#fff!important;--bg-top:#fff!important;
+    --txt:#000!important;--txt2:#222!important;--muted:#555!important;--dim:#777!important;--faint:#f7f7f7!important;
+    --line:#ddd!important;--line2:#bbb!important;--accent:#333!important;
+    --ctrl-border:#bbb!important;--ctrl-hover:#333!important;
+    --bar-fill:#333!important;--bar-ok:#333!important;--bar-warn:#666!important;--bar-bad:#999!important;
+    --donut-1:#333!important;--donut-2:#666!important;--donut-3:#999!important;--donut-4:#ccc!important;
+    --st-ok-bg:#e8e8e8!important;--st-ok-fg:#000!important;--st-ok-border:#888!important;
+    --st-warn-bg:#fff!important;--st-warn-fg:#333!important;--st-warn-border:#666!important;
+    --st-bad-bg:#fff!important;--st-bad-fg:#666!important;--st-bad-border:#999!important;
+    --st-gray-bg:#f5f5f5!important;--st-gray-fg:#555!important;--st-gray-border:#ccc!important;
+    --th-bg:#f5f5f5!important;--th-border:#999!important;--tr-hover:transparent!important;
+    --delta-pos:#080!important;--delta-neg:#800!important;--badge-first-bg:#333!important;--badge-first-fg:#fff!important;
+  }
+  .grid{gap:8px !important}
+  .kpis{grid-template-columns:repeat(4,1fr) !important}
+  .cols2{grid-template-columns:1fr 1fr !important}
+  .ctrl-4cols{grid-template-columns:repeat(4,1fr) !important}
+  .card{padding:10px !important}
+  .card h3{margin-bottom:8px !important;padding-bottom:6px !important;font-size:10px !important}
+  .kpi .v{font-size:20px !important}
+  .donut{width:110px !important;height:110px !important}
+  .donut::before{inset:16px !important}
+  .donut .mid b{font-size:18px !important}
+  table{font-size:10px !important;min-width:0 !important}
+  th,td{padding:6px 8px !important}
+  .change-tbl{min-width:0 !important;table-layout:auto !important}
+  .cc-ev{-webkit-line-clamp:none !important;display:block !important;overflow:visible !important}
+  .c4-val{-webkit-line-clamp:none !important;display:block !important;overflow:visible !important}
+}
+
+/* ===== RESPONSIVE ===== */
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
   .sidebar.open{transform:translateX(0)}
   .main{margin-right:0}
   .icon-btn{display:grid}
   .content{padding:16px}
-  .topbar{padding:12px 16px}
+  .topbar{padding:12px 14px}
   .kpi .v{font-size:26px}
   .card{padding:16px}
+  .top-actions select{max-width:150px}
+  .ctrl-4cols{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .print-btn .print-label{display:none}
+  .print-btn{padding:7px 8px;font-size:12px}
+  .theme-btn{padding:7px 8px;font-size:10.5px}
+  .theme-btn::before{display:none}
+  .theme-btn::after{display:none}
 }
 @media(max-width:560px){
   .kpis{grid-template-columns:repeat(2,1fr)}
   .cols2{grid-template-columns:1fr}
-  .topbar h2{font-size:11.5px}
+  .topbar h2{font-size:11.5px;min-width:80px}
   .donut{width:130px;height:130px}
   .donut::before{inset:18px}
   .donut .mid b{font-size:22px}
   .modal-box{padding:16px}
   .cc-ev{-webkit-line-clamp:3}
   .content{padding:12px}
-  .theme-btn{padding:7px 9px;font-size:10.5px}
+  .topbar{gap:6px;padding:10px 12px}
+  .top-actions{gap:4px}
+  .top-actions select{font-size:11px;padding:6px 8px;max-width:130px}
+  .login-stack{gap:16px;padding:0 4px}
+  .login-logo{height:40px;max-width:105px}
+  .login-logo-mid{height:52px;max-width:120px}
+  .login-logos{gap:14px}
+  .login-card{padding:28px 20px 22px}
+  .ctrl-4cols{grid-template-columns:1fr;gap:8px}
+  .change-tbl{min-width:900px}
+  .trend-toolbar{grid-template-columns:1fr 1fr}
 }
-@media(max-height:520px){.sidebar{overflow-y:auto}.nav{overflow:visible}}
+@media(max-height:520px){
+  .sidebar{overflow-y:auto}
+  .nav{overflow:visible}
+  .login-stack{gap:12px}
+}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="loginScreen" class="login-wrap">
   <div class="bg-anim">
     <div class="bg-grid"></div>
@@ -291,51 +363,55 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
     <div class="rotor rotor-c"></div>
     <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
   </div>
-  <div class="login-card">
-    <button class="login-theme" id="loginThemeBtn" type="button" title="تغییر تم">تم</button>
-    <div class="kashaf">KASHAF — 495</div>
-    <div class="kashaf-rule"></div>
-    <h1>ورود به سامانه</h1>
-    <p class="sub">پایش کنترل‌های امنیت اطلاعات</p>
-    <div id="connBox" class="diag">
-      <div><b>وضعیت اتصال:</b> <span id="connTxt">در حال بررسی…</span></div>
+  <div class="login-stack">
+    <div class="login-logos">
+      <img src="central.svg" alt="مرکز مبادله" class="login-logo" onerror="this.style.display='none'">
+      <img src="ice.png" alt="ICE" class="login-logo login-logo-mid" onerror="this.style.display='none'">
+      <img src="kashef.png" alt="کاشف" class="login-logo" onerror="this.style.display='none'">
     </div>
-    <form id="loginForm">
-      <div class="field"><label>نام کاربری</label>
-        <input id="luser" value="ice" required autocomplete="username"></div>
-      <div class="field"><label>رمز عبور</label>
-        <input id="lpass" type="password" value="ice" required autocomplete="current-password"></div>
-      <button class="btn btn-primary btn-full" type="submit" id="loginBtn">ورود</button>
-      <div class="err" id="loginErr"></div>
-    </form>
-    <div class="mode-toggle">
-      <button id="retestBtn">بررسی اتصال</button>
-      <button id="localModeBtn">حالت محلی</button>
+    <div class="login-card">
+      <button class="login-theme" id="loginThemeBtn" type="button" title="تغییر تم">تم</button>
+      <div class="kashaf">KASHAF — 495</div>
+      <div class="kashaf-rule"></div>
+      <h1>ورود به سامانه</h1>
+      <p class="sub">پایش کنترل‌های امنیت اطلاعات</p>
+      <div id="connBox" class="diag">
+        <div><b>وضعیت اتصال:</b> <span id="connTxt">در حال بررسی…</span></div>
+      </div>
+      <form id="loginForm">
+        <div class="field"><label>نام کاربری</label><input id="luser" value="ice" required autocomplete="username"></div>
+        <div class="field"><label>رمز عبور</label><input id="lpass" type="password" value="ice" required autocomplete="current-password"></div>
+        <button class="btn btn-primary btn-full" type="submit" id="loginBtn">ورود</button>
+        <div class="err" id="loginErr"></div>
+      </form>
+      <div class="mode-toggle">
+        <button id="retestBtn">بررسی اتصال</button>
+        <button id="localModeBtn">حالت محلی</button>
+      </div>
     </div>
-    <div class="hint">کاربر پیش‌فرض: <b>ice</b> / رمز: <b>ice</b></div>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app" class="hidden">
   <aside class="sidebar" id="sidebar">
     <div class="brand"><b>KASHAF 495</b><span>پایش کنترل‌های امنیت</span></div>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
-      <div class="user-chip">
-        <div class="av" id="avatar">I</div>
-        <div style="min-width:0"><b id="uName">—</b><span id="uRole">—</span></div>
-      </div>
+      <div class="user-chip"><div class="av" id="avatar">I</div><div style="min-width:0"><b id="uName">—</b><span id="uRole">—</span></div></div>
       <div id="modeIndicator"></div>
       <button class="btn btn-full" id="logoutBtn">خروج از حساب</button>
     </div>
   </aside>
   <div class="overlay" id="overlay"></div>
   <main class="main">
+    <div class="print-header" id="printHeader"></div>
     <header class="topbar">
       <button class="icon-btn" id="menuBtn">≡</button>
       <h2 id="pageTitle">داشبورد</h2>
       <div class="top-actions">
         <select id="globalPeriod"></select>
+        <button class="print-btn" onclick="printCurrentView()" title="چاپ صفحه">🖨️<span class="print-label"> چاپ</span></button>
         <button class="theme-btn" id="themeBtn" title="تغییر تم">تم</button>
       </div>
     </header>
@@ -350,7 +426,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
-/* ===== THEMES ===== */
 const THEMES = [
   {id:'default',name:'ساده',accent:'#18181b',bg:'#ffffff'},
   {id:'rose',name:'رز',accent:'#d98099',bg:'#fdf6f8'},
@@ -374,10 +449,8 @@ function applyTheme(id){
 }
 function updateThemeBtn(){
   const t = THEMES.find(x => x.id === getCurrentThemeId()) || THEMES[0];
-  const btn = document.getElementById('themeBtn');
-  if(btn) btn.textContent = t.name;
-  const lb = document.getElementById('loginThemeBtn');
-  if(lb) lb.textContent = t.name;
+  const btn = document.getElementById('themeBtn'); if(btn) btn.textContent = t.name;
+  const lb = document.getElementById('loginThemeBtn'); if(lb) lb.textContent = t.name;
 }
 function openThemeSwitcher(anchorEl, ev){
   if(ev){ ev.preventDefault(); ev.stopPropagation(); }
@@ -385,10 +458,8 @@ function openThemeSwitcher(anchorEl, ev){
   if(existing){ existing.remove(); return; }
   const current = getCurrentThemeId();
   const rect = anchorEl.getBoundingClientRect();
-  const sw = document.createElement('div');
-  sw.id = 'themeSwitcher';
-  sw.className = 'theme-switcher';
-  sw.innerHTML = `<div class="ts-head">انتخاب تم ظاهری</div><div class="ts-grid">${THEMES.map(t => `<button type="button" class="ts-opt ${current===t.id?'active':''}" data-theme-id="${t.id}"><span class="ts-swatch" style="background:linear-gradient(135deg,${t.accent} 0%,${t.accent} 50%,${t.bg} 50%,${t.bg} 100%)"></span><span class="ts-name">${t.name}</span></button>`).join('')}</div>`;
+  const sw = document.createElement('div'); sw.id = 'themeSwitcher'; sw.className = 'theme-switcher';
+  sw.innerHTML = `<div class="ts-head">انتخاب تم</div><div class="ts-grid">${THEMES.map(t => `<button type="button" class="ts-opt ${current===t.id?'active':''}" data-theme-id="${t.id}"><span class="ts-swatch" style="background:linear-gradient(135deg,${t.accent} 0%,${t.accent} 50%,${t.bg} 50%,${t.bg} 100%)"></span><span class="ts-name">${t.name}</span></button>`).join('')}</div>`;
   document.body.appendChild(sw);
   const swRect = sw.getBoundingClientRect();
   let top = rect.bottom + 6, left = rect.left;
@@ -411,35 +482,26 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const fa = n => String(n ?? '').replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const toLatin = s => String(s||'').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+let PRINT_MODE = false;
 
-function toast(msg){
-  const t = $('#toast'); t.textContent = msg; t.className = 'toast show';
-  clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='toast', 2400);
-}
-async function sha256(str){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.className = 'toast show'; clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='toast', 2400); }
+async function sha256(str){ const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
 
-/* ===== JALALI ===== */
 const JALALI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 const JALALI_WEEKDAYS = ['ش','ی','د','س','چ','پ','ج'];
 function g2j(gy, gm, gd){
   const gdm = [0,31,59,90,120,151,181,212,243,273,304,334];
-  let jy = (gy <= 1600) ? 0 : 979;
-  gy -= (gy <= 1600) ? 621 : 1600;
+  let jy = (gy <= 1600) ? 0 : 979; gy -= (gy <= 1600) ? 621 : 1600;
   const gy2 = (gm > 2) ? (gy + 1) : gy;
   let days = (365*gy) + Math.floor((gy2+3)/4) - Math.floor((gy2+99)/100) + Math.floor((gy2+399)/400) - 80 + gd + gdm[gm-1];
-  jy += 33*Math.floor(days/12053); days %= 12053;
-  jy += 4*Math.floor(days/1461); days %= 1461;
+  jy += 33*Math.floor(days/12053); days %= 12053; jy += 4*Math.floor(days/1461); days %= 1461;
   if (days > 365) { jy += Math.floor((days-1)/365); days = (days-1)%365; }
   const jm = (days < 186) ? 1 + Math.floor(days/31) : 7 + Math.floor((days-186)/30);
   const jd = 1 + ((days < 186) ? (days%31) : ((days-186)%30));
   return [jy, jm, jd];
 }
 function j2g(jy, jm, jd){
-  let gy = (jy <= 979) ? 621 : 1600;
-  jy -= (jy <= 979) ? 0 : 979;
+  let gy = (jy <= 979) ? 621 : 1600; jy -= (jy <= 979) ? 0 : 979;
   let days = (365*jy) + (Math.floor(jy/33)*8) + Math.floor(((jy%33)+3)/4) + 78 + jd + ((jm<7) ? (jm-1)*31 : ((jm-7)*30)+186);
   gy += 400*Math.floor(days/146097); days %= 146097;
   if (days >= 36525) { days--; gy += 100*Math.floor(days/36524); days %= 36524; if (days >= 365) days++; }
@@ -468,12 +530,10 @@ function openDatePicker(currentValue, onPick){
   const today = todayJalali();
   const parsed = currentValue ? parseJalali(currentValue) : null;
   let parts = (parsed || today).split('/').map(Number);
-  let jy = parts[0], jm = parts[1];
-  let selected = parsed;
+  let jy = parts[0], jm = parts[1]; let selected = parsed;
   const host = document.getElementById('datePickerHost');
   function render(){
-    const len = jalaliMonthLength(jy, jm);
-    const firstWd = firstWeekdayOfJalaliMonth(jy, jm);
+    const len = jalaliMonthLength(jy, jm); const firstWd = firstWeekdayOfJalaliMonth(jy, jm);
     const cells = [];
     for(let i=0;i<firstWd;i++) cells.push(null);
     for(let d=1;d<=len;d++) cells.push(d);
@@ -509,7 +569,6 @@ function openDatePicker(currentValue, onPick){
   render();
 }
 
-/* ===== STATUS ===== */
 const STATUS_OPTS = ['عدم پیاده‌سازی','در حال پیاده‌سازی','پیاده‌سازی کامل'];
 function normalizeStatus(s){
   s = String(s||'').trim();
@@ -521,12 +580,7 @@ function normalizeStatus(s){
   if(s.includes('پیاده')) return 'پیاده‌سازی کامل';
   return 'عدم پیاده‌سازی';
 }
-function statusFromProgress(p){
-  p = Number(p)||0;
-  if(p<=0) return 'عدم پیاده‌سازی';
-  if(p>=100) return 'پیاده‌سازی کامل';
-  return 'در حال پیاده‌سازی';
-}
+function statusFromProgress(p){ p = Number(p)||0; if(p<=0) return 'عدم پیاده‌سازی'; if(p>=100) return 'پیاده‌سازی کامل'; return 'در حال پیاده‌سازی'; }
 function statusClass(s){
   if(s === 'ثبت نشده' || s === '—' || !s) return 'st-gray';
   const n = normalizeStatus(s);
@@ -536,7 +590,6 @@ function statusClass(s){
   return 'st-bad';
 }
 
-/* ===== MODE ===== */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'online';
 let sb = null;
@@ -554,7 +607,6 @@ const LS = {
   del(k){ localStorage.removeItem('kashaf_'+k); }
 };
 function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16); }); }
-
 function getAxExtras(id){ if(!id) return {}; return LS.read('ax_' + id) || {}; }
 function setAxExtras(id, extras){ if(!id) return; const cur = LS.read('ax_' + id) || {}; Object.assign(cur, extras); LS.write('ax_' + id, cur); }
 function mergeAxExtras(a){
@@ -618,7 +670,6 @@ async function testConnection(){
   }
 }
 
-/* ===== UNIT ACCESS ===== */
 function hasUnitsColumn(user){ return user && Object.prototype.hasOwnProperty.call(user, 'allowed_units'); }
 function getUserUnits(user){
   if(MODE === 'local') return user.allowed_units;
@@ -644,7 +695,6 @@ async function createUserRecord(record, units){
   await saveUserUnits(inserted.id, units);
 }
 
-/* ===== STATE ===== */
 const S = {
   user:null, controls:[], allControls:[], periods:[], periodId:null,
   assessments:{}, allAssessments:[], units:[], allUnits:[], cats:[], levels:[],
@@ -681,7 +731,6 @@ function applyUnitAccess(all){
   return all.filter(c => allowed.includes(c.owner_unit));
 }
 
-/* ===== AUTH ===== */
 async function doLogin(username, password){
   const hash = await sha256(password);
   if(MODE==='local'){ const u = await LocalDB.findUser(username); if(!u) throw new Error('کاربر یافت نشد.'); if(u.password_hash && u.password_hash !== hash) throw new Error('رمز نادرست است.'); return u; }
@@ -714,7 +763,6 @@ function startSession(user){
 }
 function logout(){ S.user=null; S.periodId=null; $('#app').classList.add('hidden'); $('#loginScreen').classList.remove('hidden'); $('#content').innerHTML=''; updateConnBox(); }
 
-/* ===== API ===== */
 async function apiListControls(){
   if(MODE==='local') return LocalDB.listControls();
   const { data, error } = await sb.from('controls').select('*').order('row_no',{ascending:true});
@@ -767,9 +815,7 @@ async function apiSaveAssessmentFor(periodId, controlId, payload){
   const failed = {};
   for(let i=0;i<4;i++){
     try{
-      if(MODE === 'local'){
-        return await LocalDB.upsertAssessment({ period_id: periodId, control_id: controlId, ...attempted });
-      }
+      if(MODE === 'local'){ return await LocalDB.upsertAssessment({ period_id: periodId, control_id: controlId, ...attempted }); }
       const res = await sb.from('assessments').select('*').eq('period_id', periodId).eq('control_id', controlId).limit(1);
       if(res.error) throw res.error;
       const existing = res.data && res.data[0];
@@ -789,7 +835,6 @@ async function apiSaveAssessmentFor(periodId, controlId, payload){
   throw new Error('خطا در ذخیره ارزیابی');
 }
 
-/* ===== LOADERS ===== */
 async function loadControls(){
   const all = await apiListControls();
   S.allControls = all;
@@ -811,31 +856,14 @@ async function loadAssessments(){
 }
 async function loadAllAssessments(){ S.allAssessments = await apiListAssessments(null); }
 
-/* ===== MAPS ===== */
-function assessmentMapFor(pid){
-  const m = {};
-  S.allAssessments.filter(a=>a.period_id===pid).forEach(a => m[a.control_id]=a);
-  return m;
-}
 function getAllMaps(){
   const maps = {};
   S.periods.forEach(p => { maps[p.id] = {}; });
   S.allAssessments.forEach(a => { if(maps[a.period_id]) maps[a.period_id][a.control_id] = a; });
-  // Override with current assessments (fresher)
-  if(S.assessments && S.periodId){
-    maps[S.periodId] = { ...maps[S.periodId], ...S.assessments };
-  }
+  if(S.assessments && S.periodId){ maps[S.periodId] = { ...maps[S.periodId], ...S.assessments }; }
   return maps;
 }
 
-/* ===== PROGRESS LOGIC =====
- * Formula:
- * - پیاده‌سازی کامل → 100
- * - عدم پیاده‌سازی → 0
- * - در حال پیاده‌سازی → progress value if present, else 50
- * - غیر قابل احراز → excluded (null)
- * - no data → null (carry-forward in aggregates)
- */
 function calculateControlProgressDetail(c, periodId, map){
   const a = map ? map[c.id] : null;
   let status;
@@ -861,44 +889,30 @@ function calculateControlProgressDetail(c, periodId, map){
   return { value: null, reason: 'nodata' };
 }
 
-// Get raw progress for control in current period (for control card display)
 function controlProgress(c){
   const r = calculateControlProgressDetail(c, S.periodId, S.assessments);
   return r.value;
 }
 function controlStatus(c){
   const a = S.assessments[c.id];
-  if(isFirstPeriodById(S.periodId)){
-    return normalizeStatus((a && a.status) || c.status || 'عدم پیاده‌سازی');
-  }
+  if(isFirstPeriodById(S.periodId)) return normalizeStatus((a && a.status) || c.status || 'عدم پیاده‌سازی');
   const pr = controlProgress(c);
   if(pr !== null) return statusFromProgress(pr);
   if(a && a.status) return normalizeStatus(a.status);
   return 'ثبت نشده';
 }
 
-/**
- * Aggregate series with:
- * - carry-forward: if a control has no data in a period, use its previous value
- * - exclude غیر قابل احراز
- * - running max: metric never decreases across periods
- */
 function computeAggregateSeries(controls, periods, allMaps){
   if(!periods.length) return [];
-  
-  // Per control: build series of {value, excluded} with carry-forward
   const controlSeries = controls.map(c => {
     let lastVal = null;
     return periods.map(p => {
       const r = calculateControlProgressDetail(c, p.id, allMaps[p.id]);
       if(r.reason === 'excluded') return { value: null, excluded: true };
       if(r.reason === 'ok'){ lastVal = r.value; return { value: r.value, excluded: false }; }
-      // nodata → carry forward
       return { value: lastVal, excluded: false };
     });
   });
-  
-  // Aggregate per period (mean of non-excluded values)
   const aggregates = periods.map((p, i) => {
     let sum = 0, count = 0;
     controlSeries.forEach(s => {
@@ -909,18 +923,11 @@ function computeAggregateSeries(controls, periods, allMaps){
     });
     return count > 0 ? Math.round(sum / count) : null;
   });
-  
-  // Apply running max (non-decreasing)
-  const result = [];
-  let runningMax = null;
-  aggregates.forEach(v => {
-    if(v !== null && (runningMax === null || v > runningMax)) runningMax = v;
-    result.push(runningMax);
-  });
+  const result = []; let runningMax = null;
+  aggregates.forEach(v => { if(v !== null && (runningMax === null || v > runningMax)) runningMax = v; result.push(runningMax); });
   return result;
 }
 
-// Get cumulative value at current period (for KPI)
 function currentCumulativeProgress(controls){
   const idx = periodIndex();
   if(idx < 0) return null;
@@ -930,7 +937,25 @@ function currentCumulativeProgress(controls){
   return series.length ? series[series.length - 1] : null;
 }
 
-/* ===== BOOT ===== */
+async function printCurrentView(){
+  PRINT_MODE = true;
+  const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
+  const printHeader = document.getElementById('printHeader');
+  if(printHeader){
+    printHeader.innerHTML = `<div style="text-align:center;margin-bottom:8mm;padding-bottom:4mm;border-bottom:2px solid #333;">
+      <div style="font-size:15px;font-weight:bold;margin-bottom:6px;">مرکز مبادله ارز و طلای ایران — سامانه کاشف ۴۹۵</div>
+      <div style="font-size:11px;">${esc(TITLES[S.view] || '')} — دوره: ${esc(periodName)} — تاریخ چاپ: ${fa(todayJalali())}</div>
+    </div>`;
+  }
+  render();
+  await new Promise(r => setTimeout(r, 250));
+  let restored = false;
+  const restore = () => { if(restored) return; restored = true; PRINT_MODE = false; render(); };
+  window.addEventListener('afterprint', restore, { once: true });
+  window.print();
+  setTimeout(restore, 1500);
+}
+
 async function bootApp(){
   const content = $('#content');
   content.innerHTML = `<div class="card"><div class="spin"></div><div class="empty">در حال بارگذاری…</div></div>`;
@@ -945,9 +970,7 @@ async function bootApp(){
     content.innerHTML = `<div class="card"><h3><span class="dot"></span> خطا در بارگذاری</h3><div class="empty" style="text-align:right">${esc(err.message || err)}</div></div>`;
   }
 }
-function renderNav(){
-  $('#nav').innerHTML = visibleNav().map(n => `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">${n.label}</button>`).join('');
-}
+function renderNav(){ $('#nav').innerHTML = visibleNav().map(n => `<button data-view="${n.id}" class="${S.view===n.id?'active':''}">${n.label}</button>`).join(''); }
 function renderPeriodSelect(){
   const sel = $('#globalPeriod');
   if(!S.periods.length){ sel.innerHTML = `<option value="">— بدون دوره —</option>`; sel.disabled = true; return; }
@@ -977,25 +1000,18 @@ function render(){
 /* ===== DASHBOARD ===== */
 function viewDashboard(){
   const total = S.controls.length;
-  
-  // Status counts (current period)
   const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی کامل':0,'غیر قابل احراز':0,'ثبت نشده':0};
   S.controls.forEach(c => {
     const st = controlStatus(c);
     if(counts[st] !== undefined) counts[st]++;
     else counts['ثبت نشده']++;
   });
-  
-  // Overall cumulative progress
   const avg = currentCumulativeProgress(S.controls);
-  
-  // Per unit
   const byUnit = {};
   S.controls.forEach(c => {
     const u = c.owner_unit || 'نامشخص';
     if(!byUnit[u]) byUnit[u] = { n:0, ok:0, doing:0, bad:0, unverifiable:0, empty:0, controls:[] };
-    byUnit[u].n++;
-    byUnit[u].controls.push(c);
+    byUnit[u].n++; byUnit[u].controls.push(c);
     const st = controlStatus(c);
     if(st==='پیاده‌سازی کامل') byUnit[u].ok++;
     else if(st==='در حال پیاده‌سازی') byUnit[u].doing++;
@@ -1011,16 +1027,12 @@ function viewDashboard(){
     const pct = series.length ? series[series.length - 1] : null;
     return { name:k, n:v.n, ok:v.ok, doing:v.doing, bad:v.bad, unverifiable:v.unverifiable, empty:v.empty, pct };
   }).sort((a,b) => (b.pct||0) - (a.pct||0));
-  
-  // Per level
   const byLevel = {};
   S.controls.forEach(c => {
     const l = c.level || 'نامشخص';
     if(!byLevel[l]) byLevel[l] = { n:0, controls:[] };
     byLevel[l].n++; byLevel[l].controls.push(c);
   });
-  
-  // Per category
   const byCat = {};
   S.controls.forEach(c => {
     const k = c.category || 'نامشخص';
@@ -1032,7 +1044,6 @@ function viewDashboard(){
     const pct = series.length ? series[series.length - 1] : null;
     return { name:k, n:v.n, pct };
   }).sort((a,b) => (b.pct||0) - (a.pct||0));
-  
   const segs = [
     {label:'پیاده‌سازی کامل', val:counts['پیاده‌سازی کامل'], color:'var(--donut-1)'},
     {label:'در حال', val:counts['در حال پیاده‌سازی'], color:'var(--donut-2)'},
@@ -1043,10 +1054,8 @@ function viewDashboard(){
   const sumSegs = segs.reduce((a,b)=>a+b.val, 0);
   let acc = 0;
   const grad = segs.map(s => { const from = sumSegs?acc/sumSegs*360:0; acc += s.val; const to = sumSegs?acc/sumSegs*360:0; return `${s.color} ${from}deg ${to}deg`; }).join(',');
-  
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
   const scopeLabel = isAdmin() ? 'همه واحدها' : `${fa(S.units.length)} واحد مجاز`;
-  
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
       <span class="badge badge-soft">دوره: ${esc(periodName)}</span>
@@ -1054,12 +1063,10 @@ function viewDashboard(){
       <span class="badge badge-soft">${scopeLabel}</span>
       <span class="badge badge-soft" style="margin-right:auto">${MODE==='local'?'محلی':'آنلاین'}</span>
     </div>
-
     <div class="grid kpis">
       <div class="card kpi">
         <div class="v">${avg !== null ? fa(avg)+'٪' : '—'}</div>
         <div class="l">پیشرفت کل</div>
-        <div class="sublbl">شاخص تجمعی (غیر قابل احراز حذف شده)</div>
         <div class="bar" style="margin-top:12px"><i style="width:${avg !== null ? avg : 0}%"></i></div>
       </div>
       <div class="card kpi"><div class="v">${fa(counts['پیاده‌سازی کامل'])}</div><div class="l">پیاده‌سازی کامل</div></div>
@@ -1068,7 +1075,6 @@ function viewDashboard(){
       ${counts['غیر قابل احراز'] > 0 ? `<div class="card kpi"><div class="v">${fa(counts['غیر قابل احراز'])}</div><div class="l">غیر قابل احراز</div></div>` : ''}
       ${counts['ثبت نشده'] > 0 ? `<div class="card kpi"><div class="v">${fa(counts['ثبت نشده'])}</div><div class="l">ثبت نشده</div></div>` : ''}
     </div>
-
     <div class="grid cols2">
       <div class="card">
         <h3><span class="dot"></span> توزیع وضعیت</h3>
@@ -1076,9 +1082,7 @@ function viewDashboard(){
           <div class="donut" style="background:conic-gradient(${grad||'var(--donut-4) 0deg 360deg'})">
             <div class="mid"><b>${fa(total)}</b><span>کنترل</span></div>
           </div>
-          <div class="legend">
-            ${segs.map(s=>`<div><i style="background:${s.color}"></i>${s.label}<b>${fa(s.val)}</b></div>`).join('')}
-          </div>
+          <div class="legend">${segs.map(s=>`<div><i style="background:${s.color}"></i>${s.label}<b>${fa(s.val)}</b></div>`).join('')}</div>
         </div>
       </div>
       <div class="card">
@@ -1086,154 +1090,79 @@ function viewDashboard(){
         ${Object.keys(byLevel).length ? Object.entries(byLevel).map(([k,v])=>{
           const series = computeAggregateSeries(v.controls, periodsUpTo, allMaps);
           const pct = series.length ? series[series.length - 1] : null;
-          return `<div class="bar-row"><div><div class="nm">${esc(k)} — ${fa(v.n)}</div>
-            <div class="bar"><i style="width:${pct !== null ? pct : 0}%"></i></div></div>
-            <div class="pc">${pct !== null ? fa(pct)+'٪' : '—'}</div></div>`;
+          return `<div class="bar-row"><div><div class="nm">${esc(k)} — ${fa(v.n)}</div><div class="bar"><i style="width:${pct !== null ? pct : 0}%"></i></div></div><div class="pc">${pct !== null ? fa(pct)+'٪' : '—'}</div></div>`;
         }).join('') : '<div class="empty">—</div>'}
       </div>
     </div>
-
     <div class="card">
       <h3><span class="dot"></span> وضعیت واحدها</h3>
       ${unitRows.length ? `<div class="tbl-wrap"><table>
-        <thead><tr>
-          <th>واحد</th><th>کل</th><th>کامل</th><th>در حال</th><th>عدم</th>
-          ${unitRows.some(u=>u.unverifiable>0)?'<th>غیر قابل احراز</th>':''}
-          ${unitRows.some(u=>u.empty>0)?'<th>ثبت نشده</th>':''}
-          <th>پیشرفت تجمعی</th>
-        </tr></thead>
+        <thead><tr><th>واحد</th><th>کل</th><th>کامل</th><th>در حال</th><th>عدم</th>${unitRows.some(u=>u.unverifiable>0)?'<th>غیر قابل احراز</th>':''}${unitRows.some(u=>u.empty>0)?'<th>ثبت نشده</th>':''}<th>پیشرفت</th></tr></thead>
         <tbody>${unitRows.map(u=>`<tr>
           <td style="font-weight:600">${esc(u.name)}</td>
-          <td>${fa(u.n)}</td>
-          <td>${fa(u.ok)}</td>
-          <td>${fa(u.doing)}</td>
-          <td>${fa(u.bad)}</td>
+          <td>${fa(u.n)}</td><td>${fa(u.ok)}</td><td>${fa(u.doing)}</td><td>${fa(u.bad)}</td>
           ${unitRows.some(x=>x.unverifiable>0)?`<td>${fa(u.unverifiable)}</td>`:''}
           ${unitRows.some(x=>x.empty>0)?`<td>${fa(u.empty)}</td>`:''}
-          <td style="min-width:140px"><div style="display:flex;align-items:center;gap:10px">
-            <div class="bar" style="flex:1;margin:0"><i style="width:${u.pct !== null ? u.pct : 0}%"></i></div>
-            <b style="font-size:10.5px;min-width:36px;text-align:left">${u.pct !== null ? fa(u.pct)+'٪' : '—'}</b>
-          </div></td></tr>`).join('')}</tbody>
+          <td style="min-width:140px"><div style="display:flex;align-items:center;gap:10px"><div class="bar" style="flex:1;margin:0"><i style="width:${u.pct !== null ? u.pct : 0}%"></i></div><b style="font-size:10.5px;min-width:36px;text-align:left">${u.pct !== null ? fa(u.pct)+'٪' : '—'}</b></div></td>
+        </tr>`).join('')}</tbody>
       </table></div>` : '<div class="empty">داده‌ای نیست</div>'}
     </div>
-
     <div class="card">
       <h3><span class="dot"></span> پیشرفت به تفکیک دسته</h3>
-      ${catRows.length ? catRows.map(c=>`<div class="bar-row">
-        <div><div class="nm">${esc(c.name)} — ${fa(c.n)}</div>
-          <div class="bar"><i style="width:${c.pct !== null ? c.pct : 0}%"></i></div></div>
-        <div class="pc">${c.pct !== null ? fa(c.pct)+'٪' : '—'}</div></div>`).join('') : '<div class="empty">—</div>'}
+      ${catRows.length ? catRows.map(c=>`<div class="bar-row"><div><div class="nm">${esc(c.name)} — ${fa(c.n)}</div><div class="bar"><i style="width:${c.pct !== null ? c.pct : 0}%"></i></div></div><div class="pc">${c.pct !== null ? fa(c.pct)+'٪' : '—'}</div></div>`).join('') : '<div class="empty">—</div>'}
     </div>
-
     ${renderProgressComparison()}
   </div>`;
 }
 
-/* ===== PROGRESS COMPARISON (aligned + % deltas) ===== */
 function renderProgressComparison(){
   if(S.periods.length < 2) return '';
   const allMaps = getAllMaps();
-  
   const overallSeries = computeAggregateSeries(S.controls, S.periods, allMaps);
-  
   const unitRows = S.units.map(unit => {
     const controls = S.controls.filter(c => c.owner_unit === unit);
     const series = computeAggregateSeries(controls, S.periods, allMaps);
     return { name: unit, series, count: controls.length };
   }).filter(r => r.series.some(v => v !== null));
-  
   const catRows = S.cats.map(cat => {
     const controls = S.controls.filter(c => c.category === cat);
     const series = computeAggregateSeries(controls, S.periods, allMaps);
     return { name: cat, series, count: controls.length };
   }).filter(r => r.series.some(v => v !== null));
-  
   function renderCell(val, prevVal){
     if(val === null || val === undefined) return `<td class="null">—</td>`;
     let deltaHtml = '';
     if(prevVal !== null && prevVal !== undefined){
       const d = val - prevVal;
       if(d !== 0){
-        const cls = d > 0 ? 'dlt-pos' : 'dlt-neg';
         const arrow = d > 0 ? '▲' : '▼';
         deltaHtml = `<div class="cell-delta" style="color:${d > 0 ? 'var(--delta-pos)' : 'var(--delta-neg)'}">${arrow} ${fa(Math.abs(d))}٪</div>`;
       }
     }
     return `<td><div class="cell-val">${fa(val)}٪</div>${deltaHtml}</td>`;
   }
-  
-  const nPeriods = S.periods.length;
-  const colgroup = `<colgroup>
-    <col style="width:240px;">
-    <col style="width:70px;">
-    ${S.periods.map(()=>'<col>').join('')}
-  </colgroup>`;
-  
-  // Overall table
-  const overallRow = `<tr>
-    <td style="font-weight:700">مجموع کل</td>
-    <td>${fa(S.controls.length)}</td>
-    ${S.periods.map((p, i) => renderCell(overallSeries[i], i > 0 ? overallSeries[i-1] : null)).join('')}
-  </tr>`;
-  
+  const colgroup = `<colgroup><col style="width:200px;"><col style="width:60px;">${S.periods.map(()=>'<col>').join('')}</colgroup>`;
   const overallTable = `<div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> مقایسه پیشرفت کل در دوره‌ها</h3>
-    <div class="tbl-wrap">
-      <table class="cmp-table">
-        ${colgroup}
-        <thead><tr>
-          <th>دوره</th>
-          <th>تعداد</th>
-          ${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}
-        </tr></thead>
-        <tbody>${overallRow}</tbody>
-      </table>
-    </div>
-    <div style="font-size:10px;color:var(--muted);margin-top:10px;line-height:1.7">
-      شاخص تجمعی: حداکثر پیشرفت تا هر دوره — کنترل‌های «غیر قابل احراز» از محاسبه خارج شده‌اند.
-    </div>
+    <div class="tbl-wrap"><table class="cmp-table">${colgroup}
+      <thead><tr><th>مجموع</th><th>تعداد</th>${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}</tr></thead>
+      <tbody><tr><td style="font-weight:700">مجموع کل</td><td>${fa(S.controls.length)}</td>${S.periods.map((p, i) => renderCell(overallSeries[i], i > 0 ? overallSeries[i-1] : null)).join('')}</tr></tbody>
+    </table></div>
   </div>`;
-  
-  // Per unit
   const unitTable = unitRows.length ? `<div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> مقایسه پیشرفت واحدها در دوره‌ها</h3>
-    <div class="tbl-wrap">
-      <table class="cmp-table">
-        ${colgroup}
-        <thead><tr>
-          <th>واحد</th>
-          <th>تعداد</th>
-          ${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}
-        </tr></thead>
-        <tbody>${unitRows.map(row => `<tr>
-          <td style="font-weight:600" title="${esc(row.name)}">${esc(row.name)}</td>
-          <td style="font-size:10px;color:var(--muted)">${fa(row.count)}</td>
-          ${S.periods.map((p, i) => renderCell(row.series[i], i > 0 ? row.series[i-1] : null)).join('')}
-        </tr>`).join('')}</tbody>
-      </table>
-    </div>
+    <div class="tbl-wrap"><table class="cmp-table">${colgroup}
+      <thead><tr><th>واحد</th><th>تعداد</th>${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}</tr></thead>
+      <tbody>${unitRows.map(row => `<tr><td style="font-weight:600">${esc(row.name)}</td><td style="font-size:10px;color:var(--muted)">${fa(row.count)}</td>${S.periods.map((p, i) => renderCell(row.series[i], i > 0 ? row.series[i-1] : null)).join('')}</tr>`).join('')}</tbody>
+    </table></div>
   </div>` : '';
-  
-  // Per category
   const catTable = catRows.length ? `<div class="card">
     <h3><span class="dot"></span> مقایسه پیشرفت دسته‌ها در دوره‌ها</h3>
-    <div class="tbl-wrap">
-      <table class="cmp-table">
-        ${colgroup}
-        <thead><tr>
-          <th>دسته</th>
-          <th>تعداد</th>
-          ${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}
-        </tr></thead>
-        <tbody>${catRows.map(row => `<tr>
-          <td style="font-weight:600" title="${esc(row.name)}">${esc(row.name)}</td>
-          <td style="font-size:10px;color:var(--muted)">${fa(row.count)}</td>
-          ${S.periods.map((p, i) => renderCell(row.series[i], i > 0 ? row.series[i-1] : null)).join('')}
-        </tr>`).join('')}</tbody>
-      </table>
-    </div>
+    <div class="tbl-wrap"><table class="cmp-table">${colgroup}
+      <thead><tr><th>دسته</th><th>تعداد</th>${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}</tr></thead>
+      <tbody>${catRows.map(row => `<tr><td style="font-weight:600">${esc(row.name)}</td><td style="font-size:10px;color:var(--muted)">${fa(row.count)}</td>${S.periods.map((p, i) => renderCell(row.series[i], i > 0 ? row.series[i-1] : null)).join('')}</tr>`).join('')}</tbody>
+    </table></div>
   </div>` : '';
-  
   return overallTable + unitTable + catTable;
 }
 
@@ -1255,16 +1184,15 @@ function filteredControls(){
 }
 function viewControls(){
   const list = filteredControls();
-  const pages = Math.max(1, Math.ceil(list.length/S.pageSize));
+  const effPageSize = PRINT_MODE ? Math.max(list.length, 1) : S.pageSize;
+  const pages = Math.max(1, Math.ceil(list.length / effPageSize));
   if(S.page > pages) S.page = pages;
-  const start = (S.page-1)*S.pageSize;
-  const slice = list.slice(start, start+S.pageSize);
+  const start = (S.page-1)*effPageSize;
+  const slice = list.slice(start, start+effPageSize);
   const opts = (arr,cur)=>arr.map(v=>`<option value="${esc(v)}" ${v===cur?'selected':''}>${esc(v)}</option>`).join('');
   const admin = isAdmin();
-  const show4cols = !isFirstPeriodById(S.periodId);
-  
   return `
-  <div class="card" style="margin-bottom:16px;padding:16px 20px">
+  <div class="card no-print" style="margin-bottom:16px;padding:16px 20px">
     <div class="toolbar" style="margin-bottom:8px">
       <input id="fQ" placeholder="جستجو…" value="${esc(S.filters.q)}">
       <select id="fUnit"><option value="">همه واحدها</option>${opts(S.units,S.filters.unit)}</select>
@@ -1276,7 +1204,6 @@ function viewControls(){
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
       <span class="badge badge-soft">${fa(list.length)} کنترل</span>
       <span class="badge badge-soft">صفحه ${fa(S.page)} / ${fa(pages)}</span>
-      ${show4cols ? `<span class="badge badge-soft">شامل ۴ ستون اقدامات</span>` : ''}
       <button class="btn btn-sm" id="clearFilters">پاک کردن فیلترها</button>
       ${admin ? `<button class="btn btn-sm btn-primary" id="addControlBtn" style="margin-right:auto">+ افزودن کنترل</button>` : `<span class="ro-notice" style="margin-right:auto">فقط مشاهده</span>`}
     </div>
@@ -1284,10 +1211,13 @@ function viewControls(){
   <div class="list">
     ${slice.length ? slice.map(c=>{
       const st = controlStatus(c);
-      const pr = controlProgress(c);
       const a = S.assessments[c.id] || {};
+      const rawPr = (a.progress !== null && a.progress !== undefined && a.progress !== '') ? Number(a.progress) : null;
+      const actionsVal = a.actions || '';
+      const deadlineVal = a.deadline || '';
+      const notesVal = a.notes || '';
       return `<div class="ctrl" data-open="${c.id}">
-        ${admin ? `<button class="del-btn" data-del="${c.id}" title="حذف">×</button>` : ''}
+        ${admin && !PRINT_MODE ? `<button class="del-btn no-print" data-del="${c.id}" title="حذف">×</button>` : ''}
         <div class="cc-head">
           <span class="badge badge-soft">${esc(c.category||'—')}</span>
           <span class="badge badge-soft">${esc(c.level||'—')}</span>
@@ -1297,36 +1227,31 @@ function viewControls(){
         </div>
         <div class="cc-title">${esc(c.title)}</div>
         <div class="cc-ev">${esc(c.evidence||'—')}</div>
-        ${show4cols ? `
-          <div class="ctrl-4cols">
-            <div class="c4-item">
-              <div class="c4-lbl">اقدامات انجام شده</div>
-              <div class="c4-val ${a.actions ? '' : 'dim'}">${esc(a.actions || '—')}</div>
-            </div>
-            <div class="c4-item">
-              <div class="c4-lbl">آخرین مهلت اجرای اقدام</div>
-              <div class="c4-val ${a.deadline ? '' : 'dim'}">${a.deadline ? displayDate(a.deadline) : '—'}</div>
-            </div>
-            <div class="c4-item">
-              <div class="c4-lbl">درصد پیشرفت</div>
-              <div class="c4-val ${pr !== null ? '' : 'dim'}">${pr !== null ? fa(pr)+'٪' : '—'}</div>
-            </div>
-            <div class="c4-item">
-              <div class="c4-lbl">توضیحات</div>
-              <div class="c4-val ${a.notes ? '' : 'dim'}">${esc(a.notes || '—')}</div>
-            </div>
+        <div class="ctrl-4cols">
+          <div class="c4-item">
+            <div class="c4-lbl">اقدامات انجام شده</div>
+            <div class="c4-val ${actionsVal ? '' : 'dim'}">${esc(actionsVal || '—')}</div>
           </div>
-        ` : `
-          <div class="cc-foot"><div class="bar"><i style="width:${pr !== null ? pr : 0}%"></i></div>
-            <b>${pr !== null ? fa(pr)+'٪' : '—'}</b></div>
-        `}
+          <div class="c4-item">
+            <div class="c4-lbl">آخرین مهلت اجرای اقدام</div>
+            <div class="c4-val ${deadlineVal ? '' : 'dim'}">${deadlineVal ? displayDate(deadlineVal) : '—'}</div>
+          </div>
+          <div class="c4-item">
+            <div class="c4-lbl">درصد پیشرفت</div>
+            <div class="c4-val ${rawPr !== null ? '' : 'dim'}">${rawPr !== null ? fa(rawPr)+'٪' : '—'}</div>
+          </div>
+          <div class="c4-item">
+            <div class="c4-lbl">توضیحات</div>
+            <div class="c4-val ${notesVal ? '' : 'dim'}">${esc(notesVal || '—')}</div>
+          </div>
+        </div>
       </div>`;
     }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.</div></div>`}
   </div>
-  ${pages>1?`<div class="pager">
+  ${pages>1 && !PRINT_MODE ? `<div class="pager no-print">
     <button class="btn btn-sm" data-page="1" ${S.page===1?'disabled':''}>«</button>
     <button class="btn btn-sm" data-page="${S.page-1}" ${S.page===1?'disabled':''}>قبلی</button>
-    <span class="info">${fa(start+1)}—${fa(Math.min(start+S.pageSize,list.length))} از ${fa(list.length)}</span>
+    <span class="info">${fa(start+1)}—${fa(Math.min(start+effPageSize,list.length))} از ${fa(list.length)}</span>
     <button class="btn btn-sm" data-page="${S.page+1}" ${S.page===pages?'disabled':''}>بعدی</button>
     <button class="btn btn-sm" data-page="${pages}" ${S.page===pages?'disabled':''}>»</button>
   </div>`:''}
@@ -1336,90 +1261,53 @@ function viewControls(){
 /* ===== TREND ===== */
 function getStatusInPeriod(c, periodId, map){
   const a = map ? map[c.id] : null;
-  if(isFirstPeriodById(periodId)){
-    return normalizeStatus((a && a.status) || c.status || '');
-  }
-  if(a && a.progress !== null && a.progress !== undefined && a.progress !== ''){
-    return statusFromProgress(Number(a.progress));
-  }
+  if(isFirstPeriodById(periodId)){ return normalizeStatus((a && a.status) || c.status || ''); }
+  if(a && a.progress !== null && a.progress !== undefined && a.progress !== ''){ return statusFromProgress(Number(a.progress)); }
   if(a && a.status) return normalizeStatus(a.status);
   return null;
 }
-
 function getChangedControls(allMaps){
   if(!S.periods.length) return [];
-  const basePeriodId = S.periods[0].id;
-  
   return S.controls.map(c => {
-    const statuses = S.periods.map(p => ({
-      period: p,
-      status: getStatusInPeriod(c, p.id, allMaps[p.id]),
-      assessment: allMaps[p.id] ? allMaps[p.id][c.id] : null
-    }));
-    
+    const statuses = S.periods.map(p => ({ period: p, status: getStatusInPeriod(c, p.id, allMaps[p.id]), assessment: allMaps[p.id] ? allMaps[p.id][c.id] : null }));
     const baseStatus = statuses[0].status;
     if(!baseStatus || baseStatus === 'غیر قابل احراز') return null;
-    
-    // Check if any later period shows a different status
     const hasChange = statuses.slice(1).some(s => s.status && s.status !== baseStatus && s.status !== 'غیر قابل احراز');
     if(!hasChange) return null;
-    
-    // Find latest with data
-    let latestAssessment = null;
-    let latestStatus = baseStatus;
-    let latestPeriod = S.periods[0];
+    let latestAssessment = null, latestStatus = baseStatus, latestPeriod = S.periods[0];
     for(let i = statuses.length - 1; i >= 0; i--){
-      if(statuses[i].assessment){
-        latestAssessment = statuses[i].assessment;
-        latestStatus = statuses[i].status || baseStatus;
-        latestPeriod = statuses[i].period;
-        break;
-      }
+      if(statuses[i].assessment){ latestAssessment = statuses[i].assessment; latestStatus = statuses[i].status || baseStatus; latestPeriod = statuses[i].period; break; }
     }
-    
-    // Build transitions
     const transitions = [];
-    let prevStatus = baseStatus;
-    let prevPeriodName = S.periods[0].name;
+    let prevStatus = baseStatus, prevPeriodName = S.periods[0].name;
     statuses.slice(1).forEach(s => {
       if(s.status && s.status !== prevStatus && s.status !== 'غیر قابل احراز'){
         transitions.push({ from: prevStatus, to: s.status, fromPeriod: prevPeriodName, toPeriod: s.period.name });
-        prevStatus = s.status;
-        prevPeriodName = s.period.name;
+        prevStatus = s.status; prevPeriodName = s.period.name;
       }
     });
-    
     return { control: c, baseStatus, latestStatus, latestAssessment, latestPeriod, statuses, transitions };
   }).filter(Boolean);
 }
-
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
-  
   const fUnit = S._trendUnit || '__all';
   const fCat = S._trendCat || '__all';
   const fLevel = S._trendLevel || '__all';
   const groupBy = S._trendGroupBy || 'unit';
   const search = (S._trendSearch || '').trim().toLowerCase();
   const page = S._trendPage || 1;
-  
   let ctrlFiltered = S.controls;
   if(fUnit !== '__all') ctrlFiltered = ctrlFiltered.filter(c => c.owner_unit === fUnit);
   if(fCat !== '__all') ctrlFiltered = ctrlFiltered.filter(c => c.category === fCat);
   if(fLevel !== '__all') ctrlFiltered = ctrlFiltered.filter(c => c.level === fLevel);
-  if(groupBy === 'control' && search){
-    ctrlFiltered = ctrlFiltered.filter(c => (c.title||'').toLowerCase().includes(search));
-  }
-  
+  if(groupBy === 'control' && search){ ctrlFiltered = ctrlFiltered.filter(c => (c.title||'').toLowerCase().includes(search)); }
   const unitOpts = ['<option value="__all">همه واحدها</option>'].concat(S.units.map(u=>`<option value="${esc(u)}" ${fUnit===u?'selected':''}>${esc(u)}</option>`)).join('');
   const catOpts = ['<option value="__all">همه دسته‌ها</option>'].concat(S.cats.map(u=>`<option value="${esc(u)}" ${fCat===u?'selected':''}>${esc(u)}</option>`)).join('');
   const levelOpts = ['<option value="__all">همه سطوح</option>'].concat(S.levels.map(u=>`<option value="${esc(u)}" ${fLevel===u?'selected':''}>${esc(u)}</option>`)).join('');
-  
   const allMaps = getAllMaps();
   const series = computeAggregateSeries(ctrlFiltered, S.periods, allMaps).map((v, i) => ({ id: S.periods[i].id, name: S.periods[i].name, value: v }));
-  
-  // Groups
   const groups = {};
   if(groupBy === 'control'){
     ctrlFiltered.forEach(c => { groups[c.id] = { name: c.title || '', meta: { row_no: c.row_no, owner_unit: c.owner_unit, category: c.category, level: c.level }, controls: [c] }; });
@@ -1430,58 +1318,40 @@ function viewTrend(){
       groups[key].controls.push(c);
     });
   }
-  
   const groupsArr = Object.values(groups).map(g => {
     const series = computeAggregateSeries(g.controls, S.periods, allMaps);
     return { ...g, series, lastVal: series.filter(v => v !== null).slice(-1)[0] || 0 };
   }).sort((a,b) => b.lastVal - a.lastVal);
-  
   const isControlMode = groupBy === 'control';
+  const effPageSize = PRINT_MODE ? Math.max(groupsArr.length, 1) : TREND_PAGE_SIZE;
   const total = groupsArr.length;
-  const pages = isControlMode ? Math.max(1, Math.ceil(total / TREND_PAGE_SIZE)) : 1;
+  const pages = isControlMode ? Math.max(1, Math.ceil(total / effPageSize)) : 1;
   const curPage = Math.min(page, pages);
-  const start = (curPage - 1) * TREND_PAGE_SIZE;
-  const itemsToShow = isControlMode ? groupsArr.slice(start, start + TREND_PAGE_SIZE) : groupsArr;
+  const start = (curPage - 1) * effPageSize;
+  const itemsToShow = isControlMode ? groupsArr.slice(start, start + effPageSize) : groupsArr;
   const groupLabel = { unit:'واحد', category:'دسته', level:'سطح', control:'کنترل' }[groupBy];
-  
   const tableHeader = isControlMode
     ? `<tr><th>#</th><th>کنترل</th><th>واحد</th><th>دسته</th><th>سطح</th>${S.periods.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr>`
     : `<tr><th>${groupLabel}</th><th>تعداد</th>${S.periods.map(p=>`<th>${esc(p.name)}</th>`).join('')}</tr>`;
-  
   const tableBody = itemsToShow.length
     ? itemsToShow.map(g => {
         const cells = g.series.map(v => `<td style="font-weight:600">${v !== null ? fa(v)+'٪' : '<span style="color:var(--dim)">—</span>'}</td>`).join('');
         if(isControlMode){
           const m = g.meta || {};
-          return `<tr>
-            <td>${fa(m.row_no ?? '')}</td>
-            <td style="font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(g.name)}">${esc(g.name)}</td>
-            <td style="font-size:10.5px;color:var(--muted)">${esc(m.owner_unit || '—')}</td>
-            <td style="font-size:10.5px;color:var(--muted)">${esc(m.category || '—')}</td>
-            <td style="font-size:10.5px;color:var(--muted)">${esc(m.level || '—')}</td>
-            ${cells}
-          </tr>`;
+          return `<tr><td>${fa(m.row_no ?? '')}</td><td style="font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(g.name)}">${esc(g.name)}</td><td style="font-size:10.5px;color:var(--muted)">${esc(m.owner_unit || '—')}</td><td style="font-size:10.5px;color:var(--muted)">${esc(m.category || '—')}</td><td style="font-size:10.5px;color:var(--muted)">${esc(m.level || '—')}</td>${cells}</tr>`;
         }
-        return `<tr>
-          <td style="font-weight:600">${esc(g.name)}</td>
-          <td>${fa(g.controls.length)}</td>
-          ${cells}
-        </tr>`;
+        return `<tr><td style="font-weight:600">${esc(g.name)}</td><td>${fa(g.controls.length)}</td>${cells}</tr>`;
       }).join('')
     : `<tr><td colspan="${isControlMode?5+S.periods.length:2+S.periods.length}" class="empty" style="text-align:center;padding:32px">داده‌ای برای نمایش نیست</td></tr>`;
-  
-  // Changes table
   const changed = getChangedControls(allMaps).filter(item => {
     if(fUnit !== '__all' && item.control.owner_unit !== fUnit) return false;
     if(fCat !== '__all' && item.control.category !== fCat) return false;
     if(fLevel !== '__all' && item.control.level !== fLevel) return false;
     return true;
   });
-  
   const changesTableHtml = renderChangesTable(changed);
-  
   return `
-  <div class="card" style="margin-bottom:16px;padding:16px 20px">
+  <div class="card no-print" style="margin-bottom:16px;padding:16px 20px">
     <div class="trend-toolbar" style="margin-bottom:8px">
       <select id="trendUnit">${unitOpts}</select>
       <select id="trendCat">${catOpts}</select>
@@ -1498,59 +1368,39 @@ function viewTrend(){
       <span class="badge badge-soft">${fa(ctrlFiltered.length)} کنترل</span>
       <span class="badge badge-soft">${fa(total)} گروه</span>
       <span class="badge badge-soft">${fa(changed.length)} تغییر وضعیت</span>
-      ${isControlMode && pages > 1 ? `<span class="badge badge-soft">صفحه ${fa(curPage)} / ${fa(pages)}</span>` : ''}
+      ${isControlMode && pages > 1 && !PRINT_MODE ? `<span class="badge badge-soft">صفحه ${fa(curPage)} / ${fa(pages)}</span>` : ''}
       <button class="btn btn-sm" id="trendClearFilters" style="margin-right:auto">پاک کردن فیلترها</button>
     </div>
   </div>
-  
   <div class="card" style="margin-bottom:16px">
-    <h3><span class="dot"></span> روند پیشرفت تجمعی
-      ${fUnit!=='__all'?` — ${esc(fUnit)}`:''}
-      ${fCat!=='__all'?` — ${esc(fCat)}`:''}
-      ${fLevel!=='__all'?` — ${esc(fLevel)}`:''}
-    </h3>
+    <h3><span class="dot"></span> روند پیشرفت${fUnit!=='__all'?` — ${esc(fUnit)}`:''}${fCat!=='__all'?` — ${esc(fCat)}`:''}${fLevel!=='__all'?` — ${esc(fLevel)}`:''}</h3>
     ${lineChart(series)}
   </div>
-  
   <div class="card" style="margin-bottom:16px">
     <h3><span class="dot"></span> جدول پیشرفت (بر اساس ${groupLabel})</h3>
-    <div class="tbl-wrap"><table>
-      <thead>${tableHeader}</thead>
-      <tbody>${tableBody}</tbody>
-    </table></div>
-    ${isControlMode && pages > 1 ? `
-      <div class="pager">
-        <button class="btn btn-sm" data-trendpage="1" ${curPage===1?'disabled':''}>«</button>
-        <button class="btn btn-sm" data-trendpage="${curPage-1}" ${curPage===1?'disabled':''}>قبلی</button>
-        <span class="info">${fa(start+1)}—${fa(Math.min(start+TREND_PAGE_SIZE,total))} از ${fa(total)}</span>
-        <button class="btn btn-sm" data-trendpage="${curPage+1}" ${curPage===pages?'disabled':''}>بعدی</button>
-        <button class="btn btn-sm" data-trendpage="${pages}" ${curPage===pages?'disabled':''}>»</button>
-      </div>` : ''}
+    <div class="tbl-wrap"><table><thead>${tableHeader}</thead><tbody>${tableBody}</tbody></table></div>
+    ${isControlMode && pages > 1 && !PRINT_MODE ? `<div class="pager no-print">
+      <button class="btn btn-sm" data-trendpage="1" ${curPage===1?'disabled':''}>«</button>
+      <button class="btn btn-sm" data-trendpage="${curPage-1}" ${curPage===1?'disabled':''}>قبلی</button>
+      <span class="info">${fa(start+1)}—${fa(Math.min(start+effPageSize,total))} از ${fa(total)}</span>
+      <button class="btn btn-sm" data-trendpage="${curPage+1}" ${curPage===pages?'disabled':''}>بعدی</button>
+      <button class="btn btn-sm" data-trendpage="${pages}" ${curPage===pages?'disabled':''}>»</button>
+    </div>` : ''}
   </div>
-  
   <div class="card">
     <h3><span class="dot"></span> تغییرات وضعیت نسبت به دوره پایه — ${fa(changed.length)} کنترل</h3>
-    <div style="font-size:10.5px;color:var(--muted);line-height:1.7;margin-bottom:12px">
-      فقط کنترل‌هایی که وضعیت آن‌ها نسبت به دوره پایه تغییر کرده است نمایش داده می‌شوند. ستون «تغییرات» ترتیب زمانی همه جابجایی‌های وضعیت را نشان می‌دهد.
-    </div>
     ${changesTableHtml}
   </div>`;
 }
-
 function renderChangesTable(changed){
-  if(!changed.length){
-    return `<div class="empty">هیچ تغییری در وضعیت کنترل‌ها نسبت به دوره پایه ثبت نشده است</div>`;
-  }
-  
+  if(!changed.length){ return `<div class="empty">هیچ تغییری ثبت نشده است</div>`; }
   const rows = changed.map(item => {
     const c = item.control;
     const a = item.latestAssessment || {};
     const transitionsHtml = item.transitions.length
       ? item.transitions.map(t => `<div style="font-size:9.5px;line-height:1.6;color:var(--muted)">${esc(t.fromPeriod)} <span style="color:var(--dim)">→</span> ${esc(t.toPeriod)}: <b style="color:var(--txt)">${esc(t.from)}</b> ← <b style="color:var(--accent)">${esc(t.to)}</b></div>`).join('')
       : `<span style="color:var(--dim)">—</span>`;
-    
     const pr = a.progress !== null && a.progress !== undefined && a.progress !== '' ? Number(a.progress) : null;
-    
     return `<tr>
       <td style="width:40px;text-align:center">${fa(c.row_no ?? '')}</td>
       <td style="font-weight:600;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(c.title)}">${esc(c.title)}</td>
@@ -1565,40 +1415,12 @@ function renderChangesTable(changed){
       <td style="font-size:10.5px;line-height:1.6;max-width:180px">${esc(a.notes || '—')}</td>
     </tr>`;
   }).join('');
-  
-  return `<div class="tbl-wrap" style="overflow-x:auto">
-    <table class="change-tbl">
-      <colgroup>
-        <col style="width:40px">
-        <col style="width:230px">
-        <col style="width:120px">
-        <col style="width:100px">
-        <col style="width:120px">
-        <col style="width:120px">
-        <col style="width:200px">
-        <col style="width:70px">
-        <col style="width:200px">
-        <col style="width:100px">
-        <col style="width:180px">
-      </colgroup>
-      <thead><tr>
-        <th>#</th>
-        <th>کنترل</th>
-        <th>واحد</th>
-        <th>دسته</th>
-        <th>پایه</th>
-        <th>آخرین</th>
-        <th>تغییرات</th>
-        <th>درصد</th>
-        <th>اقدامات</th>
-        <th>مهلت</th>
-        <th>توضیحات</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+  return `<div class="tbl-wrap" style="overflow-x:auto"><table class="change-tbl">
+    <colgroup><col style="width:40px"><col style="width:230px"><col style="width:120px"><col style="width:100px"><col style="width:120px"><col style="width:120px"><col style="width:200px"><col style="width:70px"><col style="width:200px"><col style="width:100px"><col style="width:180px"></colgroup>
+    <thead><tr><th>#</th><th>کنترل</th><th>واحد</th><th>دسته</th><th>پایه</th><th>آخرین</th><th>تغییرات</th><th>درصد</th><th>اقدامات</th><th>مهلت</th><th>توضیحات</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
 }
-
 function lineChart(series){
   const validSeries = series.filter(s => s.value !== null && s.value !== undefined);
   if(!validSeries.length) return '<div class="empty">داده‌ای برای نمایش روند نیست</div>';
@@ -1614,7 +1436,6 @@ function lineChart(series){
     ${series.map((s,i)=> s.value !== null ? `<circle cx="${xs(i)}" cy="${ys(s.value)}" r="4" style="fill:var(--white);stroke:var(--bar-fill);stroke-width:1.5"/><text x="${xs(i)}" y="${ys(s.value)-12}" style="fill:var(--txt);font-size:10px;font-weight:600" text-anchor="middle">${fa(s.value)}٪</text><text x="${xs(i)}" y="${H-14}" style="fill:var(--muted);font-size:9px" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>` : `<text x="${xs(i)}" y="${H-14}" style="fill:var(--dim);font-size:9px" text-anchor="middle">${esc(s.name.length>16?s.name.slice(0,16)+'…':s.name)}</text>`).join('')}
   </svg></div>`;
 }
-
 async function ensureTrendData(){
   S._trendLoaded = false;
   try{ await loadAllAssessments(); }catch(e){}
@@ -1626,7 +1447,7 @@ async function ensureTrendData(){
 function viewPeriods(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
-  <div class="card" style="margin-bottom:16px">
+  <div class="card no-print" style="margin-bottom:16px">
     <h3><span class="dot"></span> ایجاد دوره جدید</h3>
     <div class="toolbar" style="margin-bottom:0">
       <input id="pName" placeholder="نام دوره">
@@ -1634,7 +1455,6 @@ function viewPeriods(){
       <div class="date-field"><input id="pEnd" class="date-input" placeholder="تاریخ پایان" readonly><span class="date-icon">📅</span></div>
       <button class="btn btn-primary" id="addPeriod">ایجاد دوره</button>
     </div>
-    <div class="info-hint">دوره <b>پایه</b> قابل حذف نیست و تاریخ برای آن ثبت نمی‌شود.</div>
   </div>
   <div class="card">
     <h3><span class="dot"></span> دوره‌ها — ${fa(S.periods.length)}</h3>
@@ -1652,9 +1472,9 @@ function viewPeriods(){
           <td>${startDisp}</td>
           <td>${endDisp}</td>
           <td>${fa(cnt)}</td>
-          <td style="white-space:nowrap">
+          <td style="white-space:nowrap" class="no-print">
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
-            <button class="btn btn-sm" data-renameperiod="${p.id}" title="تغییر نام">تغییر نام</button>
+            <button class="btn btn-sm" data-renameperiod="${p.id}">تغییر نام</button>
             <button class="btn btn-sm" data-exportperiod="${p.id}">خروجی اکسل</button>
             ${isBase ? `<button class="btn btn-sm" disabled title="دوره پایه قابل حذف نیست" style="opacity:.4">حذف</button>` : `<button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>`}
           </td></tr>`;
@@ -1675,7 +1495,7 @@ function userAccessText(u){
 }
 function viewUsers(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
-  return `<div class="card" style="margin-bottom:16px;padding:14px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:0;font-size:12px;font-weight:600">مدیریت کاربران</div><button class="btn btn-primary" id="addUserBtn">+ افزودن کاربر</button></div><div class="card"><h3><span class="dot"></span> کاربران</h3><div id="usersList"><div class="spin"></div></div></div>`;
+  return `<div class="card no-print" style="margin-bottom:16px;padding:14px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:0;font-size:12px;font-weight:600">مدیریت کاربران</div><button class="btn btn-primary" id="addUserBtn">+ افزودن کاربر</button></div><div class="card"><h3><span class="dot"></span> کاربران</h3><div id="usersList"><div class="spin"></div></div></div>`;
 }
 async function renderUsersList(){
   const host = document.getElementById('usersList'); if(!host) return;
@@ -1691,13 +1511,12 @@ async function renderUsersList(){
         <td>${esc(u.full_name||'—')}</td>
         <td><span class="badge badge-soft">${u.role==='admin'?'MANAGER':'VIEWER'}</span></td>
         <td style="font-size:10.5px;color:var(--muted)">${esc(userAccessText(u))}</td>
-        <td style="white-space:nowrap">${u.username==='ice'?'<span style="color:var(--dim);font-size:10px;letter-spacing:.08em">پیش‌فرض</span>':`<button class="btn btn-sm" data-edituser="${u.id}">ویرایش</button><button class="btn btn-sm" data-deluser="${u.id}">حذف</button>`}</td>
+        <td style="white-space:nowrap" class="no-print">${u.username==='ice'?'<span style="color:var(--dim);font-size:10px;letter-spacing:.08em">پیش‌فرض</span>':`<button class="btn btn-sm" data-edituser="${u.id}">ویرایش</button><button class="btn btn-sm" data-deluser="${u.id}">حذف</button>`}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
     host._users = users;
   }catch(err){ host.innerHTML = `<div class="empty">خطا: ${esc(err.message)}</div>`; }
 }
-
 function openUserModal(userToEdit = null){
   if(!isAdmin()) return;
   const isEdit = !!userToEdit;
@@ -1817,8 +1636,7 @@ function exportPeriodToExcel(periodId){
   });
   const ws = XLSX.utils.json_to_sheet(rows);
   ws['!cols'] = [{wch:6},{wch:18},{wch:12},{wch:50},{wch:50},{wch:18},{wch:25},{wch:40},{wch:18},{wch:10},{wch:30}];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'کنترل‌ها');
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'کنترل‌ها');
   const safeName = period.name.replace(/[\\/:*?"<>|]/g, '-');
   XLSX.writeFile(wb, `کاشف-${safeName}-${todayJalali().replace(/\//g,'-')}.xlsx`);
   toast('اکسل دانلود شد');
@@ -1830,13 +1648,8 @@ function viewImport(){
   const noPeriods = S.periods.length === 0;
   const noControls = S.allControls.length === 0;
   return `
-  <div class="card" style="margin-bottom:16px">
+  <div class="card no-print" style="margin-bottom:16px">
     <h3><span class="dot"></span> ${noPeriods ? 'بارگذاری اولیه — دوره پایه' : 'بارگذاری اکسل برای دوره'}</h3>
-    <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
-      ستون‌ها: <b style="color:var(--txt)">دسته، سطح پیشرفتگی، کنترل، شواهد، وضعیت پیاده‌سازی، واحد مسئول رسیدگی، اقدامات انجام شده تاکنون، آخرین مهلت اجرای اقدام، درصد پیشرفت، توضیحات</b>.
-      ${noPeriods ? 'اولین بارگذاری به‌عنوان <b style="color:var(--txt)">دوره پایه</b> ثبت می‌شود.' : 'ردیف‌ها بر اساس عنوان «کنترل» تطبیق داده می‌شوند.'}
-      <br><b style="color:var(--txt)">برای همه کنترل‌ها</b> ارزیابی ثبت می‌شود — سلول‌های خالی همان خالی می‌مانند.
-    </p>
     ${noPeriods ? `<div class="field"><label>نام دوره پایه</label><input id="firstPeriodName" value="پایه"></div>` : `<div class="field"><label>دوره هدف</label><select id="importPeriod">${S.periods.map(p => `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${p.name}${p.id===S.periodId?' (جاری)':''}</option>`).join('')}</select></div>`}
     <div class="toolbar" style="margin-bottom:10px">
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
@@ -1846,7 +1659,7 @@ function viewImport(){
     </div>
     <div id="importLog" style="font-size:11px;line-height:1.9;color:var(--muted)"></div>
   </div>
-  <div class="card" style="margin-bottom:16px">
+  <div class="card no-print" style="margin-bottom:16px">
     <h3><span class="dot"></span> خروجی اکسل دوره‌ها</h3>
     ${S.periods.length ? `<div class="toolbar" style="margin-bottom:0"><select id="exportPeriodSel">${S.periods.map(p => `<option value="${p.id}" ${p.id===S.periodId?'selected':''}>${p.name}</option>`).join('')}</select><button class="btn btn-primary" id="doExport">📥 دانلود اکسل</button></div>` : `<div class="empty">دوره‌ای برای خروجی وجود ندارد.</div>`}
   </div>
@@ -1968,7 +1781,7 @@ function bindView(){
         const rows = await parseSheet(file);
         if(!rows.length) throw new Error('فایل خالی است');
         const parsed = rows.map(excelRowToRecord).filter(r => r.title);
-        if(!parsed.length) throw new Error('ستون «کنترل» در فایل شناسایی نشد.');
+        if(!parsed.length) throw new Error('ستون کنترل در فایل شناسایی نشد.');
         const isFirstUpload = S.periods.length === 0;
         if(isFirstUpload){
           const periodName = ($('#firstPeriodName')?.value || '').trim() || 'پایه';
@@ -2053,18 +1866,17 @@ function bindView(){
   }
 }
 
-/* ===== ADD CONTROL MODAL ===== */
 function openAddControlModal(){
   if(!isAdmin()) return;
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
     <button class="close-x" id="closeModal">×</button>
     <h3>افزودن کنترل جدید</h3>
-    <div class="field"><label>دسته</label><input id="mCat" placeholder="مثلاً: امنیت شبکه"></div>
+    <div class="field"><label>دسته</label><input id="mCat"></div>
     <div class="field"><label>سطح پیشرفتگی</label><select id="mLevel"><option value="پایه">پایه</option><option value="مقدماتی">مقدماتی</option><option value="پیشرفته">پیشرفته</option></select></div>
     <div class="field"><label>متن کنترل</label><textarea id="mTitle"></textarea></div>
     <div class="field"><label>شواهد</label><textarea id="mEvidence"></textarea></div>
     <div class="field"><label>وضعیت پیاده‌سازی</label><select id="mStatus">${STATUS_OPTS.map(v=>`<option value="${v}">${v}</option>`).join('')}</select></div>
-    <div class="field"><label>واحد مسئول رسیدگی</label><input id="mUnit" placeholder="واحد"></div>
+    <div class="field"><label>واحد مسئول رسیدگی</label><input id="mUnit"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-primary" id="mSave">افزودن</button><button class="btn" id="mCancel">انصراف</button></div>
   </div></div>`;
   const close = () => $('#modalHost').innerHTML='';
@@ -2083,13 +1895,11 @@ function openAddControlModal(){
   });
 }
 
-/* ===== CONTROL DETAIL MODAL (with history) ===== */
 function openControlModal(id){
   const c = S.controls.find(x=>x.id===id); if(!c) return;
   const allMaps = getAllMaps();
   const currIdx = periodIndex();
   const periodsToShow = S.periods.slice(0, currIdx >= 0 ? currIdx + 1 : S.periods.length);
-  
   const historyRows = periodsToShow.map(p => {
     const a = (allMaps[p.id] && allMaps[p.id][c.id]) || {};
     const isCurrent = p.id === S.periodId;
@@ -2097,16 +1907,12 @@ function openControlModal(id){
     const ownerUnit = a.owner_unit || c.owner_unit || '—';
     const r = calculateControlProgressDetail(c, p.id, allMaps[p.id]);
     const pr = r.value;
-    let statusLabel = '—';
-    let statusCls = 'badge-soft';
+    let statusLabel = '—'; let statusCls = 'badge-soft';
     if(r.reason === 'excluded'){ statusLabel = 'غیر قابل احراز'; statusCls = 'st-gray'; }
-    else if(isBase){
-      const st = normalizeStatus(a.status || c.status || '');
-      statusLabel = st || '—'; statusCls = statusClass(st);
-    } else if(pr !== null){ const st = statusFromProgress(pr); statusLabel = st; statusCls = statusClass(st); }
+    else if(isBase){ const st = normalizeStatus(a.status || c.status || ''); statusLabel = st || '—'; statusCls = statusClass(st); }
+    else if(pr !== null){ const st = statusFromProgress(pr); statusLabel = st; statusCls = statusClass(st); }
     else if(a.status){ statusLabel = normalizeStatus(a.status); statusCls = statusClass(a.status); }
     else { statusLabel = 'ثبت نشده'; statusCls = 'st-gray'; }
-    
     return `<tr ${isCurrent ? 'style="background:var(--faint);font-weight:600"' : ''}>
       <td style="white-space:nowrap">${esc(p.name)}${isBase ? '<span class="badge badge-first" style="margin-right:4px">پایه</span>' : ''}${isCurrent ? '<span class="badge st-ok" style="margin-right:4px">جاری</span>' : ''}</td>
       <td><span class="badge ${statusCls}">${esc(statusLabel)}</span></td>
@@ -2117,10 +1923,8 @@ function openControlModal(id){
       <td style="font-size:11px;line-height:1.7;max-width:160px">${esc(a.notes || '—')}</td>
     </tr>`;
   }).join('');
-  
   const trendVals = periodsToShow.map(p => calculateControlProgressDetail(c, p.id, allMaps[p.id]).value);
   const hasTrend = trendVals.filter(v => v !== null).length >= 1;
-  
   $('#modalHost').innerHTML = `<div class="modal" id="modalBg"><div class="modal-box">
     <button class="close-x" id="closeModal">×</button>
     <h3>#${fa(c.row_no??'')} — ${esc(c.title)}</h3>
