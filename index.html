@@ -6,7 +6,7 @@
 <title>کاشف ۴۹۵ | پایش کنترل‌های امنیتی</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
-/* ========== DEFAULT (MONOCHROME) ========== */
+/* ========== THEMES ========== */
 :root{
   --white:#fff;--line:#e4e4e7;--line2:#d4d4d8;
   --txt:#09090b;--txt2:#3f3f46;--muted:#71717a;--dim:#a1a1aa;--faint:#f4f4f5;
@@ -174,7 +174,6 @@ body[class*="theme-"] .card h3 .dot{background:var(--accent)}
 .cc-foot .bar{flex:1;margin:0}
 .cc-foot b{font-size:10.5px;min-width:38px;text-align:left;font-weight:600}
 
-/* NEW: 4-column section in control cards */
 .ctrl-4cols{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
 .c4-item{min-width:0}
 .c4-lbl{font-size:9px;color:var(--muted);letter-spacing:.1em;font-weight:500;margin-bottom:4px}
@@ -268,16 +267,13 @@ input[type=checkbox],input[type=range]{accent-color:var(--accent)}
 .trend-toolbar select:focus,.trend-toolbar input:focus{background:var(--faint)}
 .trend-toolbar input::placeholder{color:var(--dim)}
 
-/* history table in modal */
 .hist-tbl { font-size: 11px; min-width: 100% }
 .hist-tbl th { font-size: 9px }
 .hist-tbl td { padding: 8px 10px; vertical-align: top }
 
-/* delta arrows */
 .dlt-pos { color: var(--delta-pos); font-weight: 600; font-size: 10px }
 .dlt-neg { color: var(--delta-neg); font-weight: 600; font-size: 10px }
 
-/* comparison table */
 .cmp-tbl { font-size: 11.5px }
 .cmp-tbl td.null { color: var(--dim) }
 .cmp-tbl tr.section td { background: var(--faint); font-weight: 600; font-size: 10px; letter-spacing: .12em; color: var(--muted) }
@@ -669,7 +665,7 @@ function mergeAxExtras(a){
   if(!a) return a;
   const extras = getAxExtras(a.id);
   const merged = { ...a };
-  ['deadline','notes'].forEach(k => {
+  ['deadline','notes','owner_unit'].forEach(k => {
     if(merged[k] === undefined || merged[k] === null || merged[k] === ''){
       if(extras[k] !== undefined && extras[k] !== null && extras[k] !== '') merged[k] = extras[k];
     }
@@ -924,10 +920,10 @@ async function apiListAssessments(pid){
   return (data||[]).map(mergeAxExtras);
 }
 async function apiSaveAssessmentFor(periodId, controlId, payload){
-  const extraKeys = ['deadline','notes'];
+  const extraKeys = ['deadline','notes','owner_unit'];
   let attempted = { ...payload };
   const failed = {};
-  for(let i = 0; i < 3; i++){
+  for(let i = 0; i < 4; i++){
     try{
       let existing = null;
       if(MODE === 'local'){
@@ -992,18 +988,13 @@ async function loadAllAssessments(){
   S.allAssessments = await apiListAssessments(null);
 }
 
-/* ===== CORE PROGRESS LOGIC (STRICT - NO RANDOM FALLBACK) ===== */
+/* ===== CORE PROGRESS LOGIC (STRICT) ===== */
 function assessmentMapFor(pid){
   const m = {};
   S.allAssessments.filter(a=>a.period_id===pid).forEach(a => m[a.control_id]=a);
   return m;
 }
 
-/**
- * Progress for a control in a specific period.
- * - Base period: derived from status (fallback to control's base status).
- * - Later periods: ONLY the explicit progress value; null if empty.
- */
 function progressForControlInPeriod(c, periodId, map){
   const a = map ? map[c.id] : null;
   if(isFirstPeriodById(periodId)){
@@ -1015,7 +1006,6 @@ function progressForControlInPeriod(c, periodId, map){
   return Number(a.progress);
 }
 
-/** Current period progress (uses S.assessments for freshness) */
 function controlProgress(c){
   const a = S.assessments[c.id];
   if(isFirstPeriodById(S.periodId)){
@@ -1027,7 +1017,6 @@ function controlProgress(c){
   return Number(a.progress);
 }
 
-/** Status for display: derived from progress in later periods */
 function controlStatus(c){
   const a = S.assessments[c.id];
   if(isFirstPeriodById(S.periodId)){
@@ -1043,17 +1032,6 @@ function averageProgressFor(controls, periodId, map){
   const vals = controls.map(c => progressForControlInPeriod(c, periodId, map)).filter(v => v !== null && v !== undefined);
   if(!vals.length) return null;
   return Math.round(vals.reduce((a,b) => a+b, 0) / vals.length);
-}
-
-function statusForControlInPeriod(c, periodId, map){
-  const a = map ? map[c.id] : null;
-  if(isFirstPeriodById(periodId)){
-    return normalizeStatus((a && a.status) || c.status || 'عدم پیاده‌سازی');
-  }
-  const pr = progressForControlInPeriod(c, periodId, map);
-  if(pr !== null) return statusFromProgress(pr);
-  if(a && a.status) return normalizeStatus(a.status);
-  return 'ثبت نشده';
 }
 
 /* ===== BOOT ===== */
@@ -1107,7 +1085,6 @@ function render(){
 function viewDashboard(){
   const total = S.controls.length;
   
-  // Current period status counts
   const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی کامل':0,'غیر قابل احراز':0,'ثبت نشده':0};
   S.controls.forEach(c => {
     const st = controlStatus(c);
@@ -1115,15 +1092,13 @@ function viewDashboard(){
     else counts['ثبت نشده']++;
   });
   
-  // Average only over controls with progress value
   const withProgress = S.controls.filter(c => controlProgress(c) !== null);
   const avg = withProgress.length ? Math.round(withProgress.reduce((s,c) => s + controlProgress(c), 0) / withProgress.length) : null;
   
-  // Per unit
   const byUnit = {};
   S.controls.forEach(c => {
     const u = c.owner_unit || 'نامشخص';
-    if(!byUnit[u]) byUnit[u] = { n:0, ok:0, doing:0, bad:0, empty:0, vals:[] };
+    if(!byUnit[u]) byUnit[u] = { n:0, ok:0, doing:0, bad:0, unverifiable:0, empty:0, vals:[] };
     byUnit[u].n++;
     const pr = controlProgress(c);
     if(pr !== null) byUnit[u].vals.push(pr);
@@ -1131,14 +1106,15 @@ function viewDashboard(){
     if(st==='پیاده‌سازی کامل') byUnit[u].ok++;
     else if(st==='در حال پیاده‌سازی') byUnit[u].doing++;
     else if(st==='عدم پیاده‌سازی') byUnit[u].bad++;
+    else if(st==='غیر قابل احراز') byUnit[u].unverifiable++;
     else byUnit[u].empty++;
   });
   const unitRows = Object.entries(byUnit).map(([k,v]) => ({
-    name:k, n:v.n, ok:v.ok, doing:v.doing, bad:v.bad, empty:v.empty,
+    name:k, n:v.n, ok:v.ok, doing:v.doing, bad:v.bad, 
+    unverifiable:v.unverifiable, empty:v.empty,
     pct: v.vals.length ? Math.round(v.vals.reduce((a,b)=>a+b,0) / v.vals.length) : null
   })).sort((a,b) => (b.pct||0) - (a.pct||0));
   
-  // Per level
   const byLevel = {};
   S.controls.forEach(c => {
     const l = c.level || 'نامشخص';
@@ -1148,7 +1124,6 @@ function viewDashboard(){
     if(pr !== null) byLevel[l].vals.push(pr);
   });
   
-  // Per category
   const byCat = {};
   S.controls.forEach(c => {
     const k = c.category || 'نامشخص';
@@ -1161,23 +1136,23 @@ function viewDashboard(){
     name:k, n:v.n, pct: v.vals.length ? Math.round(v.vals.reduce((a,b)=>a+b,0) / v.vals.length) : null
   })).sort((a,b) => (b.pct||0) - (a.pct||0));
   
-  // Donut
   const segs = [
     {label:'پیاده‌سازی کامل', val:counts['پیاده‌سازی کامل'], color:'var(--donut-1)'},
     {label:'در حال', val:counts['در حال پیاده‌سازی'], color:'var(--donut-2)'},
     {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'var(--donut-3)'},
-    {label:'ثبت نشده', val:counts['ثبت نشده'] + counts['غیر قابل احراز'], color:'var(--donut-4)'}
-  ];
+    {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'var(--dim)'},
+    {label:'ثبت نشده', val:counts['ثبت نشده'], color:'var(--donut-4)'}
+  ].filter(s => s.val > 0);
+  const sumSegs = segs.reduce((a,b)=>a+b.val, 0);
   let acc = 0;
   const grad = segs.map(s => {
-    const from = total?acc/total*360:0; acc += s.val;
-    const to = total?acc/total*360:0;
+    const from = sumSegs?acc/sumSegs*360:0; acc += s.val;
+    const to = sumSegs?acc/sumSegs*360:0;
     return `${s.color} ${from}deg ${to}deg`;
   }).join(',');
   
   const periodName = (S.periods.find(p=>p.id===S.periodId)||{}).name || 'بدون دوره';
   const scopeLabel = isAdmin() ? 'همه واحدها' : `${fa(S.units.length)} واحد مجاز`;
-  const isBase = isFirstPeriodById(S.periodId);
   
   return `<div class="grid" style="gap:16px">
     <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:14px 20px">
@@ -1196,7 +1171,8 @@ function viewDashboard(){
       <div class="card kpi"><div class="v">${fa(counts['پیاده‌سازی کامل'])}</div><div class="l">پیاده‌سازی کامل</div></div>
       <div class="card kpi"><div class="v">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال انجام</div></div>
       <div class="card kpi"><div class="v">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div></div>
-      ${(counts['ثبت نشده'] > 0 || counts['غیر قابل احراز'] > 0) ? `<div class="card kpi"><div class="v">${fa(counts['ثبت نشده'] + counts['غیر قابل احراز'])}</div><div class="l">ثبت نشده</div></div>` : ''}
+      ${counts['غیر قابل احراز'] > 0 ? `<div class="card kpi"><div class="v">${fa(counts['غیر قابل احراز'])}</div><div class="l">غیر قابل احراز</div></div>` : ''}
+      ${counts['ثبت نشده'] > 0 ? `<div class="card kpi"><div class="v">${fa(counts['ثبت نشده'])}</div><div class="l">ثبت نشده</div></div>` : ''}
     </div>
 
     <div class="grid cols2">
@@ -1225,13 +1201,19 @@ function viewDashboard(){
     <div class="card">
       <h3><span class="dot"></span> وضعیت واحدها</h3>
       ${unitRows.length ? `<div class="tbl-wrap"><table>
-        <thead><tr><th>واحد</th><th>کل</th><th>کامل</th><th>در حال</th><th>عدم</th>${unitRows.some(u=>u.empty>0)?'<th>ثبت نشده</th>':''}<th>پیشرفت</th></tr></thead>
+        <thead><tr>
+          <th>واحد</th><th>کل</th><th>کامل</th><th>در حال</th><th>عدم</th>
+          ${unitRows.some(u=>u.unverifiable>0)?'<th>غیر قابل احراز</th>':''}
+          ${unitRows.some(u=>u.empty>0)?'<th>ثبت نشده</th>':''}
+          <th>پیشرفت</th>
+        </tr></thead>
         <tbody>${unitRows.map(u=>`<tr>
           <td style="font-weight:600">${esc(u.name)}</td>
           <td>${fa(u.n)}</td>
           <td>${fa(u.ok)}</td>
           <td>${fa(u.doing)}</td>
           <td>${fa(u.bad)}</td>
+          ${unitRows.some(x=>x.unverifiable>0)?`<td>${fa(u.unverifiable)}</td>`:''}
           ${unitRows.some(x=>x.empty>0)?`<td>${fa(u.empty)}</td>`:''}
           <td style="min-width:140px"><div style="display:flex;align-items:center;gap:10px">
             <div class="bar" style="flex:1;margin:0"><i style="width:${u.pct !== null ? u.pct : 0}%"></i></div>
@@ -1255,32 +1237,25 @@ function viewDashboard(){
 function renderProgressComparison(){
   if(S.periods.length < 2) return '';
   
-  // Precompute maps for each period
   const maps = {};
   S.periods.forEach(p => { maps[p.id] = assessmentMapFor(p.id); });
   
-  // Overall
   const overallValues = S.periods.map(p => averageProgressFor(S.controls, p.id, maps[p.id]));
   
-  // Per unit
   const unitRows = S.units.map(unit => {
     const controls = S.controls.filter(c => c.owner_unit === unit);
     const values = S.periods.map(p => averageProgressFor(controls, p.id, maps[p.id]));
     return { name: unit, values, count: controls.length };
   }).filter(r => r.values.some(v => v !== null));
   
-  // Per category
   const catRows = S.cats.map(cat => {
     const controls = S.controls.filter(c => c.category === cat);
     const values = S.periods.map(p => averageProgressFor(controls, p.id, maps[p.id]));
     return { name: cat, values, count: controls.length };
   }).filter(r => r.values.some(v => v !== null));
   
-  // Helper: render a cell with delta vs previous
   function renderCell(val, prevVal){
-    if(val === null || val === undefined){
-      return `<td class="null">—</td>`;
-    }
+    if(val === null || val === undefined) return `<td class="null">—</td>`;
     let deltaHtml = '';
     if(prevVal !== null && prevVal !== undefined){
       const d = val - prevVal;
@@ -1305,7 +1280,6 @@ function renderProgressComparison(){
     return `<tr><td style="font-weight:600">${esc(row.name)}</td><td style="font-size:10px;color:var(--muted)">${fa(row.count)}</td>${cells}</tr>`;
   }).join('');
   
-  // First period → last period delta for overall
   const firstVal = overallValues.find(v => v !== null);
   const lastVal = [...overallValues].reverse().find(v => v !== null);
   const overallDelta = (firstVal !== null && lastVal !== null && firstVal !== undefined && lastVal !== undefined)
@@ -1314,7 +1288,6 @@ function renderProgressComparison(){
   return `
     <div class="card">
       <h3><span class="dot"></span> پیشرفت در دوره‌ها</h3>
-      
       <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line)">
         <div>
           <div style="font-size:10px;color:var(--muted);letter-spacing:.14em;margin-bottom:6px">پیشرفت کل</div>
@@ -1337,34 +1310,25 @@ function renderProgressComparison(){
           </div>
         ` : ''}
       </div>
-      
       ${unitRows.length ? `
         <div style="font-size:10px;color:var(--muted);letter-spacing:.14em;margin-bottom:8px;margin-top:8px">به تفکیک واحد</div>
         <div class="tbl-wrap" style="margin-bottom:16px">
           <table class="cmp-tbl">
-            <thead><tr>
-              <th>واحد</th><th>تعداد</th>
-              ${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}
-            </tr></thead>
+            <thead><tr><th>واحد</th><th>تعداد</th>${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}</tr></thead>
             <tbody>${unitRowsHtml}</tbody>
           </table>
         </div>
       ` : ''}
-      
       ${catRows.length ? `
         <div style="font-size:10px;color:var(--muted);letter-spacing:.14em;margin-bottom:8px;margin-top:16px">به تفکیک دسته</div>
         <div class="tbl-wrap">
           <table class="cmp-tbl">
-            <thead><tr>
-              <th>دسته</th><th>تعداد</th>
-              ${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}
-            </tr></thead>
+            <thead><tr><th>دسته</th><th>تعداد</th>${S.periods.map(p => `<th>${esc(p.name)}</th>`).join('')}</tr></thead>
             <tbody>${catRowsHtml}</tbody>
           </table>
         </div>
       ` : ''}
-    </div>
-  `;
+    </div>`;
 }
 
 /* ===== CONTROLS ===== */
@@ -1391,7 +1355,7 @@ function viewControls(){
   const slice = list.slice(start, start+S.pageSize);
   const opts = (arr,cur)=>arr.map(v=>`<option value="${esc(v)}" ${v===cur?'selected':''}>${esc(v)}</option>`).join('');
   const admin = isAdmin();
-  const show4cols = !isFirstPeriodById(S.periodId); // Only for period 2+
+  const show4cols = !isFirstPeriodById(S.periodId);
   
   return `
   <div class="card" style="margin-bottom:16px;padding:16px 20px">
@@ -1611,7 +1575,7 @@ function viewTrend(){
           if(!c) return '';
           return `<div style="background:var(--faint);border:1px solid var(--line);padding:12px;margin-bottom:8px">
             <div style="font-size:10.5px;color:var(--muted);margin-bottom:6px;letter-spacing:.06em">
-              #${fa(c.row_no??'')} — ${esc(c.owner_unit||'')} — ${esc((c.title||'').slice(0,80))}
+              #${fa(c.row_no??'')} — ${esc(a.owner_unit || c.owner_unit || '')} — ${esc((c.title||'').slice(0,80))}
             </div>
             <div style="font-size:11.5px;line-height:1.9">${esc(a.actions)}</div>
             <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
@@ -1631,7 +1595,6 @@ function lineChart(series){
   const W=640, H=240, PAD=44, n=series.length;
   const xs = i => n===1?W/2:PAD+i*(W-2*PAD)/(n-1);
   const ys = v => H-PAD-(v/100)*(H-2*PAD);
-  // Build path only over non-null points
   const points = series.map((s, i) => s.value !== null ? `${xs(i).toFixed(1)},${ys(s.value).toFixed(1)}` : null);
   let path = '';
   let started = false;
@@ -1900,7 +1863,7 @@ function excelRowToRecord(r){
     level: g('سطح پیشرفتگی') || null,
     title: g('کنترل') || '',
     evidence: g('شواهد') || '',
-    status: statusRaw ? normalizeStatus(statusRaw) : null,   // preserve null if empty
+    status: statusRaw ? normalizeStatus(statusRaw) : null,
     owner_unit: g('واحد مسئول رسیدگی') || null,
     actions: g('اقدامات انجام شده تاکنون', 'اقدامات انجام شده', 'اقدامات') || '',
     deadline,
@@ -1938,7 +1901,7 @@ function exportPeriodToExcel(periodId){
       'کنترل': c.title || '',
       'شواهد': c.evidence || '',
       'وضعیت پیاده‌سازی': a.status ? normalizeStatus(a.status) : (c.status || ''),
-      'واحد مسئول رسیدگی': c.owner_unit || '',
+      'واحد مسئول رسیدگی': a.owner_unit || c.owner_unit || '',
       'اقدامات انجام شده تاکنون': a.actions || '',
       'آخرین مهلت اجرای اقدام': a.deadline || '',
       'درصد پیشرفت': (a.progress !== null && a.progress !== undefined && a.progress !== '') ? Number(a.progress) : '',
@@ -1968,7 +1931,7 @@ function viewImport(){
     <p style="color:var(--muted);font-size:11.5px;line-height:1.9;margin:0 0 14px">
       ستون‌ها: <b style="color:var(--txt)">دسته، سطح پیشرفتگی، کنترل، شواهد، وضعیت پیاده‌سازی، واحد مسئول رسیدگی، اقدامات انجام شده تاکنون، آخرین مهلت اجرای اقدام، درصد پیشرفت، توضیحات</b>.
       ${noPeriods ? 'اولین بارگذاری به‌عنوان <b style="color:var(--txt)">دوره پایه</b> ثبت می‌شود (بدون تاریخ).' : 'ردیف‌ها بر اساس عنوان «کنترل» با رکوردهای موجود تطبیق داده می‌شوند.'}
-      <br><b style="color:var(--txt)">سلول‌های خالی همان خالی می‌مانند</b> — هیچ داده‌ای به‌صورت خودکار پر نمی‌شود.
+      <br><b style="color:var(--txt)">برای همه کنترل‌ها</b> ارزیابی ثبت می‌شود — سلول‌های خالی همان خالی می‌مانند.
     </p>
     ${noPeriods ? `
       <div class="field"><label>نام دوره پایه</label>
@@ -2205,38 +2168,52 @@ function bindView(){
           S.periodId = period.id;
           renderPeriodSelect();
           log.textContent = `ثبت ارزیابی دوره پایه…`;
+          let savedCount = 0, failedCount = 0;
           for(let i = 0; i < parsed.length; i++){
             const r = parsed[i];
-            const ctrl = S.allControls.find(c => c.title === r.title);
+            const ctrl = S.allControls.find(c => (c.title||'').trim() === (r.title||'').trim());
             if(!ctrl) continue;
             const baseStatus = r.status || 'عدم پیاده‌سازی';
             const progress = r.progress !== null ? r.progress : statusWeight(baseStatus);
-            await apiSaveAssessmentFor(period.id, ctrl.id, {
-              status: baseStatus,
-              progress,
-              actions: r.actions,
-              deadline: r.deadline,
-              notes: r.notes,
-              updated_by: S.user?.username || '',
-              updated_at: new Date().toISOString()
-            });
+            try {
+              await apiSaveAssessmentFor(period.id, ctrl.id, {
+                status: baseStatus,
+                progress,
+                actions: r.actions,
+                deadline: r.deadline,
+                notes: r.notes,
+                owner_unit: r.owner_unit || ctrl.owner_unit,
+                updated_by: S.user?.username || '',
+                updated_at: new Date().toISOString()
+              });
+              savedCount++;
+            } catch(e) { failedCount++; console.error(e); }
             if(i % 20 === 0) log.textContent = `ارزیابی: ${fa(i+1)} از ${fa(parsed.length)}`;
           }
           await loadAllAssessments();
           await loadAssessments();
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره پایه با ${fa(parsed.length)} کنترل ایجاد شد.</span>`;
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره پایه با ${fa(savedCount)} ارزیابی${failedCount>0?` — ${fa(failedCount)} ناموفق`:''} ایجاد شد.</span>`;
           toast('دوره پایه ایجاد شد');
         } else {
           const targetPid = $('#importPeriod').value;
           if(!targetPid) throw new Error('دوره هدف را انتخاب کنید');
           const targetPeriod = S.periods.find(p => p.id === targetPid);
           if(!targetPeriod) throw new Error('دوره یافت نشد');
+          
           log.textContent = `بارگذاری برای دوره «${targetPeriod.name}»…`;
+          
+          // 1) ساخت نگاشت عنوان→رکورد با trim
+          const excelMap = new Map();
+          parsed.forEach(r => {
+            const key = (r.title || '').trim();
+            if(key) excelMap.set(key, r);
+          });
+          
+          // 2) افزودن کنترل‌های جدید موجود در اکسل ولی نه در DB
           let createdCount = 0;
-          for(let i = 0; i < parsed.length; i++){
-            const r = parsed[i];
-            let ctrl = S.allControls.find(c => c.title === r.title);
-            if(!ctrl){
+          const existingTitles = new Set(S.allControls.map(c => (c.title||'').trim()));
+          for(const [title, r] of excelMap){
+            if(!existingTitles.has(title)){
               await apiAddControl({
                 row_no: S.allControls.length + 1,
                 category: r.category, level: r.level, title: r.title,
@@ -2244,28 +2221,61 @@ function bindView(){
                 status: r.status || 'عدم پیاده‌سازی',
                 owner_unit: r.owner_unit
               });
-              await loadControls();
-              ctrl = S.allControls.find(c => c.title === r.title);
               createdCount++;
+              existingTitles.add(title);
             }
-            if(!ctrl) continue;
-            // Preserve null: only use what's in Excel
-            await apiSaveAssessmentFor(targetPid, ctrl.id, {
-              status: r.status,          // null if empty in excel
-              progress: r.progress,      // null if empty in excel
-              actions: r.actions,
-              deadline: r.deadline,
-              notes: r.notes,
+          }
+          if(createdCount > 0) await loadControls();
+          
+          // 3) ثبت ارزیابی برای «همه» کنترل‌های موجود — نه فقط ردیف‌های اکسل
+          const allControls = S.allControls;
+          const total = allControls.length;
+          let savedCount = 0;
+          let failedCount = 0;
+          let emptyFromExcel = 0;
+          const failedTitles = [];
+          
+          for(let i = 0; i < total; i++){
+            const ctrl = allControls[i];
+            const key = (ctrl.title || '').trim();
+            const r = excelMap.get(key);
+            if(!r) emptyFromExcel++;
+            
+            const payload = {
+              status: r ? r.status : null,
+              progress: r ? r.progress : null,
+              actions: r ? (r.actions || '') : '',
+              deadline: r ? (r.deadline || '') : '',
+              notes: r ? (r.notes || '') : '',
+              owner_unit: r ? (r.owner_unit || ctrl.owner_unit) : ctrl.owner_unit,
               updated_by: S.user?.username || '',
               updated_at: new Date().toISOString()
-            });
-            if(i % 20 === 0) log.textContent = `ثبت: ${fa(i+1)} از ${fa(parsed.length)}`;
+            };
+            
+            try {
+              await apiSaveAssessmentFor(targetPid, ctrl.id, payload);
+              savedCount++;
+            } catch(e){
+              failedCount++;
+              failedTitles.push(ctrl.title);
+              console.error('Save failed:', ctrl.title, e);
+            }
+            
+            if(i % 20 === 0) log.textContent = `ثبت: ${fa(i+1)} از ${fa(total)}`;
           }
+          
           S.periodId = targetPid;
           renderPeriodSelect();
           await loadAllAssessments();
           await loadAssessments();
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${fa(parsed.length)} ردیف در دوره «${esc(targetPeriod.name)}» ثبت شد${createdCount>0?` — ${fa(createdCount)} کنترل جدید`:''}.</span>`;
+          
+          const summaryParts = [`${fa(savedCount)} از ${fa(total)} کنترل ثبت شد`];
+          if(createdCount > 0) summaryParts.push(`${fa(createdCount)} کنترل جدید`);
+          if(emptyFromExcel > 0) summaryParts.push(`${fa(emptyFromExcel)} بدون داده در اکسل`);
+          if(failedCount > 0) summaryParts.push(`${fa(failedCount)} ناموفق`);
+          
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${summaryParts.join(' — ')} در دوره «${esc(targetPeriod.name)}».</span>`
+            + (failedTitles.length ? `<br><span style="color:var(--muted);font-size:10px">ناموفق‌ها: ${failedTitles.slice(0,5).map(esc).join('، ')}${failedTitles.length>5?'…':''}</span>` : '');
           toast('بارگذاری کامل شد');
         }
         render();
@@ -2325,13 +2335,12 @@ function openAddControlModal(){
   });
 }
 
-/* ===== CONTROL DETAIL MODAL (with history) ===== */
+/* ===== CONTROL DETAIL MODAL (with history incl. owner_unit) ===== */
 function openControlModal(id){
   const c = S.controls.find(x=>x.id===id); if(!c) return;
   const maps = {};
   S.periods.forEach(p => { maps[p.id] = assessmentMapFor(p.id); });
   
-  // Show history: all periods up to and including current
   const currIdx = periodIndex();
   const periodsToShow = S.periods.slice(0, currIdx >= 0 ? currIdx + 1 : S.periods.length);
   
@@ -2339,8 +2348,8 @@ function openControlModal(id){
     const a = (maps[p.id] && maps[p.id][c.id]) || {};
     const isCurrent = p.id === S.periodId;
     const isBase = isFirstPeriodById(p.id);
+    const ownerUnit = a.owner_unit || c.owner_unit || '—';
     
-    // Compute progress for this period
     let pr = null;
     if(isBase){
       const st = a.status || c.status;
@@ -2350,7 +2359,6 @@ function openControlModal(id){
       pr = Number(a.progress);
     }
     
-    // Compute status label
     let statusLabel = '—';
     let statusCls = 'badge-soft';
     if(isBase){
@@ -2376,14 +2384,14 @@ function openControlModal(id){
         ${isCurrent ? '<span class="badge st-ok" style="margin-right:4px">جاری</span>' : ''}
       </td>
       <td><span class="badge ${statusCls}">${esc(statusLabel)}</span></td>
-      <td style="font-weight:600">${pr !== null ? fa(pr)+'٪' : '<span style="color:var(--dim)">—</span>'}</td>
-      <td style="font-size:11px;line-height:1.7;max-width:200px">${esc(a.actions || '—')}</td>
+      <td style="font-size:11px">${esc(ownerUnit)}</td>
+      <td style="font-size:11px;line-height:1.7;max-width:180px">${esc(a.actions || '—')}</td>
       <td style="white-space:nowrap">${a.deadline ? displayDate(a.deadline) : '<span style="color:var(--dim)">—</span>'}</td>
+      <td style="font-weight:600">${pr !== null ? fa(pr)+'٪' : '<span style="color:var(--dim)">—</span>'}</td>
       <td style="font-size:11px;line-height:1.7;max-width:160px">${esc(a.notes || '—')}</td>
     </tr>`;
   }).join('');
   
-  // Progress trend line (mini)
   const trendVals = periodsToShow.map(p => {
     const a = (maps[p.id] && maps[p.id][c.id]) || {};
     if(isFirstPeriodById(p.id)){
@@ -2413,9 +2421,10 @@ function openControlModal(id){
           <thead><tr>
             <th>دوره</th>
             <th>وضعیت</th>
-            <th>درصد پیشرفت</th>
+            <th>واحد مسئول</th>
             <th>اقدامات انجام شده</th>
             <th>آخرین مهلت</th>
+            <th>درصد پیشرفت</th>
             <th>توضیحات</th>
           </tr></thead>
           <tbody>${historyRows}</tbody>
