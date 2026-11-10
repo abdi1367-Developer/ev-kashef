@@ -60,6 +60,8 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-primary{background:var(--txt);color:var(--white);border-color:var(--txt)}
 .btn-primary:hover{background:var(--txt2);border-color:var(--txt2)}
+.btn-danger{background:transparent;color:var(--delta-neg);border-color:var(--delta-neg)}
+.btn-danger:hover{background:rgba(185,28,28,.08)}
 .btn-full{width:100%;padding:12px}
 .btn-sm{padding:6px 10px;font-size:11.5px}
 .err{color:var(--txt);font-size:11.5px;text-align:center;margin-top:10px;min-height:14px;font-weight:500}
@@ -253,12 +255,11 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 .ts-opt.active .ts-name::after{content:' ✓';font-size:10px;color:var(--accent);font-weight:700}
 @media(max-width:480px){.ts-grid{grid-template-columns:1fr}.theme-switcher{min-width:240px}}
 
-/* ===== PROGRESS UI ===== */
 .import-progress{display:none;margin-top:12px;padding:12px 14px;border:1px solid var(--txt);background:var(--faint)}
 .import-progress.show{display:block}
 .import-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:11.5px;font-weight:600}
 .import-progress-head .ip-pct{font-family:monospace;font-size:13px;font-weight:700;color:var(--accent)}
-.import-progress-bar{height:8px;background:var(--white);border:1px solid var(--line2);overflow:hidden;position:relative}
+.import-progress-bar{height:8px;background:var(--white);border:1px solid var(--line2);overflow:hidden}
 .import-progress-bar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .15s ease}
 .import-progress-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:10.5px;color:var(--muted)}
 .import-progress-stats b{color:var(--txt);font-weight:700}
@@ -266,7 +267,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 .import-progress-stats .err{color:var(--delta-neg)}
 .import-progress-log{margin-top:8px;max-height:120px;overflow-y:auto;font-size:10px;line-height:1.7;font-family:monospace;color:var(--muted);background:var(--white);border:1px solid var(--line);padding:6px 8px;white-space:pre-wrap;word-break:break-word}
 
-/* ===== PRINT ===== */
 .print-header{display:none}
 @media print{
   @page{margin:10mm;size:A4}
@@ -431,7 +431,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
-/* ===== THEMES ===== */
 const THEMES = [
   {id:'default',name:'ساده',accent:'#18181b',bg:'#ffffff'},
   {id:'rose',name:'رز',accent:'#d98099',bg:'#fdf6f8'},
@@ -577,25 +576,35 @@ function openDatePicker(currentValue, onPick){
 }
 
 /* ===== STATUS ===== */
-const STATUS_OPTS = ['عدم پیاده‌سازی','در حال پیاده‌سازی','پیاده‌سازی کامل'];
+const STATUS_OPTS = ['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز'];
 function normalizeStatus(s){
   s = String(s||'').trim();
   if(!s) return 'عدم پیاده‌سازی';
   if(s.includes('غیر قابل')) return 'غیر قابل احراز';
   if(s.includes('عدم')) return 'عدم پیاده‌سازی';
   if(s.includes('در حال')) return 'در حال پیاده‌سازی';
-  if(s.includes('کامل')) return 'پیاده‌سازی کامل';
-  if(s.includes('پیاده')) return 'پیاده‌سازی کامل';
+  if(s.includes('کامل')) return 'پیاده‌سازی';
+  if(s === 'پیاده‌سازی') return 'پیاده‌سازی';
+  if(s.includes('پیاده')) return 'پیاده‌سازی';
   return 'عدم پیاده‌سازی';
 }
-function statusFromProgress(p){ p = Number(p)||0; if(p<=0) return 'عدم پیاده‌سازی'; if(p>=100) return 'پیاده‌سازی کامل'; return 'در حال پیاده‌سازی'; }
+function statusFromProgress(p){ p = Number(p)||0; if(p<=0) return 'عدم پیاده‌سازی'; if(p>=100) return 'پیاده‌سازی'; return 'در حال پیاده‌سازی'; }
 function statusClass(s){
   if(s === 'ثبت نشده' || s === '—' || !s) return 'st-gray';
   const n = normalizeStatus(s);
-  if(n==='پیاده‌سازی کامل') return 'st-ok';
+  if(n==='پیاده‌سازی') return 'st-ok';
   if(n==='در حال پیاده‌سازی') return 'st-warn';
   if(n==='غیر قابل احراز') return 'st-gray';
   return 'st-bad';
+}
+/** NEW: درصد پیشرفت بر اساس فرمول درخواست‌شده */
+function progressFromStatusValue(statusRaw){
+  const n = normalizeStatus(statusRaw);
+  if(n === 'پیاده‌سازی') return 100;
+  if(n === 'عدم پیاده‌سازی') return 0;
+  if(n === 'در حال پیاده‌سازی') return 20;
+  if(n === 'غیر قابل احراز') return null;
+  return 0;
 }
 
 /* ===== MODE ===== */
@@ -622,7 +631,7 @@ function mergeAxExtras(a){
   if(!a) return a;
   const extras = getAxExtras(a.id);
   const merged = { ...a };
-  ['deadline','notes','owner_unit'].forEach(k => {
+  ['deadline','notes','owner_unit','resolve_date'].forEach(k => {
     if(merged[k] === undefined || merged[k] === null || merged[k] === ''){
       if(extras[k] !== undefined && extras[k] !== null && extras[k] !== '') merged[k] = extras[k];
     }
@@ -823,10 +832,10 @@ async function apiListAssessments(pid){
   return (data||[]).map(mergeAxExtras);
 }
 async function apiSaveAssessmentFor(periodId, controlId, payload){
-  const extraKeys = ['deadline','notes','owner_unit'];
+  const extraKeys = ['deadline','notes','owner_unit','resolve_date'];
   let attempted = { ...payload };
   const failed = {};
-  for(let i=0;i<4;i++){
+  for(let i=0;i<5;i++){
     try{
       if(MODE === 'local'){ return await LocalDB.upsertAssessment({ period_id: periodId, control_id: controlId, ...attempted }); }
       const res = await sb.from('assessments').select('*').eq('period_id', periodId).eq('control_id', controlId).limit(1);
@@ -878,6 +887,13 @@ function getAllMaps(){
   return maps;
 }
 
+/* ===== PROGRESS LOGIC =====
+ * - پیاده‌سازی = 100
+ * - عدم پیاده‌سازی = 0
+ * - در حال پیاده‌سازی = 20 (طبق درخواست)
+ * - غیر قابل احراز = null (حذف از محاسبه)
+ * - در دوره‌های بعد اگر درصد پیشرفت پر شده باشد، از همان استفاده می‌شود
+ */
 function calculateControlProgressDetail(c, periodId, map){
   const a = map ? map[c.id] : null;
   let status;
@@ -894,11 +910,11 @@ function calculateControlProgressDetail(c, periodId, map){
     }
   }
   if(status === 'غیر قابل احراز') return { value: null, reason: 'excluded' };
-  if(status === 'پیاده‌سازی کامل') return { value: 100, reason: 'ok' };
+  if(status === 'پیاده‌سازی') return { value: 100, reason: 'ok' };
   if(status === 'عدم پیاده‌سازی') return { value: 0, reason: 'ok' };
   if(status === 'در حال پیاده‌سازی'){
     if(a && a.progress !== null && a.progress !== undefined && a.progress !== '') return { value: Number(a.progress), reason: 'ok' };
-    return { value: 50, reason: 'ok' };
+    return { value: 20, reason: 'ok' };
   }
   return { value: null, reason: 'nodata' };
 }
@@ -1014,7 +1030,7 @@ function render(){
 /* ===== DASHBOARD ===== */
 function viewDashboard(){
   const total = S.controls.length;
-  const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی کامل':0,'غیر قابل احراز':0,'ثبت نشده':0};
+  const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی':0,'غیر قابل احراز':0,'ثبت نشده':0};
   S.controls.forEach(c => {
     const st = controlStatus(c);
     if(counts[st] !== undefined) counts[st]++;
@@ -1027,7 +1043,7 @@ function viewDashboard(){
     if(!byUnit[u]) byUnit[u] = { n:0, ok:0, doing:0, bad:0, unverifiable:0, empty:0, controls:[] };
     byUnit[u].n++; byUnit[u].controls.push(c);
     const st = controlStatus(c);
-    if(st==='پیاده‌سازی کامل') byUnit[u].ok++;
+    if(st==='پیاده‌سازی') byUnit[u].ok++;
     else if(st==='در حال پیاده‌سازی') byUnit[u].doing++;
     else if(st==='عدم پیاده‌سازی') byUnit[u].bad++;
     else if(st==='غیر قابل احراز') byUnit[u].unverifiable++;
@@ -1059,7 +1075,7 @@ function viewDashboard(){
     return { name:k, n:v.n, pct };
   }).sort((a,b) => (b.pct||0) - (a.pct||0));
   const segs = [
-    {label:'پیاده‌سازی کامل', val:counts['پیاده‌سازی کامل'], color:'var(--donut-1)'},
+    {label:'پیاده‌سازی', val:counts['پیاده‌سازی'], color:'var(--donut-1)'},
     {label:'در حال', val:counts['در حال پیاده‌سازی'], color:'var(--donut-2)'},
     {label:'عدم پیاده‌سازی', val:counts['عدم پیاده‌سازی'], color:'var(--donut-3)'},
     {label:'غیر قابل احراز', val:counts['غیر قابل احراز'], color:'var(--dim)'},
@@ -1083,7 +1099,7 @@ function viewDashboard(){
         <div class="l">پیشرفت کل</div>
         <div class="bar" style="margin-top:12px"><i style="width:${avg !== null ? avg : 0}%"></i></div>
       </div>
-      <div class="card kpi"><div class="v">${fa(counts['پیاده‌سازی کامل'])}</div><div class="l">پیاده‌سازی کامل</div></div>
+      <div class="card kpi"><div class="v">${fa(counts['پیاده‌سازی'])}</div><div class="l">پیاده‌سازی</div></div>
       <div class="card kpi"><div class="v">${fa(counts['در حال پیاده‌سازی'])}</div><div class="l">در حال انجام</div></div>
       <div class="card kpi"><div class="v">${fa(counts['عدم پیاده‌سازی'])}</div><div class="l">عدم پیاده‌سازی</div></div>
       ${counts['غیر قابل احراز'] > 0 ? `<div class="card kpi"><div class="v">${fa(counts['غیر قابل احراز'])}</div><div class="l">غیر قابل احراز</div></div>` : ''}
@@ -1229,6 +1245,7 @@ function viewControls(){
       const rawPr = (a.progress !== null && a.progress !== undefined && a.progress !== '') ? Number(a.progress) : null;
       const actionsVal = a.actions || '';
       const deadlineVal = a.deadline || '';
+      const resolveVal = a.resolve_date || '';
       const notesVal = a.notes || '';
       return `<div class="ctrl" data-open="${c.id}">
         ${admin && !PRINT_MODE ? `<button class="del-btn no-print" data-del="${c.id}" title="حذف">×</button>` : ''}
@@ -1255,10 +1272,11 @@ function viewControls(){
             <div class="c4-val ${rawPr !== null ? '' : 'dim'}">${rawPr !== null ? fa(rawPr)+'٪' : '—'}</div>
           </div>
           <div class="c4-item">
-            <div class="c4-lbl">توضیحات</div>
-            <div class="c4-val ${notesVal ? '' : 'dim'}">${esc(notesVal || '—')}</div>
+            <div class="c4-lbl">تاریخ رفع عدم انطباق</div>
+            <div class="c4-val ${resolveVal ? '' : 'dim'}">${resolveVal ? displayDate(resolveVal) : '—'}</div>
           </div>
         </div>
+        ${notesVal ? `<div style="margin-top:10px;font-size:11px;line-height:1.7;color:var(--muted);padding-top:8px;border-top:1px dashed var(--line)"><span style="font-weight:600;color:var(--txt)">توضیحات:</span> ${esc(notesVal)}</div>` : ''}
       </div>`;
     }).join('') : `<div class="card"><div class="empty">کنترلی یافت نشد.</div></div>`}
   </div>
@@ -1490,7 +1508,9 @@ function viewPeriods(){
             <button class="btn btn-sm" data-selperiod="${p.id}">انتخاب</button>
             <button class="btn btn-sm" data-renameperiod="${p.id}">تغییر نام</button>
             <button class="btn btn-sm" data-exportperiod="${p.id}">خروجی اکسل</button>
-            ${isBase ? `<button class="btn btn-sm" disabled title="دوره پایه قابل حذف نیست" style="opacity:.4">حذف</button>` : `<button class="btn btn-sm" data-delperiod="${p.id}">حذف</button>`}
+            ${isBase
+              ? `<button class="btn btn-sm" disabled title="دوره پایه قابل حذف نیست" style="opacity:.4">حذف</button>`
+              : `<button class="btn btn-sm btn-danger" data-delperiod="${p.id}">حذف دوره</button>`}
           </td></tr>`;
       }).join('')}</tbody>
     </table></div>` : '<div class="empty">دوره‌ای نیست.</div>'}
@@ -1609,8 +1629,9 @@ function openUserModal(userToEdit = null){
 /* ===== EXCEL PARSING ===== */
 function normalizeHeaderText(s){
   s = String(s || '');
-  s = s.replace(/[\u200c\u200d\u200e\u200f]/g, '');
+  s = s.replace(/[\u200c\u200d\u200e\u200f\u202a-\u202e]/g, '');
   s = s.replace(/ي/g,'ی').replace(/ك/g,'ک');
+  s = s.replace(/[آأإا]/g,'ا');
   s = s.replace(/\s+/g,' ');
   return s.trim();
 }
@@ -1618,7 +1639,14 @@ const HEADER_ALIASES = {
   category: ['دسته', 'دسته بندی', 'دسته‌بندی', 'دسته کنترل'],
   level: ['سطح پیشرفتگی', 'سطح', 'سطح پیشرفت'],
   title: ['کنترل', 'عنوان کنترل', 'متن کنترل'],
-  evidence: ['شواهد', 'شواهد ارزیابی']
+  evidence: ['شواهد', 'شواهد ارزیابی'],
+  status: ['وضعیت پیاده‌سازی', 'وضعیت'],
+  owner_unit: ['واحد مسئول رسیدگی', 'واحد مسئول', 'واحد'],
+  actions: ['اقدامات انجام‌شده', 'اقدامات انجام شده', 'اقدامات'],
+  resolve_date: ['تاریخ رفع عدم انطباق', 'تاریخ رفع'],
+  progress: ['درصد پیشرفت تاکنون', 'درصد پیشرفت', 'درصد'],
+  notes: ['توضیحات', 'توضیح', 'یادداشت'],
+  deadline: ['آخرین مهلت اجرای اقدام', 'آخرین مهلت', 'مهلت']
 };
 function findHeaderKey(keys, aliases){
   const normKeys = keys.map(k => ({ raw: k, norm: normalizeHeaderText(k) }));
@@ -1636,39 +1664,50 @@ function findHeaderKey(keys, aliases){
 }
 function buildRowAccessor(rawRow){
   const keys = Object.keys(rawRow);
-  const catKey = findHeaderKey(keys, HEADER_ALIASES.category);
-  const levelKey = findHeaderKey(keys, HEADER_ALIASES.level);
-  const titleKey = findHeaderKey(keys, HEADER_ALIASES.title);
-  const evKey = findHeaderKey(keys, HEADER_ALIASES.evidence);
+  const cache = {};
+  const getKey = (field) => {
+    if(cache[field] !== undefined) return cache[field];
+    const aliases = HEADER_ALIASES[field] || [];
+    const k = findHeaderKey(keys, aliases);
+    cache[field] = k;
+    return k;
+  };
   return {
-    category: () => catKey ? String(rawRow[catKey] || '').trim() : '',
-    level: () => levelKey ? String(rawRow[levelKey] || '').trim() : '',
-    title: () => titleKey ? String(rawRow[titleKey] || '').trim() : '',
-    evidence: () => evKey ? String(rawRow[evKey] || '').trim() : '',
-    other: (aliases) => {
-      const k = findHeaderKey(keys, aliases);
-      return k ? String(rawRow[k] || '').trim() : '';
-    }
+    category: () => { const k = getKey('category'); return k ? String(rawRow[k] || '').trim() : ''; },
+    level: () => { const k = getKey('level'); return k ? String(rawRow[k] || '').trim() : ''; },
+    title: () => { const k = getKey('title'); return k ? String(rawRow[k] || '').trim() : ''; },
+    evidence: () => { const k = getKey('evidence'); return k ? String(rawRow[k] || '').trim() : ''; },
+    status: () => { const k = getKey('status'); return k ? String(rawRow[k] || '').trim() : ''; },
+    owner_unit: () => { const k = getKey('owner_unit'); return k ? String(rawRow[k] || '').trim() : ''; },
+    actions: () => { const k = getKey('actions'); return k ? String(rawRow[k] || '').trim() : ''; },
+    resolve_date: () => { const k = getKey('resolve_date'); return k ? String(rawRow[k] || '').trim() : ''; },
+    progress: () => { const k = getKey('progress'); return k ? String(rawRow[k] || '').trim() : ''; },
+    notes: () => { const k = getKey('notes'); return k ? String(rawRow[k] || '').trim() : ''; },
+    deadline: () => { const k = getKey('deadline'); return k ? String(rawRow[k] || '').trim() : ''; }
   };
 }
 function excelRowToRecord(rawRow){
   const a = buildRowAccessor(rawRow);
-  const deadlineRaw = a.other(['آخرین مهلت اجرای اقدام', 'آخرین مهلت', 'مهلت', 'deadline']);
+  const deadlineRaw = a.deadline();
   const deadline = deadlineRaw ? (parseJalali(deadlineRaw) || deadlineRaw) : '';
-  const progressRaw = a.other(['درصد پیشرفت', 'درصد', 'progress']);
+  const resolveRaw = a.resolve_date();
+  const resolve_date = resolveRaw ? (parseJalali(resolveRaw) || resolveRaw) : '';
+  const progressRaw = a.progress();
   let progress = null;
   if(progressRaw){ const num = parseInt(toLatin(progressRaw).replace(/[^\d-]/g, ''), 10); if(!isNaN(num)) progress = Math.max(0, Math.min(100, num)); }
-  const statusRaw = a.other(['وضعیت پیاده‌سازی', 'وضعیت']);
+  const statusRaw = a.status();
   return {
     category: a.category() || null,
     level: a.level() || null,
     title: a.title() || '',
     evidence: a.evidence() || '',
     status: statusRaw ? normalizeStatus(statusRaw) : null,
-    owner_unit: a.other(['واحد مسئول رسیدگی', 'واحد مسئول', 'واحد']) || null,
-    actions: a.other(['اقدامات انجام شده تاکنون', 'اقدامات انجام شده', 'اقدامات']) || '',
-    deadline, progress,
-    notes: a.other(['توضیحات', 'توضیح', 'یادداشت']) || ''
+    owner_unit: a.owner_unit() || null,
+    actions: a.actions() || '',
+    resolve_date,
+    deadline,
+    progress,
+    notes: a.notes() || ''
   };
 }
 function parseSheet(file){
@@ -1679,21 +1718,16 @@ function parseSheet(file){
         const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
         if(!wb.SheetNames || !wb.SheetNames.length) throw new Error('هیچ شیتی در فایل نیست');
         const ws = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false });
-        if(!rows.length){
-          const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1 });
-          if(aoa.length >= 2){
-            const headers = aoa[0];
-            const dataRows = aoa.slice(1).map(arr => {
-              const obj = {};
-              headers.forEach((h, i) => { obj[h] = arr[i] ?? ''; });
-              return obj;
-            });
-            res(dataRows);
-            return;
-          }
-        }
-        res(rows);
+        // Always read with header:1 to have full control
+        const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1 });
+        if(!aoa.length) throw new Error('فایل خالی است');
+        const headers = aoa[0];
+        const dataRows = aoa.slice(1).map(arr => {
+          const obj = {};
+          headers.forEach((h, i) => { obj[h] = arr[i] ?? ''; });
+          return obj;
+        });
+        res(dataRows);
       }catch(err){ rej(err); }
     };
     r.onerror = () => rej(new Error('خواندن فایل ناموفق'));
@@ -1711,14 +1745,14 @@ function exportPeriodToExcel(periodId){
       'ردیف': i + 1, 'دسته': c.category || '', 'سطح پیشرفتگی': c.level || '', 'کنترل': c.title || '', 'شواهد': c.evidence || '',
       'وضعیت پیاده‌سازی': a.status ? normalizeStatus(a.status) : (c.status || ''),
       'واحد مسئول رسیدگی': a.owner_unit || c.owner_unit || '',
-      'اقدامات انجام شده تاکنون': a.actions || '',
-      'آخرین مهلت اجرای اقدام': a.deadline || '',
-      'درصد پیشرفت': (a.progress !== null && a.progress !== undefined && a.progress !== '') ? Number(a.progress) : '',
+      'اقدامات انجام‌شده': a.actions || '',
+      'تاریخ رفع عدم انطباق': a.resolve_date || '',
+      'درصد پیشرفت تاکنون': (a.progress !== null && a.progress !== undefined && a.progress !== '') ? Number(a.progress) : '',
       'توضیحات': a.notes || ''
     };
   });
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [{wch:6},{wch:18},{wch:12},{wch:50},{wch:50},{wch:18},{wch:25},{wch:40},{wch:18},{wch:10},{wch:30}];
+  ws['!cols'] = [{wch:6},{wch:18},{wch:12},{wch:50},{wch:50},{wch:18},{wch:25},{wch:40},{wch:18},{wch:18},{wch:30}];
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'کنترل‌ها');
   const safeName = period.name.replace(/[\\/:*?"<>|]/g, '-');
   XLSX.writeFile(wb, `کاشف-${safeName}-${todayJalali().replace(/\//g,'-')}.xlsx`);
@@ -1729,7 +1763,6 @@ function exportPeriodToExcel(periodId){
 function viewImport(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   const noPeriods = S.periods.length === 0;
-  const noControls = S.allControls.length === 0;
   return `
   <div class="card no-print" style="margin-bottom:16px">
     <h3><span class="dot"></span> ${noPeriods ? 'بارگذاری اولیه — دوره پایه' : 'بارگذاری اکسل برای دوره'}</h3>
@@ -1738,7 +1771,6 @@ function viewImport(){
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
       <button class="btn btn-primary" id="doImport">${noPeriods ? 'بارگذاری و ایجاد دوره پایه' : 'بارگذاری برای این دوره'}</button>
       <button class="btn" id="addCtrlFromImport">+ افزودن کنترل دستی</button>
-      ${!noControls ? `<button class="btn" id="wipeControls">حذف همه کنترل‌ها</button>` : ''}
     </div>
     <div class="import-progress" id="importProgress">
       <div class="import-progress-head">
@@ -1840,8 +1872,16 @@ function bindView(){
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       const pid = b.dataset.delperiod;
       if(isFirstPeriodById(pid)) return toast('دوره پایه قابل حذف نیست');
-      if(!confirm('حذف دوره و ارزیابی‌های آن؟')) return;
-      try{ await apiDelPeriod(pid); await loadPeriods(); if(!S.periods.find(p=>p.id===S.periodId)) S.periodId = S.periods[S.periods.length-1]?.id || null; renderPeriodSelect(); await loadAllAssessments(); await loadAssessments(); toast('حذف شد'); render(); }
+      const p = S.periods.find(x => x.id === pid);
+      const cnt = S.allAssessments.filter(a => a.period_id === pid).length;
+      if(!confirm(`دوره «${p?.name || ''}» و ${cnt} ارزیابی مربوط به آن حذف شود؟`)) return;
+      try{
+        await apiDelPeriod(pid);
+        await loadPeriods();
+        if(!S.periods.find(x=>x.id===S.periodId)) S.periodId = S.periods[S.periods.length-1]?.id || null;
+        renderPeriodSelect(); await loadAllAssessments(); await loadAssessments();
+        toast('دوره حذف شد'); render();
+      }
       catch(err){ toast('خطا: '+err.message); }
     }));
   }
@@ -1859,11 +1899,6 @@ function bindView(){
   }
   if(S.view==='import' && admin){
     $('#addCtrlFromImport')?.addEventListener('click', () => openAddControlModal());
-    $('#wipeControls')?.addEventListener('click', async () => {
-      if(!confirm('همه کنترل‌ها و ارزیابی‌های مرتبط حذف شوند؟')) return;
-      try{ if(MODE==='local') await LocalDB.wipeControls(); else { const { error } = await sb.from('controls').delete().not('id','is',null); if(error) throw error; } await loadControls(); await loadAllAssessments(); toast('حذف شد'); render(); }
-      catch(err){ toast('خطا: '+err.message); }
-    });
     $('#doExport')?.addEventListener('click', async () => {
       const pid = $('#exportPeriodSel').value;
       if(!pid) return toast('دوره را انتخاب کنید');
@@ -1873,17 +1908,13 @@ function bindView(){
     $('#doImport')?.addEventListener('click', async () => {
       const file = $('#xlsFile').files[0]; const log = $('#importLog');
       if(!file) return toast('فایل را انتخاب کنید');
-      
-      // Reset & show progress UI
       const pg = $('#importProgress'); pg.classList.add('show');
       const ipTitle = $('#ipTitle'), ipPct = $('#ipPct'), ipBar = $('#ipBar');
       const ipTotal = $('#ipTotal'), ipOk = $('#ipOk'), ipErr = $('#ipErr'), ipEmpty = $('#ipEmpty'), ipLog = $('#ipLog');
       ipTitle.textContent = 'در حال آماده‌سازی…';
       ipPct.textContent = '0%'; ipBar.style.width = '0%';
       ipTotal.textContent = '0'; ipOk.textContent = '0'; ipErr.textContent = '0'; ipEmpty.textContent = '0';
-      ipLog.textContent = '';
-      log.textContent = '';
-      
+      ipLog.textContent = ''; log.textContent = '';
       const logLine = (msg) => {
         const t = new Date();
         const ts = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
@@ -1891,51 +1922,39 @@ function bindView(){
       };
       const setProgress = (done, total, title) => {
         const pct = total > 0 ? Math.round(done / total * 100) : 0;
-        ipBar.style.width = pct + '%';
-        ipPct.textContent = pct + '%';
+        ipBar.style.width = pct + '%'; ipPct.textContent = pct + '%';
         if(title) ipTitle.textContent = title;
       };
-      
       try{
         logLine('شروع خواندن فایل…');
         ipTitle.textContent = 'در حال خواندن فایل اکسل…';
         const rows = await parseSheet(file);
         logLine(`تعداد ${rows.length} ردیف خوانده شد.`);
         if(!rows.length) throw new Error('فایل خالی است');
-        
-        // Verify headers exist
         if(rows[0]){
           const keys = Object.keys(rows[0]);
           const hasTitle = findHeaderKey(keys, HEADER_ALIASES.title);
           if(!hasTitle) throw new Error('ستون «کنترل» در فایل پیدا نشد. ستون‌های موجود: ' + keys.join(' | '));
+          logLine(`ستون‌های شناسایی‌شده: ${keys.join(' | ')}`);
         }
-        
-        const parsed = rows.map(excelRowToRecord).filter(r => r.title);
+        const parsed = rows.map(excelRowToRecord).filter(r => r.title && r.title.trim() !== '' && normalizeHeaderText(r.title) !== normalizeHeaderText('کنترل'));
         logLine(`پس از پردازش: ${parsed.length} کنترل معتبر.`);
         if(!parsed.length) throw new Error('هیچ ردیف معتبری با عنوان کنترل پیدا نشد.');
-        
         const isFirstUpload = S.periods.length === 0;
-        
         if(isFirstUpload){
           ipTitle.textContent = 'ایجاد دوره پایه…';
-          logLine('دوره‌ای موجود نیست — ایجاد دوره پایه.');
           const periodName = ($('#firstPeriodName')?.value || '').trim() || 'پایه';
           const period = await apiAddPeriod({ name: periodName });
           S.periodId = period.id;
-          logLine(`دوره «${periodName}» با شناسه ایجاد شد.`);
-          
-          // Insert controls in chunks
-          ipTitle.textContent = `درج ${parsed.length} کنترل در پایگاه داده…`;
+          logLine(`دوره «${periodName}» ایجاد شد.`);
+          ipTitle.textContent = `درج ${parsed.length} کنترل…`;
           setProgress(0, parsed.length, ipTitle.textContent);
-          
           if(MODE === 'local'){
             await LocalDB.setControls(parsed.map(r => ({ category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit })));
-            logLine('کنترل‌ها در حافظه محلی ذخیره شدند.');
             setProgress(parsed.length, parsed.length);
           } else {
             const del = await sb.from('controls').delete().not('id','is',null);
             if(del.error) throw del.error;
-            logLine('کنترل‌های قبلی حذف شدند.');
             const CH = 100;
             for(let i = 0; i < parsed.length; i += CH){
               const part = parsed.slice(i, i+CH).map((r,idx) => ({ row_no: i+idx+1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit }));
@@ -1943,52 +1962,34 @@ function bindView(){
               if(error) throw error;
               setProgress(Math.min(i+CH, parsed.length), parsed.length, `درج کنترل‌ها: ${Math.min(i+CH, parsed.length)} از ${parsed.length}`);
             }
-            logLine(`همه ${parsed.length} کنترل در پایگاه داده درج شدند.`);
           }
-          
-          await loadPeriods();
-          await loadControls();
-          logLine(`کنترل‌ها از پایگاه داده بارگذاری شدند (${S.allControls.length}).`);
-          S.periodId = period.id;
-          renderPeriodSelect();
-          
-          // Assessments for base period
+          await loadPeriods(); await loadControls();
+          S.periodId = period.id; renderPeriodSelect();
           ipTitle.textContent = 'ثبت ارزیابی دوره پایه…';
           let savedCount = 0, failedCount = 0;
-          setProgress(0, parsed.length, ipTitle.textContent);
           ipTotal.textContent = parsed.length;
-          
+          setProgress(0, parsed.length, ipTitle.textContent);
+          const titleMap = new Map();
+          S.allControls.forEach(ctrl => titleMap.set((ctrl.title||'').trim(), ctrl));
           for(let i = 0; i < parsed.length; i++){
             const r = parsed[i];
-            const ctrl = S.allControls.find(c => (c.title||'').trim() === (r.title||'').trim());
-            if(!ctrl){
-              ipEmpty.textContent = String(Number(ipEmpty.textContent) + 1);
-              logLine(`هشدار: کنترل «${r.title.slice(0,40)}…» پس از درج پیدا نشد.`);
-              setProgress(i+1, parsed.length);
-              continue;
-            }
+            const ctrl = titleMap.get((r.title||'').trim());
+            if(!ctrl){ setProgress(i+1, parsed.length); continue; }
             const baseStatus = r.status || 'عدم پیاده‌سازی';
+            const computedProgress = r.progress !== null ? r.progress : progressFromStatusValue(baseStatus);
             try{
               await apiSaveAssessmentFor(period.id, ctrl.id, {
-                status: baseStatus, progress: r.progress, actions: r.actions, deadline: r.deadline, notes: r.notes,
+                status: baseStatus, progress: computedProgress, actions: r.actions, deadline: r.deadline, resolve_date: r.resolve_date, notes: r.notes,
                 owner_unit: r.owner_unit || ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString()
               });
-              savedCount++;
-              ipOk.textContent = String(savedCount);
-            }catch(e){
-              failedCount++;
-              ipErr.textContent = String(failedCount);
-              logLine(`خطا در ثبت «${r.title.slice(0,40)}…»: ${e.message}`);
-            }
+              savedCount++; ipOk.textContent = String(savedCount);
+            }catch(e){ failedCount++; ipErr.textContent = String(failedCount); }
             setProgress(i+1, parsed.length, `ثبت ارزیابی: ${i+1} از ${parsed.length}`);
+            if(i % 10 === 0) await new Promise(r2 => setTimeout(r2, 0));
           }
-          
-          logLine(`پایان: ${savedCount} موفق، ${failedCount} ناموفق.`);
+          await loadAllAssessments(); await loadAssessments();
           ipTitle.textContent = `✔ دوره پایه با ${savedCount} ارزیابی ایجاد شد`;
           ipPct.textContent = '100%'; ipBar.style.width = '100%';
-          
-          await loadAllAssessments();
-          await loadAssessments();
           log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره پایه با ${fa(savedCount)} ارزیابی${failedCount>0?` — ${fa(failedCount)} ناموفق`:''} ایجاد شد.</span>`;
           toast('دوره پایه ایجاد شد');
         } else {
@@ -1997,66 +1998,49 @@ function bindView(){
           const targetPeriod = S.periods.find(p => p.id === targetPid);
           if(!targetPeriod) throw new Error('دوره یافت نشد');
           ipTitle.textContent = `بارگذاری برای دوره «${targetPeriod.name}»…`;
-          logLine(`دوره هدف: ${targetPeriod.name}`);
-          
           const excelMap = new Map();
           parsed.forEach(r => { const key = (r.title||'').trim(); if(key) excelMap.set(key, r); });
           logLine(`${excelMap.size} عنوان یکتا در اکسل.`);
-          
           let createdCount = 0;
           const existingTitles = new Set(S.allControls.map(c => (c.title||'').trim()));
-          logLine(`کنترل‌های موجود در پایگاه داده: ${existingTitles.size}`);
-          
-          // Create any new controls from Excel
           for(const [title, r] of excelMap){
             if(!existingTitles.has(title)){
               await apiAddControl({ row_no: S.allControls.length + 1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit });
               createdCount++; existingTitles.add(title);
             }
           }
-          if(createdCount > 0){ await loadControls(); logLine(`${createdCount} کنترل جدید اضافه شد.`); }
-          
+          if(createdCount > 0) await loadControls();
           const allControls = S.allControls; const total = allControls.length;
           let savedCount = 0, failedCount = 0, emptyFromExcel = 0;
           const failedTitles = [];
           ipTotal.textContent = total;
           setProgress(0, total, `ثبت ${total} کنترل…`);
-          
+          const titleMap = new Map();
+          allControls.forEach(ctrl => titleMap.set((ctrl.title||'').trim(), ctrl));
           for(let i = 0; i < total; i++){
             const ctrl = allControls[i];
             const key = (ctrl.title || '').trim();
             const r = excelMap.get(key);
             if(!r) emptyFromExcel++;
-            const payload = { status: r ? r.status : null, progress: r ? r.progress : null, actions: r ? (r.actions || '') : '', deadline: r ? (r.deadline || '') : '', notes: r ? (r.notes || '') : '', owner_unit: r ? (r.owner_unit || ctrl.owner_unit) : ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString() };
-            try{
-              await apiSaveAssessmentFor(targetPid, ctrl.id, payload);
-              savedCount++;
-              ipOk.textContent = String(savedCount);
-            }catch(e){
-              failedCount++;
-              failedTitles.push(ctrl.title);
-              ipErr.textContent = String(failedCount);
-              if(failedTitles.length <= 5) logLine(`خطا «${ctrl.title.slice(0,40)}…»: ${e.message}`);
-            }
+            const baseStatus = r ? r.status : null;
+            const computedProgress = r ? (r.progress !== null ? r.progress : (baseStatus ? progressFromStatusValue(baseStatus) : null)) : null;
+            const payload = { status: baseStatus, progress: computedProgress, actions: r ? (r.actions || '') : '', deadline: r ? (r.deadline || '') : '', resolve_date: r ? (r.resolve_date || '') : '', notes: r ? (r.notes || '') : '', owner_unit: r ? (r.owner_unit || ctrl.owner_unit) : ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString() };
+            try{ await apiSaveAssessmentFor(targetPid, ctrl.id, payload); savedCount++; ipOk.textContent = String(savedCount); }
+            catch(e){ failedCount++; failedTitles.push(ctrl.title); ipErr.textContent = String(failedCount); }
+            ipEmpty.textContent = String(emptyFromExcel);
             setProgress(i+1, total, `ثبت: ${i+1} از ${total} — موفق: ${savedCount}`);
-            if(i % 10 === 0) await new Promise(r => setTimeout(r, 0)); // yield to UI
+            if(i % 10 === 0) await new Promise(r2 => setTimeout(r2, 0));
           }
-          
-          ipEmpty.textContent = String(emptyFromExcel);
           ipTitle.textContent = `✔ بارگذاری کامل شد — ${savedCount} از ${total} ثبت`;
           ipPct.textContent = '100%'; ipBar.style.width = '100%';
-          
           S.periodId = targetPid; renderPeriodSelect();
-          await loadAllAssessments();
-          await loadAssessments();
-          
+          await loadAllAssessments(); await loadAssessments();
           const parts = [`${fa(savedCount)} از ${fa(total)} کنترل ثبت شد`];
           if(createdCount > 0) parts.push(`${fa(createdCount)} کنترل جدید`);
           if(emptyFromExcel > 0) parts.push(`${fa(emptyFromExcel)} بدون داده`);
           if(failedCount > 0) parts.push(`${fa(failedCount)} ناموفق`);
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${parts.join(' — ')} در دوره «${esc(targetPeriod.name)}».</span>`
-            + (failedTitles.length ? `<br><span style="color:var(--muted);font-size:10px">ناموفق‌ها: ${failedTitles.slice(0,5).map(esc).join('، ')}${failedTitles.length>5?'…':''}</span>` : '');
-          logLine(`پایان: ${savedCount} موفق، ${failedCount} ناموفق، ${emptyFromExcel} بدون داده.`);
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${parts.join(' — ')} در دوره «${esc(targetPeriod.name)}».</span>`;
+          logLine(`پایان: ${savedCount} موفق، ${failedCount} ناموفق.`);
           toast('بارگذاری کامل شد');
         }
         render();
