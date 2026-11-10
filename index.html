@@ -6,7 +6,6 @@
 <title>کاشف ۴۹۵ | پایش کنترل‌های امنیتی</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
-/* ===== THEMES ===== */
 :root{--white:#fff;--line:#e4e4e7;--line2:#d4d4d8;--txt:#09090b;--txt2:#3f3f46;--muted:#71717a;--dim:#a1a1aa;--faint:#f4f4f5;--bg-main:#fff;--bg-side:#fff;--bg-top:#fff;--donut-1:#18181b;--donut-2:#71717a;--donut-3:#d4d4d8;--donut-4:#f4f4f5;--bar-fill:#18181b;--bar-ok:#18181b;--bar-warn:#71717a;--bar-bad:#d4d4d8;--blob-1:#e4e4e7;--blob-2:#f4f4f5;--blob-3:#d4d4d8;--accent:#18181b;--overlay-bg:rgba(9,9,11,.32);--ctrl-border:var(--line2);--ctrl-hover:var(--txt);--th-bg:var(--faint);--th-border:var(--txt);--tr-hover:var(--faint);--toast-bg:var(--txt);--st-ok-bg:#18181b;--st-ok-fg:#fff;--st-ok-border:#18181b;--st-warn-bg:#fff;--st-warn-fg:#09090b;--st-warn-border:#09090b;--st-bad-bg:#fff;--st-bad-fg:#71717a;--st-bad-border:#d4d4d8;--st-gray-bg:transparent;--st-gray-fg:#a1a1aa;--st-gray-border:#e4e4e7;--badge-first-bg:#18181b;--badge-first-fg:#fff;--delta-pos:#15803d;--delta-neg:#b91c1c}
 body.theme-rose{--white:#fffbfc;--line:#f0dfe3;--line2:#e5ccd2;--txt:#4a2a35;--txt2:#5e3542;--muted:#96707c;--dim:#c9a5b1;--faint:#fdf3f5;--bg-main:#fdf6f8;--bg-side:#faeef2;--bg-top:#fdf6f8;--donut-1:#e8a5b6;--donut-2:#f2c4d0;--donut-3:#f7dbe3;--donut-4:#fceef2;--bar-fill:#d98099;--bar-ok:#e8a5b6;--bar-warn:#f2c4d0;--bar-bad:#f7dbe3;--blob-1:#f4c8d4;--blob-2:#f7dde5;--blob-3:#fceef2;--accent:#d98099;--overlay-bg:rgba(74,42,53,.3);--ctrl-border:#ecdbdf;--ctrl-hover:#d98099;--th-bg:#fceef2;--th-border:#e8a5b6;--tr-hover:#fdf3f5;--toast-bg:#d98099;--st-ok-bg:#f5d5dc;--st-ok-fg:#8a3a4e;--st-ok-border:#e8a5b6;--st-warn-bg:#fce5d2;--st-warn-fg:#8a5535;--st-warn-border:#f2c4a8;--st-bad-bg:#f0e0e8;--st-bad-fg:#7a5568;--st-bad-border:#dcbfcd;--st-gray-bg:#fbeef1;--st-gray-fg:#a17284;--st-gray-border:#ecd2da;--badge-first-bg:#d98099;--badge-first-fg:#fff;--delta-pos:#2d7d4f;--delta-neg:#a13048}
 body.theme-lavender{--white:#fdfbff;--line:#e8ddf2;--line2:#dcc9ea;--txt:#40305c;--txt2:#503d70;--muted:#8570a3;--dim:#b9a8cf;--faint:#f7f1fc;--bg-main:#faf5ff;--bg-side:#f5ecfd;--bg-top:#faf5ff;--donut-1:#b89ad6;--donut-2:#d4bde7;--donut-3:#e8daf2;--donut-4:#f5ecfd;--bar-fill:#a887d3;--bar-ok:#b89ad6;--bar-warn:#d4bde7;--bar-bad:#e8daf2;--blob-1:#dcc9ea;--blob-2:#e8daf2;--blob-3:#f5ecfd;--accent:#a887d3;--overlay-bg:rgba(64,48,92,.3);--ctrl-border:#e0d2ee;--ctrl-hover:#a887d3;--th-bg:#f5ecfd;--th-border:#c9b3e3;--tr-hover:#faf5ff;--toast-bg:#a887d3;--st-ok-bg:#e0d3f0;--st-ok-fg:#5a3d8a;--st-ok-border:#c9b3e3;--st-warn-bg:#fce5d2;--st-warn-fg:#8a5535;--st-warn-border:#f2c4a8;--st-bad-bg:#f0e0e8;--st-bad-fg:#7a5568;--st-bad-border:#dcbfcd;--st-gray-bg:#f2ecfa;--st-gray-fg:#8878a5;--st-gray-border:#dfd4ee;--badge-first-bg:#a887d3;--badge-first-fg:#fff;--delta-pos:#2d7d4f;--delta-neg:#a13048}
@@ -27,7 +26,6 @@ a{color:var(--txt);text-decoration:none}
 button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
 
-/* ===== LOGIN ===== */
 .login-wrap{position:fixed;inset:0;overflow-y:auto;z-index:200;padding:24px 16px;background:var(--bg-main);display:flex;flex-direction:column}
 .bg-anim{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px);background-size:48px 48px;opacity:.8}
@@ -75,7 +73,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
 
-/* ===== APP ===== */
 #app{height:100vh;height:100dvh;display:block}
 .sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--bg-side);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
 .brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
@@ -112,7 +109,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .overlay{position:fixed;inset:0;background:var(--overlay-bg);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.show{opacity:1;pointer-events:auto}
 
-/* ===== COMPONENTS ===== */
 .grid{display:grid;gap:16px;width:100%}
 .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
@@ -257,7 +253,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 .ts-opt.active .ts-name::after{content:' ✓';font-size:10px;color:var(--accent);font-weight:700}
 @media(max-width:480px){.ts-grid{grid-template-columns:1fr}.theme-switcher{min-width:240px}}
 
-/* ===== PRINT ===== */
 .print-header{display:none}
 @media print{
   @page{margin:10mm;size:A4}
@@ -271,7 +266,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
   .btn,.del-btn,.theme-btn,.icon-btn,.print-btn,.pager,.toolbar,.no-print,.theme-switcher,.mode-toggle,.ro-notice{display:none !important}
   .card{box-shadow:none !important;break-inside:avoid;page-break-inside:avoid;padding:12px !important}
   .ctrl{break-inside:avoid;page-break-inside:avoid}
-  /* Force light colors for print */
   :root,body[class*="theme-"]{
     --white:#fff!important;--bg-main:#fff!important;--bg-side:#fff!important;--bg-top:#fff!important;
     --txt:#000!important;--txt2:#222!important;--muted:#555!important;--dim:#777!important;--faint:#f7f7f7!important;
@@ -303,7 +297,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
   .c4-val{-webkit-line-clamp:none !important;display:block !important;overflow:visible !important}
 }
 
-/* ===== RESPONSIVE ===== */
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
   .sidebar.open{transform:translateX(0)}
@@ -379,8 +372,8 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
         <div><b>وضعیت اتصال:</b> <span id="connTxt">در حال بررسی…</span></div>
       </div>
       <form id="loginForm">
-        <div class="field"><label>نام کاربری</label><input id="luser" value="ice" required autocomplete="username"></div>
-        <div class="field"><label>رمز عبور</label><input id="lpass" type="password" value="ice" required autocomplete="current-password"></div>
+        <div class="field"><label>نام کاربری</label><input id="luser" required autocomplete="username"></div>
+        <div class="field"><label>رمز عبور</label><input id="lpass" type="password" required autocomplete="current-password"></div>
         <button class="btn btn-primary btn-full" type="submit" id="loginBtn">ورود</button>
         <div class="err" id="loginErr"></div>
       </form>
@@ -1592,27 +1585,96 @@ function openUserModal(userToEdit = null){
   });
 }
 
-/* ===== EXCEL ===== */
-function excelRowToRecord(r){
-  const g = (...names) => { for(const n of names){ const key = Object.keys(r).find(k => String(k).trim() === n); if(key !== undefined && String(r[key]).trim() !== '') return String(r[key]).trim(); } return ''; };
-  const deadlineRaw = g('آخرین مهلت اجرای اقدام', 'آخرین مهلت', 'مهلت', 'deadline');
+/* ===== EXCEL: ROBUST HEADER DETECTION & NORMALIZATION ===== */
+function normalizeHeaderText(s){
+  s = String(s || '');
+  s = s.replace(/[\u200c\u200d\u200e\u200f]/g, '');
+  s = s.replace(/ي/g,'ی').replace(/ك/g,'ک');
+  s = s.replace(/\s+/g,' ');
+  return s.trim();
+}
+const HEADER_ALIASES = {
+  category: ['دسته', 'دسته بندی', 'دسته‌بندی', 'دسته کنترل'],
+  level: ['سطح پیشرفتگی', 'سطح', 'سطح پیشرفت'],
+  title: ['کنترل', 'عنوان کنترل', 'متن کنترل'],
+  evidence: ['شواهد', 'شواهد ارزیابی']
+};
+function findHeaderKey(keys, aliases){
+  const normKeys = keys.map(k => ({ raw: k, norm: normalizeHeaderText(k) }));
+  for(const alias of aliases){
+    const targetNorm = normalizeHeaderText(alias);
+    const found = normKeys.find(x => x.norm === targetNorm);
+    if(found) return found.raw;
+  }
+  for(const alias of aliases){
+    const targetNorm = normalizeHeaderText(alias);
+    const found = normKeys.find(x => x.norm.includes(targetNorm) || targetNorm.includes(x.norm));
+    if(found) return found.raw;
+  }
+  return null;
+}
+function buildRowAccessor(rawRow){
+  const keys = Object.keys(rawRow);
+  const catKey = findHeaderKey(keys, HEADER_ALIASES.category);
+  const levelKey = findHeaderKey(keys, HEADER_ALIASES.level);
+  const titleKey = findHeaderKey(keys, HEADER_ALIASES.title);
+  const evKey = findHeaderKey(keys, HEADER_ALIASES.evidence);
+  return {
+    category: () => catKey ? String(rawRow[catKey] || '').trim() : '',
+    level: () => levelKey ? String(rawRow[levelKey] || '').trim() : '',
+    title: () => titleKey ? String(rawRow[titleKey] || '').trim() : '',
+    evidence: () => evKey ? String(rawRow[evKey] || '').trim() : '',
+    other: (aliases) => {
+      const k = findHeaderKey(keys, aliases);
+      return k ? String(rawRow[k] || '').trim() : '';
+    }
+  };
+}
+function excelRowToRecord(rawRow){
+  const a = buildRowAccessor(rawRow);
+  const deadlineRaw = a.other(['آخرین مهلت اجرای اقدام', 'آخرین مهلت', 'مهلت', 'deadline']);
   const deadline = deadlineRaw ? (parseJalali(deadlineRaw) || deadlineRaw) : '';
-  const progressRaw = g('درصد پیشرفت', 'درصد', 'progress');
+  const progressRaw = a.other(['درصد پیشرفت', 'درصد', 'progress']);
   let progress = null;
   if(progressRaw){ const num = parseInt(toLatin(progressRaw).replace(/[^\d-]/g, ''), 10); if(!isNaN(num)) progress = Math.max(0, Math.min(100, num)); }
-  const statusRaw = g('وضعیت پیاده‌سازی');
+  const statusRaw = a.other(['وضعیت پیاده‌سازی', 'وضعیت']);
   return {
-    category: g('دسته') || null, level: g('سطح پیشرفتگی') || null, title: g('کنترل') || '',
-    evidence: g('شواهد') || '', status: statusRaw ? normalizeStatus(statusRaw) : null,
-    owner_unit: g('واحد مسئول رسیدگی') || null,
-    actions: g('اقدامات انجام شده تاکنون', 'اقدامات انجام شده', 'اقدامات') || '',
-    deadline, progress, notes: g('توضیحات', 'توضیح', 'یادداشت') || ''
+    category: a.category() || null,
+    level: a.level() || null,
+    title: a.title() || '',
+    evidence: a.evidence() || '',
+    status: statusRaw ? normalizeStatus(statusRaw) : null,
+    owner_unit: a.other(['واحد مسئول رسیدگی', 'واحد مسئول', 'واحد']) || null,
+    actions: a.other(['اقدامات انجام شده تاکنون', 'اقدامات انجام شده', 'اقدامات']) || '',
+    deadline, progress,
+    notes: a.other(['توضیحات', 'توضیح', 'یادداشت']) || ''
   };
 }
 function parseSheet(file){
   return new Promise((res, rej) => {
     const r = new FileReader();
-    r.onload = e => { try{ const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'}); const ws = wb.Sheets[wb.SheetNames[0]]; res(XLSX.utils.sheet_to_json(ws, { defval:'', raw:false })); }catch(err){ rej(err); } };
+    r.onload = e => {
+      try{
+        const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+        if(!wb.SheetNames || !wb.SheetNames.length) throw new Error('هیچ شیتی در فایل نیست');
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false });
+        if(!rows.length){
+          const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1 });
+          if(aoa.length >= 2){
+            const headers = aoa[0];
+            const dataRows = aoa.slice(1).map(arr => {
+              const obj = {};
+              headers.forEach((h, i) => { obj[h] = arr[i] ?? ''; });
+              return obj;
+            });
+            res(dataRows);
+            return;
+          }
+        }
+        res(rows);
+      }catch(err){ rej(err); }
+    };
     r.onerror = () => rej(new Error('خواندن فایل ناموفق'));
     r.readAsArrayBuffer(file);
   });
@@ -1781,7 +1843,7 @@ function bindView(){
         const rows = await parseSheet(file);
         if(!rows.length) throw new Error('فایل خالی است');
         const parsed = rows.map(excelRowToRecord).filter(r => r.title);
-        if(!parsed.length) throw new Error('ستون کنترل در فایل شناسایی نشد.');
+        if(!parsed.length) throw new Error('ستون «کنترل» در فایل شناسایی نشد. سرستون‌ها باید شامل: دسته، سطح پیشرفتگی، کنترل، شواهد باشد.');
         const isFirstUpload = S.periods.length === 0;
         if(isFirstUpload){
           const periodName = ($('#firstPeriodName')?.value || '').trim() || 'پایه';
