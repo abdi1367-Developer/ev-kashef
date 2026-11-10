@@ -253,6 +253,20 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 .ts-opt.active .ts-name::after{content:' ✓';font-size:10px;color:var(--accent);font-weight:700}
 @media(max-width:480px){.ts-grid{grid-template-columns:1fr}.theme-switcher{min-width:240px}}
 
+/* ===== PROGRESS UI ===== */
+.import-progress{display:none;margin-top:12px;padding:12px 14px;border:1px solid var(--txt);background:var(--faint)}
+.import-progress.show{display:block}
+.import-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:11.5px;font-weight:600}
+.import-progress-head .ip-pct{font-family:monospace;font-size:13px;font-weight:700;color:var(--accent)}
+.import-progress-bar{height:8px;background:var(--white);border:1px solid var(--line2);overflow:hidden;position:relative}
+.import-progress-bar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .15s ease}
+.import-progress-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:10.5px;color:var(--muted)}
+.import-progress-stats b{color:var(--txt);font-weight:700}
+.import-progress-stats .ok{color:var(--delta-pos)}
+.import-progress-stats .err{color:var(--delta-neg)}
+.import-progress-log{margin-top:8px;max-height:120px;overflow-y:auto;font-size:10px;line-height:1.7;font-family:monospace;color:var(--muted);background:var(--white);border:1px solid var(--line);padding:6px 8px;white-space:pre-wrap;word-break:break-word}
+
+/* ===== PRINT ===== */
 .print-header{display:none}
 @media print{
   @page{margin:10mm;size:A4}
@@ -263,7 +277,7 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
   .main{margin:0 !important;height:auto !important;display:block !important}
   .content{padding:0 !important;overflow:visible !important;height:auto !important}
   .print-header{display:block !important}
-  .btn,.del-btn,.theme-btn,.icon-btn,.print-btn,.pager,.toolbar,.no-print,.theme-switcher,.mode-toggle,.ro-notice{display:none !important}
+  .btn,.del-btn,.theme-btn,.icon-btn,.print-btn,.pager,.toolbar,.no-print,.theme-switcher,.mode-toggle,.ro-notice,.import-progress{display:none !important}
   .card{box-shadow:none !important;break-inside:avoid;page-break-inside:avoid;padding:12px !important}
   .ctrl{break-inside:avoid;page-break-inside:avoid}
   :root,body[class*="theme-"]{
@@ -347,7 +361,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen" class="login-wrap">
   <div class="bg-anim">
     <div class="bg-grid"></div>
@@ -385,7 +398,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" class="hidden">
   <aside class="sidebar" id="sidebar">
     <div class="brand"><b>KASHAF 495</b><span>پایش کنترل‌های امنیت</span></div>
@@ -419,6 +431,7 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
+/* ===== THEMES ===== */
 const THEMES = [
   {id:'default',name:'ساده',accent:'#18181b',bg:'#ffffff'},
   {id:'rose',name:'رز',accent:'#d98099',bg:'#fdf6f8'},
@@ -480,6 +493,7 @@ let PRINT_MODE = false;
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.className = 'toast show'; clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='toast', 2400); }
 async function sha256(str){ const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
 
+/* ===== JALALI ===== */
 const JALALI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 const JALALI_WEEKDAYS = ['ش','ی','د','س','چ','پ','ج'];
 function g2j(gy, gm, gd){
@@ -562,6 +576,7 @@ function openDatePicker(currentValue, onPick){
   render();
 }
 
+/* ===== STATUS ===== */
 const STATUS_OPTS = ['عدم پیاده‌سازی','در حال پیاده‌سازی','پیاده‌سازی کامل'];
 function normalizeStatus(s){
   s = String(s||'').trim();
@@ -583,6 +598,7 @@ function statusClass(s){
   return 'st-bad';
 }
 
+/* ===== MODE ===== */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'online';
 let sb = null;
@@ -663,6 +679,7 @@ async function testConnection(){
   }
 }
 
+/* ===== UNIT ACCESS ===== */
 function hasUnitsColumn(user){ return user && Object.prototype.hasOwnProperty.call(user, 'allowed_units'); }
 function getUserUnits(user){
   if(MODE === 'local') return user.allowed_units;
@@ -688,6 +705,7 @@ async function createUserRecord(record, units){
   await saveUserUnits(inserted.id, units);
 }
 
+/* ===== STATE ===== */
 const S = {
   user:null, controls:[], allControls:[], periods:[], periodId:null,
   assessments:{}, allAssessments:[], units:[], allUnits:[], cats:[], levels:[],
@@ -724,6 +742,7 @@ function applyUnitAccess(all){
   return all.filter(c => allowed.includes(c.owner_unit));
 }
 
+/* ===== AUTH ===== */
 async function doLogin(username, password){
   const hash = await sha256(password);
   if(MODE==='local'){ const u = await LocalDB.findUser(username); if(!u) throw new Error('کاربر یافت نشد.'); if(u.password_hash && u.password_hash !== hash) throw new Error('رمز نادرست است.'); return u; }
@@ -756,6 +775,7 @@ function startSession(user){
 }
 function logout(){ S.user=null; S.periodId=null; $('#app').classList.add('hidden'); $('#loginScreen').classList.remove('hidden'); $('#content').innerHTML=''; updateConnBox(); }
 
+/* ===== API ===== */
 async function apiListControls(){
   if(MODE==='local') return LocalDB.listControls();
   const { data, error } = await sb.from('controls').select('*').order('row_no',{ascending:true});
@@ -828,6 +848,7 @@ async function apiSaveAssessmentFor(periodId, controlId, payload){
   throw new Error('خطا در ذخیره ارزیابی');
 }
 
+/* ===== LOADERS ===== */
 async function loadControls(){
   const all = await apiListControls();
   S.allControls = all;
@@ -1585,7 +1606,7 @@ function openUserModal(userToEdit = null){
   });
 }
 
-/* ===== EXCEL: ROBUST HEADER DETECTION & NORMALIZATION ===== */
+/* ===== EXCEL PARSING ===== */
 function normalizeHeaderText(s){
   s = String(s || '');
   s = s.replace(/[\u200c\u200d\u200e\u200f]/g, '');
@@ -1719,7 +1740,21 @@ function viewImport(){
       <button class="btn" id="addCtrlFromImport">+ افزودن کنترل دستی</button>
       ${!noControls ? `<button class="btn" id="wipeControls">حذف همه کنترل‌ها</button>` : ''}
     </div>
-    <div id="importLog" style="font-size:11px;line-height:1.9;color:var(--muted)"></div>
+    <div class="import-progress" id="importProgress">
+      <div class="import-progress-head">
+        <span id="ipTitle">در حال بارگذاری…</span>
+        <span class="ip-pct" id="ipPct">0%</span>
+      </div>
+      <div class="import-progress-bar"><i id="ipBar"></i></div>
+      <div class="import-progress-stats">
+        <span>کل: <b id="ipTotal">0</b></span>
+        <span class="ok">موفق: <b id="ipOk">0</b></span>
+        <span class="err">ناموفق: <b id="ipErr">0</b></span>
+        <span>بدون داده در اکسل: <b id="ipEmpty">0</b></span>
+      </div>
+      <div class="import-progress-log" id="ipLog"></div>
+    </div>
+    <div id="importLog" style="font-size:11px;line-height:1.9;color:var(--muted);margin-top:10px"></div>
   </div>
   <div class="card no-print" style="margin-bottom:16px">
     <h3><span class="dot"></span> خروجی اکسل دوره‌ها</h3>
@@ -1838,46 +1873,122 @@ function bindView(){
     $('#doImport')?.addEventListener('click', async () => {
       const file = $('#xlsFile').files[0]; const log = $('#importLog');
       if(!file) return toast('فایل را انتخاب کنید');
-      log.textContent = 'در حال خواندن فایل…';
+      
+      // Reset & show progress UI
+      const pg = $('#importProgress'); pg.classList.add('show');
+      const ipTitle = $('#ipTitle'), ipPct = $('#ipPct'), ipBar = $('#ipBar');
+      const ipTotal = $('#ipTotal'), ipOk = $('#ipOk'), ipErr = $('#ipErr'), ipEmpty = $('#ipEmpty'), ipLog = $('#ipLog');
+      ipTitle.textContent = 'در حال آماده‌سازی…';
+      ipPct.textContent = '0%'; ipBar.style.width = '0%';
+      ipTotal.textContent = '0'; ipOk.textContent = '0'; ipErr.textContent = '0'; ipEmpty.textContent = '0';
+      ipLog.textContent = '';
+      log.textContent = '';
+      
+      const logLine = (msg) => {
+        const t = new Date();
+        const ts = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+        ipLog.textContent = `[${ts}] ${msg}\n` + ipLog.textContent;
+      };
+      const setProgress = (done, total, title) => {
+        const pct = total > 0 ? Math.round(done / total * 100) : 0;
+        ipBar.style.width = pct + '%';
+        ipPct.textContent = pct + '%';
+        if(title) ipTitle.textContent = title;
+      };
+      
       try{
+        logLine('شروع خواندن فایل…');
+        ipTitle.textContent = 'در حال خواندن فایل اکسل…';
         const rows = await parseSheet(file);
+        logLine(`تعداد ${rows.length} ردیف خوانده شد.`);
         if(!rows.length) throw new Error('فایل خالی است');
+        
+        // Verify headers exist
+        if(rows[0]){
+          const keys = Object.keys(rows[0]);
+          const hasTitle = findHeaderKey(keys, HEADER_ALIASES.title);
+          if(!hasTitle) throw new Error('ستون «کنترل» در فایل پیدا نشد. ستون‌های موجود: ' + keys.join(' | '));
+        }
+        
         const parsed = rows.map(excelRowToRecord).filter(r => r.title);
-        if(!parsed.length) throw new Error('ستون «کنترل» در فایل شناسایی نشد. سرستون‌ها باید شامل: دسته، سطح پیشرفتگی، کنترل، شواهد باشد.');
+        logLine(`پس از پردازش: ${parsed.length} کنترل معتبر.`);
+        if(!parsed.length) throw new Error('هیچ ردیف معتبری با عنوان کنترل پیدا نشد.');
+        
         const isFirstUpload = S.periods.length === 0;
+        
         if(isFirstUpload){
+          ipTitle.textContent = 'ایجاد دوره پایه…';
+          logLine('دوره‌ای موجود نیست — ایجاد دوره پایه.');
           const periodName = ($('#firstPeriodName')?.value || '').trim() || 'پایه';
-          log.textContent = `ایجاد دوره «${periodName}»…`;
           const period = await apiAddPeriod({ name: periodName });
           S.periodId = period.id;
-          log.textContent = `ایجاد ${fa(parsed.length)} کنترل…`;
+          logLine(`دوره «${periodName}» با شناسه ایجاد شد.`);
+          
+          // Insert controls in chunks
+          ipTitle.textContent = `درج ${parsed.length} کنترل در پایگاه داده…`;
+          setProgress(0, parsed.length, ipTitle.textContent);
+          
           if(MODE === 'local'){
             await LocalDB.setControls(parsed.map(r => ({ category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit })));
+            logLine('کنترل‌ها در حافظه محلی ذخیره شدند.');
+            setProgress(parsed.length, parsed.length);
           } else {
             const del = await sb.from('controls').delete().not('id','is',null);
             if(del.error) throw del.error;
+            logLine('کنترل‌های قبلی حذف شدند.');
             const CH = 100;
             for(let i = 0; i < parsed.length; i += CH){
               const part = parsed.slice(i, i+CH).map((r,idx) => ({ row_no: i+idx+1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit }));
               const { error } = await sb.from('controls').insert(part);
               if(error) throw error;
-              log.textContent = `کنترل‌ها: ${fa(Math.min(i+CH, parsed.length))} از ${fa(parsed.length)}`;
+              setProgress(Math.min(i+CH, parsed.length), parsed.length, `درج کنترل‌ها: ${Math.min(i+CH, parsed.length)} از ${parsed.length}`);
             }
+            logLine(`همه ${parsed.length} کنترل در پایگاه داده درج شدند.`);
           }
-          await loadPeriods(); await loadControls();
-          S.periodId = period.id; renderPeriodSelect();
-          log.textContent = `ثبت ارزیابی دوره پایه…`;
+          
+          await loadPeriods();
+          await loadControls();
+          logLine(`کنترل‌ها از پایگاه داده بارگذاری شدند (${S.allControls.length}).`);
+          S.periodId = period.id;
+          renderPeriodSelect();
+          
+          // Assessments for base period
+          ipTitle.textContent = 'ثبت ارزیابی دوره پایه…';
           let savedCount = 0, failedCount = 0;
+          setProgress(0, parsed.length, ipTitle.textContent);
+          ipTotal.textContent = parsed.length;
+          
           for(let i = 0; i < parsed.length; i++){
             const r = parsed[i];
             const ctrl = S.allControls.find(c => (c.title||'').trim() === (r.title||'').trim());
-            if(!ctrl) continue;
+            if(!ctrl){
+              ipEmpty.textContent = String(Number(ipEmpty.textContent) + 1);
+              logLine(`هشدار: کنترل «${r.title.slice(0,40)}…» پس از درج پیدا نشد.`);
+              setProgress(i+1, parsed.length);
+              continue;
+            }
             const baseStatus = r.status || 'عدم پیاده‌سازی';
-            try{ await apiSaveAssessmentFor(period.id, ctrl.id, { status: baseStatus, progress: r.progress, actions: r.actions, deadline: r.deadline, notes: r.notes, owner_unit: r.owner_unit || ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString() }); savedCount++; }
-            catch(e){ failedCount++; console.error(e); }
-            if(i % 20 === 0) log.textContent = `ارزیابی: ${fa(i+1)} از ${fa(parsed.length)}`;
+            try{
+              await apiSaveAssessmentFor(period.id, ctrl.id, {
+                status: baseStatus, progress: r.progress, actions: r.actions, deadline: r.deadline, notes: r.notes,
+                owner_unit: r.owner_unit || ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString()
+              });
+              savedCount++;
+              ipOk.textContent = String(savedCount);
+            }catch(e){
+              failedCount++;
+              ipErr.textContent = String(failedCount);
+              logLine(`خطا در ثبت «${r.title.slice(0,40)}…»: ${e.message}`);
+            }
+            setProgress(i+1, parsed.length, `ثبت ارزیابی: ${i+1} از ${parsed.length}`);
           }
-          await loadAllAssessments(); await loadAssessments();
+          
+          logLine(`پایان: ${savedCount} موفق، ${failedCount} ناموفق.`);
+          ipTitle.textContent = `✔ دوره پایه با ${savedCount} ارزیابی ایجاد شد`;
+          ipPct.textContent = '100%'; ipBar.style.width = '100%';
+          
+          await loadAllAssessments();
+          await loadAssessments();
           log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره پایه با ${fa(savedCount)} ارزیابی${failedCount>0?` — ${fa(failedCount)} ناموفق`:''} ایجاد شد.</span>`;
           toast('دوره پایه ایجاد شد');
         } else {
@@ -1885,43 +1996,74 @@ function bindView(){
           if(!targetPid) throw new Error('دوره هدف را انتخاب کنید');
           const targetPeriod = S.periods.find(p => p.id === targetPid);
           if(!targetPeriod) throw new Error('دوره یافت نشد');
-          log.textContent = `بارگذاری برای دوره «${targetPeriod.name}»…`;
+          ipTitle.textContent = `بارگذاری برای دوره «${targetPeriod.name}»…`;
+          logLine(`دوره هدف: ${targetPeriod.name}`);
+          
           const excelMap = new Map();
           parsed.forEach(r => { const key = (r.title||'').trim(); if(key) excelMap.set(key, r); });
+          logLine(`${excelMap.size} عنوان یکتا در اکسل.`);
+          
           let createdCount = 0;
           const existingTitles = new Set(S.allControls.map(c => (c.title||'').trim()));
+          logLine(`کنترل‌های موجود در پایگاه داده: ${existingTitles.size}`);
+          
+          // Create any new controls from Excel
           for(const [title, r] of excelMap){
             if(!existingTitles.has(title)){
               await apiAddControl({ row_no: S.allControls.length + 1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit });
               createdCount++; existingTitles.add(title);
             }
           }
-          if(createdCount > 0) await loadControls();
+          if(createdCount > 0){ await loadControls(); logLine(`${createdCount} کنترل جدید اضافه شد.`); }
+          
           const allControls = S.allControls; const total = allControls.length;
           let savedCount = 0, failedCount = 0, emptyFromExcel = 0;
           const failedTitles = [];
+          ipTotal.textContent = total;
+          setProgress(0, total, `ثبت ${total} کنترل…`);
+          
           for(let i = 0; i < total; i++){
             const ctrl = allControls[i];
             const key = (ctrl.title || '').trim();
             const r = excelMap.get(key);
             if(!r) emptyFromExcel++;
             const payload = { status: r ? r.status : null, progress: r ? r.progress : null, actions: r ? (r.actions || '') : '', deadline: r ? (r.deadline || '') : '', notes: r ? (r.notes || '') : '', owner_unit: r ? (r.owner_unit || ctrl.owner_unit) : ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString() };
-            try{ await apiSaveAssessmentFor(targetPid, ctrl.id, payload); savedCount++; }
-            catch(e){ failedCount++; failedTitles.push(ctrl.title); console.error(e); }
-            if(i % 20 === 0) log.textContent = `ثبت: ${fa(i+1)} از ${fa(total)}`;
+            try{
+              await apiSaveAssessmentFor(targetPid, ctrl.id, payload);
+              savedCount++;
+              ipOk.textContent = String(savedCount);
+            }catch(e){
+              failedCount++;
+              failedTitles.push(ctrl.title);
+              ipErr.textContent = String(failedCount);
+              if(failedTitles.length <= 5) logLine(`خطا «${ctrl.title.slice(0,40)}…»: ${e.message}`);
+            }
+            setProgress(i+1, total, `ثبت: ${i+1} از ${total} — موفق: ${savedCount}`);
+            if(i % 10 === 0) await new Promise(r => setTimeout(r, 0)); // yield to UI
           }
+          
+          ipEmpty.textContent = String(emptyFromExcel);
+          ipTitle.textContent = `✔ بارگذاری کامل شد — ${savedCount} از ${total} ثبت`;
+          ipPct.textContent = '100%'; ipBar.style.width = '100%';
+          
           S.periodId = targetPid; renderPeriodSelect();
-          await loadAllAssessments(); await loadAssessments();
+          await loadAllAssessments();
+          await loadAssessments();
+          
           const parts = [`${fa(savedCount)} از ${fa(total)} کنترل ثبت شد`];
           if(createdCount > 0) parts.push(`${fa(createdCount)} کنترل جدید`);
           if(emptyFromExcel > 0) parts.push(`${fa(emptyFromExcel)} بدون داده`);
           if(failedCount > 0) parts.push(`${fa(failedCount)} ناموفق`);
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${parts.join(' — ')} در دوره «${esc(targetPeriod.name)}».</span>` + (failedTitles.length ? `<br><span style="color:var(--muted);font-size:10px">ناموفق‌ها: ${failedTitles.slice(0,5).map(esc).join('، ')}${failedTitles.length>5?'…':''}</span>` : '');
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${parts.join(' — ')} در دوره «${esc(targetPeriod.name)}».</span>`
+            + (failedTitles.length ? `<br><span style="color:var(--muted);font-size:10px">ناموفق‌ها: ${failedTitles.slice(0,5).map(esc).join('، ')}${failedTitles.length>5?'…':''}</span>` : '');
+          logLine(`پایان: ${savedCount} موفق، ${failedCount} ناموفق، ${emptyFromExcel} بدون داده.`);
           toast('بارگذاری کامل شد');
         }
         render();
       }catch(err){
-        log.innerHTML = `<span style="color:var(--txt)">خطا: ${esc(err.message||err)}</span>`;
+        ipTitle.textContent = 'خطا در بارگذاری';
+        logLine(`❌ ${err.message || err}`);
+        log.innerHTML = `<span style="color:var(--delta-neg);font-weight:600">خطا: ${esc(err.message||err)}</span>`;
         toast('خطا در بارگذاری');
       }
     });
