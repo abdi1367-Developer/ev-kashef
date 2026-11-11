@@ -856,8 +856,7 @@ async function apiSaveAssessmentsBulk(periodId, items){
   items.forEach(it => {
     const payload = { period_id: periodId, ...it };
     const id = existingMap.get(it.control_id);
-    if(id){ toUpdate.push({ id, ...payload }); }
-    else { toInsert.push(payload); }
+    if(id){ toUpdate.push({ id, ...payload }); } else { toInsert.push(payload); }
   });
 
   const CH = 200;
@@ -902,10 +901,8 @@ function getAllMaps(){
   return maps;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// محاسبه پیشرفت هر کنترل در یک دوره — بدون carry-forward بین دوره‌ها
+// محاسبه پیشرفت هر کنترل در یک دوره — مستقل، بدون carry-forward
 // پیش‌فرض بر اساس وضعیت: پیاده‌سازی=۱۰۰ / عدم=۰ / در حال=۱۰ / غیرقابل=null
-// ═══════════════════════════════════════════════════════════════
 function calculateControlProgressDetail(c, periodId, map){
   const a = map ? map[c.id] : null;
   // ۱) اگر درصد صریح ثبت شده، همان ملاک است
@@ -913,14 +910,13 @@ function calculateControlProgressDetail(c, periodId, map){
     const p = Number(a.progress);
     if(!isNaN(p)) return { value: Math.max(0, Math.min(100, p)), reason: 'explicit' };
   }
-  // ۲) وگرنه از وضعیت استخراج می‌کنیم (هم برای دوره پایه، هم دوره‌های بعد)
+  // ۲) وگرنه از وضعیت استخراج می‌کنیم
   const statusSrc = (a && a.status) || (isFirstPeriodById(periodId) ? (c.status || '') : '');
   const st = normalizeStatus(statusSrc);
   if(st === 'غیر قابل احراز') return { value: null, reason: 'excluded' };
   if(st === 'پیاده‌سازی') return { value: 100, reason: 'status' };
   if(st === 'عدم پیاده‌سازی') return { value: 0, reason: 'status' };
   if(st === 'در حال پیاده‌سازی') return { value: 10, reason: 'status' };
-  // اگر هیچ داده‌ای نیست
   return { value: null, reason: 'nodata' };
 }
 
@@ -928,29 +924,29 @@ function controlProgress(c){
   const r = calculateControlProgressDetail(c, S.periodId, S.assessments);
   return r.value;
 }
+// وضعیت نمایشی کنترل در دوره جاری — کاملاً مستقل از دوره‌های دیگر
 function controlStatus(c){
   const a = S.assessments[c.id];
-  // اولویت: وضعیت صریح ثبت‌شده
+  // ۱) اگر assessment دوره جاری وضعیت صریح دارد
   if(a && a.status) return normalizeStatus(a.status);
-  // اگر درصد صریح ثبت شده
+  // ۲) اگر درصد صریح ثبت شده
   const pr = controlProgress(c);
   if(pr !== null) return statusFromProgress(pr);
-  // اگر دوره پایه و وضعیت کنترل موجود
+  // ۳) فقط در دوره پایه، از c.status استفاده کن
   if(isFirstPeriodById(S.periodId) && c.status) return normalizeStatus(c.status);
+  // ۴) در دوره غیرپایه بدون assessment، "ثبت نشده"
   return 'ثبت نشده';
 }
 
-// ═══════════════════════════════════════════════════════════════
 // میانگین تجمعی — هر دوره مستقل، بدون carry-forward
-// ═══════════════════════════════════════════════════════════════
 function computeAggregateSeries(controls, periods, allMaps){
   if(!periods.length) return [];
   return periods.map(p => {
     let sum = 0, count = 0;
     controls.forEach(c => {
       const r = calculateControlProgressDetail(c, p.id, allMaps[p.id]);
-      if(r.reason === 'excluded') return; // غیرقابل احراز از میانگین حذف
-      if(r.value === null) return;       // بدون داده از میانگین حذف
+      if(r.reason === 'excluded') return;
+      if(r.value === null) return;
       sum += r.value; count++;
     });
     return count > 0 ? Math.round(sum / count) : null;
@@ -1642,14 +1638,11 @@ function openUserModal(userToEdit = null){
   });
 }
 
-// ═══════════════════════════════════════════════════════════════
 // خواندن اکسل — تشخیص خودکار ردیف سرستون
-// ═══════════════════════════════════════════════════════════════
 const COLS = { category: 0, level: 1, title: 2, evidence: 3, status: 4, owner_unit: 5, actions: 6, resolve_date: 7, progress: 8, notes: 9 };
 function isHeaderRow(arr){
   if(!arr) return false;
   const joined = arr.map(v => String(v ?? '').trim()).join(' ');
-  // اگر یکی از این کلیدواژه‌ها در ردیف باشد، سرستون است
   return /کنترل|عنوان|شواهد|وضعیت|واحد|دسته|سطح|اقدامات|پیشرفت|توضیحات|ردیف/i.test(joined);
 }
 function parseSheet(file){
@@ -1662,11 +1655,8 @@ function parseSheet(file){
         const ws = wb.Sheets[wb.SheetNames[0]];
         const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1, blankrows:false});
         if(!aoa.length) throw new Error('فایل خالی است');
-        // تشخیص خودکار سرستون
         let dataRows = aoa;
-        if(isHeaderRow(aoa[0])){
-          dataRows = aoa.slice(1);
-        }
+        if(isHeaderRow(aoa[0])){ dataRows = aoa.slice(1); }
         res(dataRows);
       }catch(err){ rej(err); }
     };
@@ -1848,7 +1838,6 @@ function bindView(){
       try{ await apiUpdatePeriod(p.id, { name: trimmed }); await loadPeriods(); renderPeriodSelect(); toast('نام تغییر کرد'); render(); } catch(err){ toast('خطا: '+err.message); }
     }));
     c.querySelectorAll('[data-exportperiod]').forEach(b => b.addEventListener('click', async () => { if(!S.allAssessments.length) await loadAllAssessments(); exportPeriodToExcel(b.dataset.exportperiod); }));
-    // حذف تک‌دوره — فقط همان دوره و ارزیابی‌هایش
     c.querySelectorAll('[data-delperiod]').forEach(b => b.addEventListener('click', async () => {
       const pid = b.dataset.delperiod;
       if(isFirstPeriodById(pid)) return toast('دوره پایه قابل حذف نیست');
@@ -1857,7 +1846,6 @@ function bindView(){
       if(!confirm(`دوره «${p?.name || ''}» و ${cnt} ارزیابی مربوط به آن حذف شود؟ (سایر دوره‌ها حفظ می‌شوند)`)) return;
       try{
         await apiDelPeriod(pid);
-        // بارگذاری مجدد کامل از دیتابیس — نه دستکاری دستی
         await loadPeriods();
         if(!S.periods.find(x=>x.id===S.periodId)) S.periodId = S.periods[S.periods.length-1]?.id || null;
         renderPeriodSelect();
@@ -1901,21 +1889,15 @@ function bindView(){
       try{
         if(MODE === 'local'){
           const t = LocalDB.tables();
-          t.controls = [];
-          t.assessments = [];
-          t.periods = [];
+          t.controls = []; t.assessments = []; t.periods = [];
           LocalDB.save(t);
         } else {
           await apiWipeAllControls();
           const { error } = await sb.from('periods').delete().not('id','is',null);
           if(error) throw error;
         }
-        S.controls = [];
-        S.allControls = [];
-        S.assessments = {};
-        S.allAssessments = [];
-        S.periods = [];
-        S.periodId = null;
+        S.controls = []; S.allControls = []; S.assessments = {}; S.allAssessments = [];
+        S.periods = []; S.periodId = null;
         S.units = []; S.allUnits = []; S.cats = []; S.levels = [];
         renderNav(); renderPeriodSelect(); render();
         toast('تمام داده‌های وارد‌شده حذف شد (کاربران حفظ شدند)');
@@ -1995,7 +1977,6 @@ function bindView(){
             const ctrl = titleMap.get((r.title||'').trim());
             if(!ctrl){ setProgress(i+1, parsed.length); continue; }
             const baseStatus = r.status || 'عدم پیاده‌سازی';
-            // اگر درصد خالی بود، از وضعیت محاسبه کن (۱۰۰/۰/۱۰)
             const computedProgress = r.progress !== null ? r.progress : progressFromStatusValue(baseStatus);
             bulkItems.push({
               control_id: ctrl.id,
@@ -2018,7 +1999,13 @@ function bindView(){
             setProgress(Math.min(i+CH2, bulkItems.length), bulkItems.length, `ثبت ارزیابی: ${Math.min(i+CH2, bulkItems.length)} از ${bulkItems.length}`);
             await new Promise(r2 => setTimeout(r2, 0));
           }
-          await loadAllAssessments(); await loadAssessments();
+          // reload کامل بعد از import
+          await loadPeriods();
+          await loadControls();
+          await loadAllAssessments();
+          S.periodId = period.id;
+          await loadAssessments();
+          renderPeriodSelect();
           const savedCount = Number(ipOk.textContent);
           ipTitle.textContent = `✔ دوره پایه با ${savedCount} ارزیابی ایجاد شد`;
           ipPct.textContent = '100%'; ipBar.style.width = '100%';
@@ -2052,6 +2039,7 @@ function bindView(){
               setProgress(Math.min(i+CH, newControlsToAdd.length), newControlsToAdd.length);
             }
             createdCount = newControlsToAdd.length;
+            // reload controls بعد از افزودن
             await loadControls();
             logLine(`${createdCount} کنترل جدید اضافه شد.`);
           }
@@ -2095,10 +2083,17 @@ function bindView(){
             setProgress(Math.min(i+CH2, bulkItems.length), bulkItems.length, `ثبت ارزیابی: ${Math.min(i+CH2, bulkItems.length)} از ${bulkItems.length}`);
             await new Promise(r2 => setTimeout(r2, 0));
           }
+          // ═══════════════════════════════════════════════════════════
+          // CRITICAL: reload کامل state بعد از import دوره غیرپایه
+          // ═══════════════════════════════════════════════════════════
+          S.periodId = targetPid;
+          await loadPeriods();
+          await loadControls();
+          await loadAllAssessments();
+          await loadAssessments();  // ← این باید assessments دوره هدف را reload کند
+          renderPeriodSelect();
           ipTitle.textContent = `✔ بارگذاری کامل شد — ${ipOk.textContent} از ${total} ثبت`;
           ipPct.textContent = '100%'; ipBar.style.width = '100%';
-          S.periodId = targetPid; renderPeriodSelect();
-          await loadAllAssessments(); await loadAssessments();
           const parts = [`${fa(ipOk.textContent)} از ${fa(total)} کنترل ثبت شد`];
           if(createdCount > 0) parts.push(`${fa(createdCount)} کنترل جدید`);
           if(emptyFromExcel > 0) parts.push(`${fa(emptyFromExcel)} بدون داده`);
