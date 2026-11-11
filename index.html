@@ -17,7 +17,6 @@ body.theme-sage{--white:#fbfcf9;--line:#dde4d4;--line2:#c8d2bb;--txt:#3a4228;--t
 body.theme-lilac{--white:#fdfaff;--line:#e6dbf5;--line2:#d5c4ea;--txt:#3f2e63;--txt2:#4f3b78;--muted:#8575ac;--dim:#baacd3;--faint:#f6f0fc;--bg-main:#faf5ff;--bg-side:#f3eafd;--bg-top:#faf5ff;--donut-1:#a389d4;--donut-2:#c5b2e6;--donut-3:#ded2f0;--donut-4:#f3eafd;--bar-fill:#8c6bc6;--bar-ok:#a389d4;--bar-warn:#c5b2e6;--bar-bad:#ded2f0;--blob-1:#d5c4ea;--blob-2:#e6dbf5;--blob-3:#f3eafd;--accent:#8c6bc6;--overlay-bg:rgba(63,46,99,.3);--ctrl-border:#e0d2ee;--ctrl-hover:#8c6bc6;--th-bg:#f3eafd;--th-border:#c5b2e6;--tr-hover:#faf5ff;--toast-bg:#8c6bc6;--st-ok-bg:#dfe3f0;--st-ok-fg:#4a3a7a;--st-ok-border:#c8cee3;--st-warn-bg:#f5e0cc;--st-warn-fg:#7a5520;--st-warn-border:#e5c8a8;--st-bad-bg:#f0d8e0;--st-bad-fg:#7a4050;--st-bad-border:#dcbcce;--st-gray-bg:#f2ecfa;--st-gray-fg:#8878a5;--st-gray-border:#dfd4ee;--badge-first-bg:#8c6bc6;--badge-first-fg:#fff;--delta-pos:#2d7d4f;--delta-neg:#a13048}
 body.theme-seafoam{--white:#f9fdfd;--line:#cfe4e3;--line2:#b5d2d1;--txt:#22403e;--txt2:#2e5552;--muted:#61847f;--dim:#9dbbb7;--faint:#eaf5f4;--bg-main:#f4fafa;--bg-side:#eaf4f3;--bg-top:#f4fafa;--donut-1:#6dbcb6;--donut-2:#a2d4d0;--donut-3:#c8e5e2;--donut-4:#eaf4f3;--bar-fill:#4ba19a;--bar-ok:#6dbcb6;--bar-warn:#a2d4d0;--bar-bad:#c8e5e2;--blob-1:#b5d2d1;--blob-2:#cfe4e3;--blob-3:#eaf4f3;--accent:#4ba19a;--overlay-bg:rgba(34,64,62,.3);--ctrl-border:#cae1df;--ctrl-hover:#4ba19a;--th-bg:#eaf4f3;--th-border:#a8cfcc;--tr-hover:#f4fafa;--toast-bg:#4ba19a;--st-ok-bg:#c8e2e0;--st-ok-fg:#2a5a55;--st-ok-border:#a8cfcc;--st-warn-bg:#f5e8c8;--st-warn-fg:#7a5a20;--st-warn-border:#e5d19c;--st-bad-bg:#f0dad8;--st-bad-fg:#7a4440;--st-bad-border:#dcc0bc;--st-gray-bg:#eaf4f4;--st-gray-fg:#6a8585;--st-gray-border:#c8dcdc;--badge-first-bg:#4ba19a;--badge-first-fg:#fff;--delta-pos:#2d7d4f;--delta-neg:#a13048}
 body.theme-cream{--white:#fffdf9;--line:#eee3d3;--line2:#e2d3be;--txt:#4c3f2c;--txt2:#63533b;--muted:#9a8871;--dim:#ccbba3;--faint:#fcf8f0;--bg-main:#fdfaf4;--bg-side:#fbf5e9;--bg-top:#fdfaf4;--donut-1:#c9ac7f;--donut-2:#dcc5a1;--donut-3:#ecdcbf;--donut-4:#fbf5e9;--bar-fill:#b1905e;--bar-ok:#c9ac7f;--bar-warn:#dcc5a1;--bar-bad:#ecdcbf;--blob-1:#e2d3be;--blob-2:#ecdcbf;--blob-3:#fbf5e9;--accent:#b1905e;--overlay-bg:rgba(76,63,44,.3);--ctrl-border:#e8dccb;--ctrl-hover:#b1905e;--th-bg:#fbf5e9;--th-border:#e2d3be;--tr-hover:#fdfaf4;--toast-bg:#b1905e;--st-ok-bg:#dce8cc;--st-ok-fg:#4a5a2a;--st-ok-border:#c0d2a8;--st-warn-bg:#f5e4c8;--st-warn-fg:#7a5a20;--st-warn-border:#e5cca8;--st-bad-bg:#f0d8d2;--st-bad-fg:#7a4035;--st-bad-border:#dcbcb4;--st-gray-bg:#f5ede0;--st-gray-fg:#8a7c62;--st-gray-border:#e0d2bc;--badge-first-bg:#b1905e;--badge-first-fg:#fff;--delta-pos:#2d7d4f;--delta-neg:#a13048}
-
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;height:100%;height:100dvh;overflow:hidden}
 body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg-main);color:var(--txt);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;transition:background .25s,color .25s}
@@ -25,7 +24,6 @@ body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg-main);colo
 a{color:var(--txt);text-decoration:none}
 button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .hidden{display:none!important}
-
 .login-wrap{position:fixed;inset:0;overflow-y:auto;z-index:200;padding:24px 16px;background:var(--bg-main);display:flex;flex-direction:column}
 .bg-anim{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px);background-size:48px 48px;opacity:.8}
@@ -74,7 +72,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .mode-toggle button{flex:1;padding:8px 6px;font-size:10.5px;background:var(--white);color:var(--txt);border:none;cursor:pointer;letter-spacing:.05em;font-weight:500}
 .mode-toggle button:first-child{border-left:1px solid var(--txt)}
 .mode-toggle button:hover{background:var(--faint)}
-
 #app{height:100vh;height:100dvh;display:block}
 .sidebar{position:fixed;top:0;right:0;width:220px;height:100vh;height:100dvh;z-index:50;background:var(--bg-side);border-left:1px solid var(--txt);display:flex;flex-direction:column;padding:22px 14px;overflow:hidden}
 .brand{padding:0 6px 18px;border-bottom:1px solid var(--txt);margin-bottom:18px;flex-shrink:0}
@@ -110,7 +107,6 @@ button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
 .content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:24px;width:100%;min-width:0}
 .overlay{position:fixed;inset:0;background:var(--overlay-bg);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.show{opacity:1;pointer-events:auto}
-
 .grid{display:grid;gap:16px;width:100%}
 .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .cols2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
@@ -254,7 +250,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 .ts-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ts-opt.active .ts-name::after{content:' ✓';font-size:10px;color:var(--accent);font-weight:700}
 @media(max-width:480px){.ts-grid{grid-template-columns:1fr}.theme-switcher{min-width:240px}}
-
 .import-progress{display:none;margin-top:12px;padding:12px 14px;border:1px solid var(--txt);background:var(--faint)}
 .import-progress.show{display:block}
 .import-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:11.5px;font-weight:600}
@@ -266,7 +261,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
 .import-progress-stats .ok{color:var(--delta-pos)}
 .import-progress-stats .err{color:var(--delta-neg)}
 .import-progress-log{margin-top:8px;max-height:120px;overflow-y:auto;font-size:10px;line-height:1.7;font-family:monospace;color:var(--muted);background:var(--white);border:1px solid var(--line);padding:6px 8px;white-space:pre-wrap;word-break:break-word}
-
 .print-header{display:none}
 @media print{
   @page{margin:10mm;size:A4}
@@ -310,7 +304,6 @@ body[class*="theme-"] .theme-switcher{border-color:var(--accent);box-shadow:0 20
   .cc-ev{-webkit-line-clamp:none !important;display:block !important;overflow:visible !important}
   .c4-val{-webkit-line-clamp:none !important;display:block !important;overflow:visible !important}
 }
-
 @media(max-width:900px){
   .sidebar{transform:translateX(100%);transition:transform .26s cubic-bezier(.2,.9,.3,1);width:240px}
   .sidebar.open{transform:translateX(0)}
@@ -651,7 +644,7 @@ const LocalDB = {
     this.save(t);
   },
   async delControl(id){ const t=this.tables(); t.controls=t.controls.filter(c=>c.id!==id); t.assessments=t.assessments.filter(a=>a.control_id!==id); this.save(t); },
-  async wipeAll(){ const t=this.tables(); t.controls=[]; t.assessments=[]; t.periods=[]; this.save(t); },
+  async wipeAllControls(){ const t=this.tables(); t.controls=[]; t.assessments=[]; this.save(t); },
   async listPeriods(){ return this.tables().periods; },
   async addPeriod(p){ const t=this.tables(); const row={id:uuid(),created_at:new Date().toISOString(),...p}; t.periods.push(row); this.save(t); return row; },
   async delPeriod(id){ const t=this.tables(); t.periods=t.periods.filter(p=>p.id!==id); t.assessments=t.assessments.filter(a=>a.period_id!==id); this.save(t); },
@@ -669,12 +662,6 @@ const LocalDB = {
   async wipePeriodAssessments(pid){
     const t=this.tables();
     t.assessments = t.assessments.filter(a => a.period_id !== pid);
-    this.save(t);
-  },
-  async wipePeriodEverything(pid){
-    const t=this.tables();
-    t.assessments = t.assessments.filter(a => a.period_id !== pid);
-    t.periods = t.periods.filter(p => p.id !== pid);
     this.save(t);
   }
 };
@@ -813,6 +800,13 @@ async function apiDelControl(id){
   const { error } = await sb.from('controls').delete().eq('id', id);
   if(error) throw new Error('خطا در حذف: '+error.message);
 }
+async function apiWipeAllControls(){
+  if(MODE === 'local'){ return LocalDB.wipeAllControls(); }
+  const { error: e1 } = await sb.from('assessments').delete().not('id','is',null);
+  if(e1) throw new Error('خطا در حذف ارزیابی‌ها: '+e1.message);
+  const { error: e2 } = await sb.from('controls').delete().not('id','is',null);
+  if(e2) throw new Error('خطا در حذف کنترل‌ها: '+e2.message);
+}
 async function apiListPeriods(){
   if(MODE==='local') return LocalDB.listPeriods();
   const { data, error } = await sb.from('periods').select('*').order('created_at',{ascending:true});
@@ -843,6 +837,11 @@ async function apiListAssessments(pid){
   if(error) throw new Error('خطا در خواندن ارزیابی‌ها: '+error.message);
   return (data||[]).map(mergeAxExtras);
 }
+async function apiWipePeriodAssessments(pid){
+  if(MODE === 'local'){ return LocalDB.wipePeriodAssessments(pid); }
+  const { error } = await sb.from('assessments').delete().eq('period_id', pid);
+  if(error) throw new Error('خطا در حذف ارزیابی‌ها: '+error.message);
+}
 async function apiSaveAssessmentsBulk(periodId, items){
   if(MODE==='local'){
     return LocalDB.upsertAssessmentsBulk(items.map(it => ({ period_id: periodId, ...it })));
@@ -866,12 +865,8 @@ async function apiSaveAssessmentsBulk(periodId, items){
     const { error } = await sb.from('assessments').insert(part);
     if(error) throw new Error('خطا در درج: ' + error.message);
   }
-  // Bulk update via upsert
   for(let i = 0; i < toUpdate.length; i += CH){
     const part = toUpdate.slice(i, i+CH).map(({id, ...rest}) => rest);
-    const ids = toUpdate.slice(i, i+CH).map(x => x.id);
-    // Supabase doesn't have bulk update by ID list easily; do upsert with matching (period_id, control_id)
-    // We can rely on upsert with onConflict
     const { error } = await sb.from('assessments').upsert(part, { onConflict: 'period_id,control_id' });
     if(error) throw new Error('خطا در به‌روزرسانی: ' + error.message);
   }
@@ -1041,6 +1036,15 @@ function render(){
 
 function viewDashboard(){
   const total = S.controls.length;
+  if(total === 0){
+    return `<div class="grid" style="gap:16px">
+      <div class="card" style="text-align:center;padding:48px 24px">
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px">هیچ کنترلی برای این دوره ثبت نشده است</div>
+        <div class="empty" style="padding:16px">برای شروع، از تب «ورود/خروج داده» فایل اکسل را بارگذاری کنید.</div>
+        ${isAdmin() ? `<button class="btn btn-primary" onclick="S.view='import';render();">رفتن به ورود داده</button>` : ''}
+      </div>
+    </div>`;
+  }
   const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی':0,'غیر قابل احراز':0,'ثبت نشده':0};
   S.controls.forEach(c => {
     const st = controlStatus(c);
@@ -1158,6 +1162,7 @@ function viewDashboard(){
 
 function renderProgressComparison(){
   if(S.periods.length < 2) return '';
+  if(S.controls.length === 0) return '';
   const allMaps = getAllMaps();
   const overallSeries = computeAggregateSeries(S.controls, S.periods, allMaps);
   const unitRows = S.units.map(unit => {
@@ -1223,6 +1228,15 @@ function filteredControls(){
   });
 }
 function viewControls(){
+  if(S.controls.length === 0){
+    return `<div class="grid" style="gap:16px">
+      <div class="card" style="text-align:center;padding:48px 24px">
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px">هیچ کنترلی برای این دوره ثبت نشده است</div>
+        <div class="empty" style="padding:16px">برای شروع، از تب «ورود/خروج داده» فایل اکسل را بارگذاری کنید.</div>
+        ${isAdmin() ? `<button class="btn btn-primary" onclick="S.view='import';render();">رفتن به ورود داده</button>` : ''}
+      </div>
+    </div>`;
+  }
   const list = filteredControls();
   const effPageSize = PRINT_MODE ? Math.max(list.length, 1) : S.pageSize;
   const pages = Math.max(1, Math.ceil(list.length / effPageSize));
@@ -1332,6 +1346,7 @@ function getChangedControls(allMaps){
 }
 function viewTrend(){
   if(!S.periods.length) return `<div class="card"><div class="empty">دوره‌ای نیست.</div></div>`;
+  if(S.controls.length === 0) return `<div class="card"><div class="empty">داده‌ای برای نمایش وجود ندارد</div></div>`;
   if(!S._trendLoaded) return `<div class="card"><div class="spin"></div><div class="empty">بارگذاری…</div></div>`;
   const fUnit = S._trendUnit || '__all';
   const fCat = S._trendCat || '__all';
@@ -1633,13 +1648,6 @@ function openUserModal(userToEdit = null){
   });
 }
 
-/* ===== EXCEL: FIXED COLUMNS =====
- * ردیف اول = سرستون (همیشه نادیده گرفته می‌شود)
- * A: دسته   B: سطح پیشرفتگی   C: کنترل   D: شواهد
- * E: وضعیت پیاده‌سازی   F: واحد مسئول رسیدگی
- * G: اقدامات انجام شده   H: تاریخ رفع عدم انطباق
- * I: درصد پیشرفت تاکنون   J: توضیحات
- */
 const COLS = { category: 0, level: 1, title: 2, evidence: 3, status: 4, owner_unit: 5, actions: 6, resolve_date: 7, progress: 8, notes: 9 };
 function parseSheet(file){
   return new Promise((res, rej) => {
@@ -1651,7 +1659,6 @@ function parseSheet(file){
         const ws = wb.Sheets[wb.SheetNames[0]];
         const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1, blankrows:false});
         if(!aoa.length) throw new Error('فایل خالی است');
-        // Skip the header row
         const dataRows = aoa.slice(1);
         res(dataRows);
       }catch(err){ rej(err); }
@@ -1688,6 +1695,9 @@ function excelRowArrToRecord(arr){
 function exportPeriodToExcel(periodId){
   const period = S.periods.find(p => p.id === periodId);
   if(!period) return toast('دوره یافت نشد');
+  if(S.allControls.length === 0){
+    return toast('داده‌ای برای خروجی وجود ندارد');
+  }
   const map = {};
   S.allAssessments.filter(a => a.period_id === periodId).forEach(a => { if(!map[a.control_id]) map[a.control_id] = mergeAxExtras(a); });
   const rows = S.allControls.map((c, i) => {
@@ -1721,8 +1731,19 @@ function viewImport(){
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
       <button class="btn btn-primary" id="doImport">${noPeriods ? 'بارگذاری و ایجاد دوره پایه' : 'بارگذاری برای این دوره'}</button>
       <button class="btn" id="addCtrlFromImport">+ افزودن کنترل دستی</button>
-      ${!noPeriods ? `<button class="btn btn-danger" id="wipeCurrentPeriod">حذف همه ارزیابی‌های این دوره</button>` : ''}
     </div>
+    ${!noPeriods ? `
+    <div class="card" style="border-color:var(--bad-border);background:var(--bad-bg);padding:12px 16px;margin-top:12px">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <div style="flex:1;min-width:180px;font-size:11.5px;color:var(--bad);line-height:1.7">
+          <b style="color:var(--bad)">⚠️ حذف کامل داده‌های دوره</b><br>
+          این عملیات تمام ارزیابی‌های این دوره را حذف می‌کند. اگر می‌خواهید همه داده‌های کنترل‌ها و ارزیابی‌ها از سامانه پاک شود، از گزینه دوم استفاده کنید.
+        </div>
+        <button class="btn btn-sm btn-danger" id="wipeCurrentPeriod">حذف ارزیابی‌های این دوره</button>
+        <button class="btn btn-sm btn-danger" id="wipeAllData">🗑️ حذف همه داده‌ها (کل سامانه)</button>
+      </div>
+    </div>
+    ` : ''}
     <div class="import-progress" id="importProgress">
       <div class="import-progress-head">
         <span id="ipTitle">در حال بارگذاری…</span>
@@ -1749,6 +1770,7 @@ function viewImport(){
       <span class="badge badge-soft">کنترل: ${fa(S.allControls.length)}</span>
       <span class="badge badge-soft">واحد: ${fa(S.allUnits.length)}</span>
       <span class="badge badge-soft">دوره: ${fa(S.periods.length)}</span>
+      <span class="badge badge-soft">ارزیابی کل: ${fa(S.allAssessments.length)}</span>
     </div>
   </div>`;
 }
@@ -1852,17 +1874,42 @@ function bindView(){
       const targetPid = $('#importPeriod')?.value || S.periodId;
       if(!targetPid) return toast('دوره‌ای انتخاب نشده');
       const p = S.periods.find(x => x.id === targetPid);
-      if(!confirm(`همه ارزیابی‌های دوره «${p?.name || ''}» حذف شوند؟`)) return;
+      if(!confirm(`همه ارزیابی‌های دوره «${p?.name || ''}» حذف شوند؟ (کنترل‌ها و داده‌های سایر دوره‌ها حفظ می‌شوند)`)) return;
       try{
-        if(MODE === 'local'){ await LocalDB.wipePeriodAssessments(targetPid); }
-        else {
-          const { error } = await sb.from('assessments').delete().eq('period_id', targetPid);
-          if(error) throw error;
-        }
+        await apiWipePeriodAssessments(targetPid);
         await loadAllAssessments();
-        if(targetPid === S.periodId) await loadAssessments();
+        if(targetPid === S.periodId){
+          S.assessments = {};
+          S.controls = [];
+          S.units = [];
+          S.cats = [];
+          S.levels = [];
+        }
         toast('ارزیابی‌های دوره حذف شد');
         render();
+      }catch(err){ toast('خطا: '+err.message); }
+    });
+    $('#wipeAllData')?.addEventListener('click', async () => {
+      if(!confirm('⚠️ این عملیات تمام کنترل‌ها، ارزیابی‌ها و دوره‌ها را حذف می‌کند. آیا مطمئن هستید؟')) return;
+      if(!confirm('تأیید نهایی: همه داده‌ها پاک شوند؟')) return;
+      try{
+        if(MODE === 'local'){
+          LS.del('tables');
+        } else {
+          await apiWipeAllControls();
+          const { error } = await sb.from('periods').delete().not('id','is',null);
+          if(error) throw error;
+        }
+        // Reset state completely
+        S.controls = [];
+        S.allControls = [];
+        S.assessments = {};
+        S.allAssessments = [];
+        S.periods = [];
+        S.periodId = null;
+        S.units = []; S.allUnits = []; S.cats = []; S.levels = [];
+        renderNav(); renderPeriodSelect(); render();
+        toast('تمام داده‌ها حذف شد');
       }catch(err){ toast('خطا: '+err.message); }
     });
     $('#doExport')?.addEventListener('click', async () => {
