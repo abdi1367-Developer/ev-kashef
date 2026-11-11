@@ -1733,14 +1733,14 @@ function viewImport(){
       <button class="btn" id="addCtrlFromImport">+ افزودن کنترل دستی</button>
     </div>
     ${!noPeriods ? `
-    <div class="card" style="border-color:var(--bad-border);background:var(--bad-bg);padding:12px 16px;margin-top:12px">
+    <div class="card" style="border-color:var(--line2);background:var(--faint);padding:12px 16px;margin-top:12px">
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-        <div style="flex:1;min-width:180px;font-size:11.5px;color:var(--bad);line-height:1.7">
-          <b style="color:var(--bad)">⚠️ حذف کامل داده‌های دوره</b><br>
-          این عملیات تمام ارزیابی‌های این دوره را حذف می‌کند. اگر می‌خواهید همه داده‌های کنترل‌ها و ارزیابی‌ها از سامانه پاک شود، از گزینه دوم استفاده کنید.
+        <div style="flex:1;min-width:180px;font-size:11.5px;color:var(--muted);line-height:1.7">
+          <b style="color:var(--txt)">🧹 حذف داده‌های وارد‌شده</b><br>
+          حذف ارزیابی‌های این دوره، یا حذف کل داده‌های وارد‌شده (کنترل‌ها، ارزیابی‌ها و دوره‌ها). کاربران و تنظیمات دست‌نخورده می‌مانند.
         </div>
         <button class="btn btn-sm btn-danger" id="wipeCurrentPeriod">حذف ارزیابی‌های این دوره</button>
-        <button class="btn btn-sm btn-danger" id="wipeAllData">🗑️ حذف همه داده‌ها (کل سامانه)</button>
+        <button class="btn btn-sm btn-danger" id="wipeAllData">🗑️ حذف همه داده‌های وارد‌شده (همه دوره‌ها)</button>
       </div>
     </div>
     ` : ''}
@@ -1890,17 +1890,21 @@ function bindView(){
       }catch(err){ toast('خطا: '+err.message); }
     });
     $('#wipeAllData')?.addEventListener('click', async () => {
-      if(!confirm('⚠️ این عملیات تمام کنترل‌ها، ارزیابی‌ها و دوره‌ها را حذف می‌کند. آیا مطمئن هستید؟')) return;
-      if(!confirm('تأیید نهایی: همه داده‌ها پاک شوند؟')) return;
+      if(!confirm('⚠️ این عملیات تمام داده‌های وارد‌شده (کنترل‌ها، ارزیابی‌ها و دوره‌ها) را حذف می‌کند. کاربران و تنظیمات حفظ می‌شوند. آیا مطمئن هستید؟')) return;
+      if(!confirm('تأیید نهایی: همه داده‌های وارد‌شده پاک شوند؟')) return;
       try{
         if(MODE === 'local'){
-          LS.del('tables');
+          // حفظ کاربران، حذف کنترل‌ها/دوره‌ها/ارزیابی‌ها
+          const t = LocalDB.tables();
+          t.controls = [];
+          t.assessments = [];
+          t.periods = [];
+          LocalDB.save(t);
         } else {
           await apiWipeAllControls();
           const { error } = await sb.from('periods').delete().not('id','is',null);
           if(error) throw error;
         }
-        // Reset state completely
         S.controls = [];
         S.allControls = [];
         S.assessments = {};
@@ -1909,7 +1913,7 @@ function bindView(){
         S.periodId = null;
         S.units = []; S.allUnits = []; S.cats = []; S.levels = [];
         renderNav(); renderPeriodSelect(); render();
-        toast('تمام داده‌ها حذف شد');
+        toast('تمام داده‌های وارد‌شده حذف شد (کاربران حفظ شدند)');
       }catch(err){ toast('خطا: '+err.message); }
     });
     $('#doExport')?.addEventListener('click', async () => {
