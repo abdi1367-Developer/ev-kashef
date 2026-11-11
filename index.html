@@ -492,7 +492,6 @@ let PRINT_MODE = false;
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.className = 'toast show'; clearTimeout(t._tm); t._tm = setTimeout(()=>t.className='toast', 2400); }
 async function sha256(str){ const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
 
-/* ===== JALALI ===== */
 const JALALI_MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 const JALALI_WEEKDAYS = ['ش','ی','د','س','چ','پ','ج'];
 function g2j(gy, gm, gd){
@@ -575,7 +574,6 @@ function openDatePicker(currentValue, onPick){
   render();
 }
 
-/* ===== STATUS ===== */
 const STATUS_OPTS = ['پیاده‌سازی','در حال پیاده‌سازی','عدم پیاده‌سازی','غیر قابل احراز'];
 function normalizeStatus(s){
   s = String(s||'').trim();
@@ -606,7 +604,6 @@ function progressFromStatusValue(statusRaw){
   return 0;
 }
 
-/* ===== MODE ===== */
 const MODE_KEY = 'kashaf_mode';
 let MODE = localStorage.getItem(MODE_KEY) || 'online';
 let sb = null;
@@ -647,7 +644,6 @@ const LocalDB = {
   async updateUser(id,patch){ const t=this.tables(); const u=t.users.find(x=>x.id===id); if(u){ Object.assign(u,patch); this.save(t); } },
   async listUsers(){ return this.tables().users; },
   async listControls(){ return this.tables().controls; },
-  async addControl(row){ const t=this.tables(); const maxRow=t.controls.reduce((m,c)=>Math.max(m,Number(c.row_no)||0),0); t.controls.push({id:uuid(),row_no:maxRow+1,...row}); this.save(t); },
   async addControlsBulk(rows){
     const t=this.tables();
     const maxRow=t.controls.reduce((m,c)=>Math.max(m,Number(c.row_no)||0),0);
@@ -655,20 +651,12 @@ const LocalDB = {
     this.save(t);
   },
   async delControl(id){ const t=this.tables(); t.controls=t.controls.filter(c=>c.id!==id); t.assessments=t.assessments.filter(a=>a.control_id!==id); this.save(t); },
-  async setControls(rows){ const t=this.tables(); t.controls=rows.map((r,i)=>({id:uuid(),row_no:i+1,...r})); const ids=new Set(t.controls.map(c=>c.id)); t.assessments=t.assessments.filter(a=>ids.has(a.control_id)); this.save(t); },
+  async wipeAll(){ const t=this.tables(); t.controls=[]; t.assessments=[]; t.periods=[]; this.save(t); },
   async listPeriods(){ return this.tables().periods; },
   async addPeriod(p){ const t=this.tables(); const row={id:uuid(),created_at:new Date().toISOString(),...p}; t.periods.push(row); this.save(t); return row; },
   async delPeriod(id){ const t=this.tables(); t.periods=t.periods.filter(p=>p.id!==id); t.assessments=t.assessments.filter(a=>a.period_id!==id); this.save(t); },
   async updatePeriod(id,patch){ const t=this.tables(); const p=t.periods.find(x=>x.id===id); if(p){ Object.assign(p,patch); this.save(t); } },
   async listAssessments(pid){ const t=this.tables(); return pid?t.assessments.filter(a=>a.period_id===pid):t.assessments; },
-  async upsertAssessment(a){
-    const t=this.tables();
-    const i=t.assessments.findIndex(x=>x.period_id===a.period_id && x.control_id===a.control_id);
-    if(i>=0) t.assessments[i]={...t.assessments[i],...a};
-    else t.assessments.push({id:uuid(),created_at:new Date().toISOString(),...a});
-    this.save(t);
-    return t.assessments.find(x=>x.period_id===a.period_id && x.control_id===a.control_id);
-  },
   async upsertAssessmentsBulk(items){
     const t=this.tables();
     items.forEach(a => {
@@ -676,6 +664,17 @@ const LocalDB = {
       if(i>=0) t.assessments[i]={...t.assessments[i],...a};
       else t.assessments.push({id:uuid(),created_at:new Date().toISOString(),...a});
     });
+    this.save(t);
+  },
+  async wipePeriodAssessments(pid){
+    const t=this.tables();
+    t.assessments = t.assessments.filter(a => a.period_id !== pid);
+    this.save(t);
+  },
+  async wipePeriodEverything(pid){
+    const t=this.tables();
+    t.assessments = t.assessments.filter(a => a.period_id !== pid);
+    t.periods = t.periods.filter(p => p.id !== pid);
     this.save(t);
   }
 };
@@ -701,7 +700,6 @@ async function testConnection(){
   }
 }
 
-/* ===== UNIT ACCESS ===== */
 function hasUnitsColumn(user){ return user && Object.prototype.hasOwnProperty.call(user, 'allowed_units'); }
 function getUserUnits(user){
   if(MODE === 'local') return user.allowed_units;
@@ -727,7 +725,6 @@ async function createUserRecord(record, units){
   await saveUserUnits(inserted.id, units);
 }
 
-/* ===== STATE ===== */
 const S = {
   user:null, controls:[], allControls:[], periods:[], periodId:null,
   assessments:{}, allAssessments:[], units:[], allUnits:[], cats:[], levels:[],
@@ -764,7 +761,6 @@ function applyUnitAccess(all){
   return all.filter(c => allowed.includes(c.owner_unit));
 }
 
-/* ===== AUTH ===== */
 async function doLogin(username, password){
   const hash = await sha256(password);
   if(MODE==='local'){ const u = await LocalDB.findUser(username); if(!u) throw new Error('کاربر یافت نشد.'); if(u.password_hash && u.password_hash !== hash) throw new Error('رمز نادرست است.'); return u; }
@@ -797,7 +793,6 @@ function startSession(user){
 }
 function logout(){ S.user=null; S.periodId=null; $('#app').classList.add('hidden'); $('#loginScreen').classList.remove('hidden'); $('#content').innerHTML=''; updateConnBox(); }
 
-/* ===== API ===== */
 async function apiListControls(){
   if(MODE==='local') return LocalDB.listControls();
   const { data, error } = await sb.from('controls').select('*').order('row_no',{ascending:true});
@@ -806,8 +801,12 @@ async function apiListControls(){
 }
 async function apiAddControlsBulk(rows){
   if(MODE==='local'){ return LocalDB.addControlsBulk(rows); }
-  const { error } = await sb.from('controls').insert(rows);
-  if(error) throw new Error('خطا در افزودن: '+error.message);
+  const CH = 200;
+  for(let i = 0; i < rows.length; i += CH){
+    const part = rows.slice(i, i+CH);
+    const { error } = await sb.from('controls').insert(part);
+    if(error) throw new Error('خطا در افزودن: '+error.message);
+  }
 }
 async function apiDelControl(id){
   if(MODE==='local') return LocalDB.delControl(id);
@@ -848,7 +847,6 @@ async function apiSaveAssessmentsBulk(periodId, items){
   if(MODE==='local'){
     return LocalDB.upsertAssessmentsBulk(items.map(it => ({ period_id: periodId, ...it })));
   }
-  // Fetch existing for the period
   const existingRes = await sb.from('assessments').select('id, control_id').eq('period_id', periodId);
   if(existingRes.error) throw existingRes.error;
   const existingMap = new Map((existingRes.data||[]).map(r => [r.control_id, r.id]));
@@ -862,17 +860,19 @@ async function apiSaveAssessmentsBulk(periodId, items){
     else { toInsert.push(payload); }
   });
 
-  // 1) Bulk insert (chunks of 200)
   const CH = 200;
   for(let i = 0; i < toInsert.length; i += CH){
     const part = toInsert.slice(i, i+CH);
     const { error } = await sb.from('assessments').insert(part);
     if(error) throw new Error('خطا در درج: ' + error.message);
   }
-  // 2) Update one by one (Supabase doesn't support bulk update well)
-  for(const u of toUpdate){
-    const { id, ...patch } = u;
-    const { error } = await sb.from('assessments').update(patch).eq('id', id);
+  // Bulk update via upsert
+  for(let i = 0; i < toUpdate.length; i += CH){
+    const part = toUpdate.slice(i, i+CH).map(({id, ...rest}) => rest);
+    const ids = toUpdate.slice(i, i+CH).map(x => x.id);
+    // Supabase doesn't have bulk update by ID list easily; do upsert with matching (period_id, control_id)
+    // We can rely on upsert with onConflict
+    const { error } = await sb.from('assessments').upsert(part, { onConflict: 'period_id,control_id' });
     if(error) throw new Error('خطا در به‌روزرسانی: ' + error.message);
   }
 }
@@ -1039,7 +1039,6 @@ function render(){
   updateThemeBtn();
 }
 
-/* ===== DASHBOARD ===== */
 function viewDashboard(){
   const total = S.controls.length;
   const counts = {'عدم پیاده‌سازی':0,'در حال پیاده‌سازی':0,'پیاده‌سازی':0,'غیر قابل احراز':0,'ثبت نشده':0};
@@ -1208,7 +1207,6 @@ function renderProgressComparison(){
   return overallTable + unitTable + catTable;
 }
 
-/* ===== CONTROLS ===== */
 function filteredControls(){
   const f = S.filters;
   return S.controls.filter(c => {
@@ -1302,7 +1300,6 @@ function viewControls(){
   `;
 }
 
-/* ===== TREND ===== */
 function getStatusInPeriod(c, periodId, map){
   const a = map ? map[c.id] : null;
   if(isFirstPeriodById(periodId)){ return normalizeStatus((a && a.status) || c.status || ''); }
@@ -1487,7 +1484,6 @@ async function ensureTrendData(){
   if(S.view==='trend'){ $('#content').innerHTML = viewTrend(); bindView(); }
 }
 
-/* ===== PERIODS ===== */
 function viewPeriods(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   return `
@@ -1529,7 +1525,6 @@ function viewPeriods(){
   </div>`;
 }
 
-/* ===== USERS ===== */
 function userAccessText(u){
   if(u.role === 'admin') return 'همه (مدیر)';
   const units = u.allowed_units;
@@ -1638,24 +1633,14 @@ function openUserModal(userToEdit = null){
   });
 }
 
-/* ===== EXCEL PARSING (position-based, fixed columns) =====
- * ترتیب ستون‌ها (همیشه ثابت):
- * A: دسته
- * B: سطح پیشرفتگی
- * C: کنترل
- * D: شواهد
- * E: وضعیت پیاده‌سازی
- * F: واحد مسئول رسیدگی
- * G: اقدامات انجام شده
- * H: تاریخ رفع عدم انطباق
- * I: درصد پیشرفت تاکنون
- * J: توضیحات
- * ردیف ۱ همیشه سرستون است (نادیده گرفته می‌شود).
+/* ===== EXCEL: FIXED COLUMNS =====
+ * ردیف اول = سرستون (همیشه نادیده گرفته می‌شود)
+ * A: دسته   B: سطح پیشرفتگی   C: کنترل   D: شواهد
+ * E: وضعیت پیاده‌سازی   F: واحد مسئول رسیدگی
+ * G: اقدامات انجام شده   H: تاریخ رفع عدم انطباق
+ * I: درصد پیشرفت تاکنون   J: توضیحات
  */
-const COLS = {
-  category: 0, level: 1, title: 2, evidence: 3, status: 4,
-  owner_unit: 5, actions: 6, resolve_date: 7, progress: 8, notes: 9
-};
+const COLS = { category: 0, level: 1, title: 2, evidence: 3, status: 4, owner_unit: 5, actions: 6, resolve_date: 7, progress: 8, notes: 9 };
 function parseSheet(file){
   return new Promise((res, rej) => {
     const r = new FileReader();
@@ -1664,10 +1649,9 @@ function parseSheet(file){
         const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:false, cellText:true});
         if(!wb.SheetNames || !wb.SheetNames.length) throw new Error('هیچ شیتی در فایل نیست');
         const ws = wb.Sheets[wb.SheetNames[0]];
-        // header:1 → array of arrays, rows
         const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1, blankrows:false});
         if(!aoa.length) throw new Error('فایل خالی است');
-        // ردیف اول همیشه سرستون است — نادیده بگیر
+        // Skip the header row
         const dataRows = aoa.slice(1);
         res(dataRows);
       }catch(err){ rej(err); }
@@ -1679,12 +1663,8 @@ function parseSheet(file){
 function cellStr(arr, idx){ if(!arr) return ''; const v = arr[idx]; return v === null || v === undefined ? '' : String(v).trim(); }
 function excelRowArrToRecord(arr){
   const title = cellStr(arr, COLS.title);
-  // If title is empty or equals header, skip
   if(!title) return null;
-  const normTitle = normalizeHeaderText(title);
-  if(normTitle === normalizeHeaderText('کنترل')) return null;
   const statusRaw = cellStr(arr, COLS.status);
-  const deadlineRaw = ''; // not present in this layout
   const resolveRaw = cellStr(arr, COLS.resolve_date);
   const resolve_date = resolveRaw ? (parseJalali(resolveRaw) || resolveRaw) : '';
   const progressRaw = cellStr(arr, COLS.progress);
@@ -1699,20 +1679,12 @@ function excelRowArrToRecord(arr){
     owner_unit: cellStr(arr, COLS.owner_unit) || null,
     actions: cellStr(arr, COLS.actions) || '',
     resolve_date,
-    deadline: deadlineRaw,
+    deadline: '',
     progress,
     notes: cellStr(arr, COLS.notes) || ''
   };
 }
-function normalizeHeaderText(s){
-  s = String(s || '');
-  s = s.replace(/[\u200c\u200d\u200e\u200f\u202a-\u202e]/g, '');
-  s = s.replace(/ي/g,'ی').replace(/ك/g,'ک');
-  s = s.replace(/\s+/g,' ');
-  return s.trim();
-}
 
-/* ===== EXPORT ===== */
 function exportPeriodToExcel(periodId){
   const period = S.periods.find(p => p.id === periodId);
   if(!period) return toast('دوره یافت نشد');
@@ -1738,7 +1710,6 @@ function exportPeriodToExcel(periodId){
   toast('اکسل دانلود شد');
 }
 
-/* ===== IMPORT ===== */
 function viewImport(){
   if(!isAdmin()) return `<div class="card"><div class="empty">دسترسی ندارید.</div></div>`;
   const noPeriods = S.periods.length === 0;
@@ -1750,6 +1721,7 @@ function viewImport(){
       <input type="file" id="xlsFile" accept=".xlsx,.xls,.csv">
       <button class="btn btn-primary" id="doImport">${noPeriods ? 'بارگذاری و ایجاد دوره پایه' : 'بارگذاری برای این دوره'}</button>
       <button class="btn" id="addCtrlFromImport">+ افزودن کنترل دستی</button>
+      ${!noPeriods ? `<button class="btn btn-danger" id="wipeCurrentPeriod">حذف همه ارزیابی‌های این دوره</button>` : ''}
     </div>
     <div class="import-progress" id="importProgress">
       <div class="import-progress-head">
@@ -1781,7 +1753,6 @@ function viewImport(){
   </div>`;
 }
 
-/* ===== BIND ===== */
 function bindView(){
   const c = $('#content');
   const admin = isAdmin();
@@ -1877,6 +1848,23 @@ function bindView(){
   }
   if(S.view==='import' && admin){
     $('#addCtrlFromImport')?.addEventListener('click', () => openAddControlModal());
+    $('#wipeCurrentPeriod')?.addEventListener('click', async () => {
+      const targetPid = $('#importPeriod')?.value || S.periodId;
+      if(!targetPid) return toast('دوره‌ای انتخاب نشده');
+      const p = S.periods.find(x => x.id === targetPid);
+      if(!confirm(`همه ارزیابی‌های دوره «${p?.name || ''}» حذف شوند؟`)) return;
+      try{
+        if(MODE === 'local'){ await LocalDB.wipePeriodAssessments(targetPid); }
+        else {
+          const { error } = await sb.from('assessments').delete().eq('period_id', targetPid);
+          if(error) throw error;
+        }
+        await loadAllAssessments();
+        if(targetPid === S.periodId) await loadAssessments();
+        toast('ارزیابی‌های دوره حذف شد');
+        render();
+      }catch(err){ toast('خطا: '+err.message); }
+    });
     $('#doExport')?.addEventListener('click', async () => {
       const pid = $('#exportPeriodSel').value;
       if(!pid) return toast('دوره را انتخاب کنید');
@@ -1907,9 +1895,8 @@ function bindView(){
         logLine('شروع خواندن فایل…');
         ipTitle.textContent = 'در حال خواندن فایل اکسل…';
         const rowsArr = await parseSheet(file);
-        logLine(`تعداد ${rowsArr.length} ردیف خوانده شد (به‌جز ردیف سرستون).`);
+        logLine(`تعداد ${rowsArr.length} ردیف داده (به‌جز ردیف سرستون) خوانده شد.`);
         if(!rowsArr.length) throw new Error('فایل هیچ داده‌ای ندارد.');
-        // convert each row (array) to record; skip invalid
         const parsed = [];
         for(let i = 0; i < rowsArr.length; i++){
           const r = excelRowArrToRecord(rowsArr[i]);
@@ -1926,19 +1913,17 @@ function bindView(){
           logLine(`دوره «${periodName}» ایجاد شد.`);
           ipTitle.textContent = `درج ${parsed.length} کنترل…`;
           setProgress(0, parsed.length, ipTitle.textContent);
-          // Bulk insert (chunk 200)
           const CH = 200;
+          const rowsToAdd = parsed.map((r, idx) => ({ row_no: idx + 1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit }));
           if(MODE === 'local'){
-            for(let i = 0; i < parsed.length; i += CH){
-              const part = parsed.slice(i, i+CH).map(r => ({ category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit }));
-              await LocalDB.addControlsBulk(part);
-              setProgress(Math.min(i+CH, parsed.length), parsed.length, `درج کنترل‌ها: ${Math.min(i+CH, parsed.length)} از ${parsed.length}`);
-            }
+            await LocalDB.addControlsBulk(rowsToAdd);
+            setProgress(parsed.length, parsed.length);
           } else {
-            for(let i = 0; i < parsed.length; i += CH){
-              const part = parsed.slice(i, i+CH).map((r,idx) => ({ row_no: i+idx+1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit }));
-              await apiAddControlsBulk(part);
-              setProgress(Math.min(i+CH, parsed.length), parsed.length, `درج کنترل‌ها: ${Math.min(i+CH, parsed.length)} از ${parsed.length}`);
+            for(let i = 0; i < rowsToAdd.length; i += CH){
+              const part = rowsToAdd.slice(i, i+CH);
+              const { error } = await sb.from('controls').insert(part);
+              if(error) throw error;
+              setProgress(Math.min(i+CH, rowsToAdd.length), rowsToAdd.length, `درج کنترل‌ها: ${Math.min(i+CH, rowsToAdd.length)} از ${rowsToAdd.length}`);
             }
           }
           await loadPeriods(); await loadControls();
@@ -1948,7 +1933,6 @@ function bindView(){
           setProgress(0, parsed.length, ipTitle.textContent);
           const titleMap = new Map();
           S.allControls.forEach(ctrl => titleMap.set((ctrl.title||'').trim(), ctrl));
-          // prepare items for bulk save
           const bulkItems = [];
           for(let i = 0; i < parsed.length; i++){
             const r = parsed[i];
@@ -1973,7 +1957,7 @@ function bindView(){
             try{
               await apiSaveAssessmentsBulk(period.id, part);
               ipOk.textContent = String(Number(ipOk.textContent) + part.length);
-            }catch(e){ ipErr.textContent = String(Number(ipErr.textContent) + part.length); logLine('خطا در بلوک ارزیابی: '+e.message); }
+            }catch(e){ ipErr.textContent = String(Number(ipErr.textContent) + part.length); logLine('خطا در بلوک: '+e.message); }
             setProgress(Math.min(i+CH2, bulkItems.length), bulkItems.length, `ثبت ارزیابی: ${Math.min(i+CH2, bulkItems.length)} از ${bulkItems.length}`);
             await new Promise(r2 => setTimeout(r2, 0));
           }
@@ -2006,7 +1990,8 @@ function bindView(){
             const CH = 200;
             for(let i = 0; i < newControlsToAdd.length; i += CH){
               const part = newControlsToAdd.slice(i, i+CH).map((r,idx) => ({ ...r, row_no: S.allControls.length + i + idx + 1 }));
-              await apiAddControlsBulk(part);
+              if(MODE === 'local'){ await LocalDB.addControlsBulk(part); }
+              else { const { error } = await sb.from('controls').insert(part); if(error) throw error; }
               setProgress(Math.min(i+CH, newControlsToAdd.length), newControlsToAdd.length);
             }
             createdCount = newControlsToAdd.length;
@@ -2048,7 +2033,7 @@ function bindView(){
             try{
               await apiSaveAssessmentsBulk(targetPid, part);
               ipOk.textContent = String(Number(ipOk.textContent) + part.length);
-            }catch(e){ ipErr.textContent = String(Number(ipErr.textContent) + part.length); logLine('خطا در بلوک ارزیابی: '+e.message); }
+            }catch(e){ ipErr.textContent = String(Number(ipErr.textContent) + part.length); logLine('خطا در بلوک: '+e.message); }
             setProgress(Math.min(i+CH2, bulkItems.length), bulkItems.length, `ثبت ارزیابی: ${Math.min(i+CH2, bulkItems.length)} از ${bulkItems.length}`);
             await new Promise(r2 => setTimeout(r2, 0));
           }
@@ -2094,9 +2079,9 @@ function openAddControlModal(){
     const title = $('#mTitle').value.trim();
     if(!title) return toast('متن کنترل الزامی است');
     try{
-      const row = { category: $('#mCat').value.trim() || null, level: $('#mLevel').value || null, title, evidence: $('#mEvidence').value.trim() || '', status: normalizeStatus($('#mStatus').value), owner_unit: $('#mUnit').value.trim() || null };
-      const rowsToAdd = [{ row_no: S.allControls.reduce((m,c)=>Math.max(m, Number(c.row_no)||0), 0) + 1, ...row }];
-      await apiAddControlsBulk(rowsToAdd);
+      const row = { row_no: S.allControls.reduce((m,c)=>Math.max(m, Number(c.row_no)||0), 0) + 1, category: $('#mCat').value.trim() || null, level: $('#mLevel').value || null, title, evidence: $('#mEvidence').value.trim() || '', status: normalizeStatus($('#mStatus').value), owner_unit: $('#mUnit').value.trim() || null };
+      if(MODE==='local'){ await LocalDB.addControlsBulk([row]); }
+      else { const { error } = await sb.from('controls').insert(row); if(error) throw error; }
       await loadControls(); toast('کنترل اضافه شد'); close(); render();
     }catch(err){ toast('خطا: '+err.message); }
   });
@@ -2158,7 +2143,6 @@ function openControlModal(id){
   $('#modalBg').addEventListener('click', e => { if(e.target.id==='modalBg') close(); });
 }
 
-/* ===== GLOBAL EVENTS ===== */
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('#loginBtn'), err = $('#loginErr');
