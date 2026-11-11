@@ -597,7 +597,6 @@ function statusClass(s){
   if(n==='غیر قابل احراز') return 'st-gray';
   return 'st-bad';
 }
-/** NEW: درصد پیشرفت بر اساس فرمول درخواست‌شده */
 function progressFromStatusValue(statusRaw){
   const n = normalizeStatus(statusRaw);
   if(n === 'پیاده‌سازی') return 100;
@@ -649,9 +648,14 @@ const LocalDB = {
   async listUsers(){ return this.tables().users; },
   async listControls(){ return this.tables().controls; },
   async addControl(row){ const t=this.tables(); const maxRow=t.controls.reduce((m,c)=>Math.max(m,Number(c.row_no)||0),0); t.controls.push({id:uuid(),row_no:maxRow+1,...row}); this.save(t); },
+  async addControlsBulk(rows){
+    const t=this.tables();
+    const maxRow=t.controls.reduce((m,c)=>Math.max(m,Number(c.row_no)||0),0);
+    rows.forEach((r,i) => t.controls.push({id:uuid(),row_no:maxRow+1+i,...r}));
+    this.save(t);
+  },
   async delControl(id){ const t=this.tables(); t.controls=t.controls.filter(c=>c.id!==id); t.assessments=t.assessments.filter(a=>a.control_id!==id); this.save(t); },
   async setControls(rows){ const t=this.tables(); t.controls=rows.map((r,i)=>({id:uuid(),row_no:i+1,...r})); const ids=new Set(t.controls.map(c=>c.id)); t.assessments=t.assessments.filter(a=>ids.has(a.control_id)); this.save(t); },
-  async wipeControls(){ const t=this.tables(); t.controls=[]; t.assessments=[]; this.save(t); },
   async listPeriods(){ return this.tables().periods; },
   async addPeriod(p){ const t=this.tables(); const row={id:uuid(),created_at:new Date().toISOString(),...p}; t.periods.push(row); this.save(t); return row; },
   async delPeriod(id){ const t=this.tables(); t.periods=t.periods.filter(p=>p.id!==id); t.assessments=t.assessments.filter(a=>a.period_id!==id); this.save(t); },
@@ -664,6 +668,15 @@ const LocalDB = {
     else t.assessments.push({id:uuid(),created_at:new Date().toISOString(),...a});
     this.save(t);
     return t.assessments.find(x=>x.period_id===a.period_id && x.control_id===a.control_id);
+  },
+  async upsertAssessmentsBulk(items){
+    const t=this.tables();
+    items.forEach(a => {
+      const i=t.assessments.findIndex(x=>x.period_id===a.period_id && x.control_id===a.control_id);
+      if(i>=0) t.assessments[i]={...t.assessments[i],...a};
+      else t.assessments.push({id:uuid(),created_at:new Date().toISOString(),...a});
+    });
+    this.save(t);
   }
 };
 
@@ -791,9 +804,9 @@ async function apiListControls(){
   if(error) throw new Error('خطا در خواندن کنترل‌ها: '+error.message);
   return data||[];
 }
-async function apiAddControl(row){
-  if(MODE==='local') return LocalDB.addControl(row);
-  const { error } = await sb.from('controls').insert(row);
+async function apiAddControlsBulk(rows){
+  if(MODE==='local'){ return LocalDB.addControlsBulk(rows); }
+  const { error } = await sb.from('controls').insert(rows);
   if(error) throw new Error('خطا در افزودن: '+error.message);
 }
 async function apiDelControl(id){
@@ -831,33 +844,39 @@ async function apiListAssessments(pid){
   if(error) throw new Error('خطا در خواندن ارزیابی‌ها: '+error.message);
   return (data||[]).map(mergeAxExtras);
 }
-async function apiSaveAssessmentFor(periodId, controlId, payload){
-  const extraKeys = ['deadline','notes','owner_unit','resolve_date'];
-  let attempted = { ...payload };
-  const failed = {};
-  for(let i=0;i<5;i++){
-    try{
-      if(MODE === 'local'){ return await LocalDB.upsertAssessment({ period_id: periodId, control_id: controlId, ...attempted }); }
-      const res = await sb.from('assessments').select('*').eq('period_id', periodId).eq('control_id', controlId).limit(1);
-      if(res.error) throw res.error;
-      const existing = res.data && res.data[0];
-      let data, error;
-      if(existing){ ({ data, error } = await sb.from('assessments').update(attempted).eq('id', existing.id).select().single()); }
-      else { ({ data, error } = await sb.from('assessments').insert({ period_id: periodId, control_id: controlId, ...attempted }).select().single()); }
-      if(error) throw error;
-      if(Object.keys(failed).length) setAxExtras(data.id, failed);
-      return mergeAxExtras(data);
-    } catch(err){
-      const msg = String(err.message || '').toLowerCase();
-      let removed = false;
-      for(const k of extraKeys){ if(attempted[k] !== undefined && msg.includes(k.toLowerCase())){ failed[k] = attempted[k]; delete attempted[k]; removed = true; break; } }
-      if(!removed) throw err;
-    }
+async function apiSaveAssessmentsBulk(periodId, items){
+  if(MODE==='local'){
+    return LocalDB.upsertAssessmentsBulk(items.map(it => ({ period_id: periodId, ...it })));
   }
-  throw new Error('خطا در ذخیره ارزیابی');
+  // Fetch existing for the period
+  const existingRes = await sb.from('assessments').select('id, control_id').eq('period_id', periodId);
+  if(existingRes.error) throw existingRes.error;
+  const existingMap = new Map((existingRes.data||[]).map(r => [r.control_id, r.id]));
+
+  const toInsert = [];
+  const toUpdate = [];
+  items.forEach(it => {
+    const payload = { period_id: periodId, ...it };
+    const id = existingMap.get(it.control_id);
+    if(id){ toUpdate.push({ id, ...payload }); }
+    else { toInsert.push(payload); }
+  });
+
+  // 1) Bulk insert (chunks of 200)
+  const CH = 200;
+  for(let i = 0; i < toInsert.length; i += CH){
+    const part = toInsert.slice(i, i+CH);
+    const { error } = await sb.from('assessments').insert(part);
+    if(error) throw new Error('خطا در درج: ' + error.message);
+  }
+  // 2) Update one by one (Supabase doesn't support bulk update well)
+  for(const u of toUpdate){
+    const { id, ...patch } = u;
+    const { error } = await sb.from('assessments').update(patch).eq('id', id);
+    if(error) throw new Error('خطا در به‌روزرسانی: ' + error.message);
+  }
 }
 
-/* ===== LOADERS ===== */
 async function loadControls(){
   const all = await apiListControls();
   S.allControls = all;
@@ -887,13 +906,6 @@ function getAllMaps(){
   return maps;
 }
 
-/* ===== PROGRESS LOGIC =====
- * - پیاده‌سازی = 100
- * - عدم پیاده‌سازی = 0
- * - در حال پیاده‌سازی = 20 (طبق درخواست)
- * - غیر قابل احراز = null (حذف از محاسبه)
- * - در دوره‌های بعد اگر درصد پیشرفت پر شده باشد، از همان استفاده می‌شود
- */
 function calculateControlProgressDetail(c, periodId, map){
   const a = map ? map[c.id] : null;
   let status;
@@ -1626,107 +1638,37 @@ function openUserModal(userToEdit = null){
   });
 }
 
-/* ===== EXCEL PARSING ===== */
-function normalizeHeaderText(s){
-  s = String(s || '');
-  s = s.replace(/[\u200c\u200d\u200e\u200f\u202a-\u202e]/g, '');
-  s = s.replace(/ي/g,'ی').replace(/ك/g,'ک');
-  s = s.replace(/[آأإا]/g,'ا');
-  s = s.replace(/\s+/g,' ');
-  return s.trim();
-}
-const HEADER_ALIASES = {
-  category: ['دسته', 'دسته بندی', 'دسته‌بندی', 'دسته کنترل'],
-  level: ['سطح پیشرفتگی', 'سطح', 'سطح پیشرفت'],
-  title: ['کنترل', 'عنوان کنترل', 'متن کنترل'],
-  evidence: ['شواهد', 'شواهد ارزیابی'],
-  status: ['وضعیت پیاده‌سازی', 'وضعیت'],
-  owner_unit: ['واحد مسئول رسیدگی', 'واحد مسئول', 'واحد'],
-  actions: ['اقدامات انجام‌شده', 'اقدامات انجام شده', 'اقدامات'],
-  resolve_date: ['تاریخ رفع عدم انطباق', 'تاریخ رفع'],
-  progress: ['درصد پیشرفت تاکنون', 'درصد پیشرفت', 'درصد'],
-  notes: ['توضیحات', 'توضیح', 'یادداشت'],
-  deadline: ['آخرین مهلت اجرای اقدام', 'آخرین مهلت', 'مهلت']
+/* ===== EXCEL PARSING (position-based, fixed columns) =====
+ * ترتیب ستون‌ها (همیشه ثابت):
+ * A: دسته
+ * B: سطح پیشرفتگی
+ * C: کنترل
+ * D: شواهد
+ * E: وضعیت پیاده‌سازی
+ * F: واحد مسئول رسیدگی
+ * G: اقدامات انجام شده
+ * H: تاریخ رفع عدم انطباق
+ * I: درصد پیشرفت تاکنون
+ * J: توضیحات
+ * ردیف ۱ همیشه سرستون است (نادیده گرفته می‌شود).
+ */
+const COLS = {
+  category: 0, level: 1, title: 2, evidence: 3, status: 4,
+  owner_unit: 5, actions: 6, resolve_date: 7, progress: 8, notes: 9
 };
-function findHeaderKey(keys, aliases){
-  const normKeys = keys.map(k => ({ raw: k, norm: normalizeHeaderText(k) }));
-  for(const alias of aliases){
-    const targetNorm = normalizeHeaderText(alias);
-    const found = normKeys.find(x => x.norm === targetNorm);
-    if(found) return found.raw;
-  }
-  for(const alias of aliases){
-    const targetNorm = normalizeHeaderText(alias);
-    const found = normKeys.find(x => x.norm.includes(targetNorm) || targetNorm.includes(x.norm));
-    if(found) return found.raw;
-  }
-  return null;
-}
-function buildRowAccessor(rawRow){
-  const keys = Object.keys(rawRow);
-  const cache = {};
-  const getKey = (field) => {
-    if(cache[field] !== undefined) return cache[field];
-    const aliases = HEADER_ALIASES[field] || [];
-    const k = findHeaderKey(keys, aliases);
-    cache[field] = k;
-    return k;
-  };
-  return {
-    category: () => { const k = getKey('category'); return k ? String(rawRow[k] || '').trim() : ''; },
-    level: () => { const k = getKey('level'); return k ? String(rawRow[k] || '').trim() : ''; },
-    title: () => { const k = getKey('title'); return k ? String(rawRow[k] || '').trim() : ''; },
-    evidence: () => { const k = getKey('evidence'); return k ? String(rawRow[k] || '').trim() : ''; },
-    status: () => { const k = getKey('status'); return k ? String(rawRow[k] || '').trim() : ''; },
-    owner_unit: () => { const k = getKey('owner_unit'); return k ? String(rawRow[k] || '').trim() : ''; },
-    actions: () => { const k = getKey('actions'); return k ? String(rawRow[k] || '').trim() : ''; },
-    resolve_date: () => { const k = getKey('resolve_date'); return k ? String(rawRow[k] || '').trim() : ''; },
-    progress: () => { const k = getKey('progress'); return k ? String(rawRow[k] || '').trim() : ''; },
-    notes: () => { const k = getKey('notes'); return k ? String(rawRow[k] || '').trim() : ''; },
-    deadline: () => { const k = getKey('deadline'); return k ? String(rawRow[k] || '').trim() : ''; }
-  };
-}
-function excelRowToRecord(rawRow){
-  const a = buildRowAccessor(rawRow);
-  const deadlineRaw = a.deadline();
-  const deadline = deadlineRaw ? (parseJalali(deadlineRaw) || deadlineRaw) : '';
-  const resolveRaw = a.resolve_date();
-  const resolve_date = resolveRaw ? (parseJalali(resolveRaw) || resolveRaw) : '';
-  const progressRaw = a.progress();
-  let progress = null;
-  if(progressRaw){ const num = parseInt(toLatin(progressRaw).replace(/[^\d-]/g, ''), 10); if(!isNaN(num)) progress = Math.max(0, Math.min(100, num)); }
-  const statusRaw = a.status();
-  return {
-    category: a.category() || null,
-    level: a.level() || null,
-    title: a.title() || '',
-    evidence: a.evidence() || '',
-    status: statusRaw ? normalizeStatus(statusRaw) : null,
-    owner_unit: a.owner_unit() || null,
-    actions: a.actions() || '',
-    resolve_date,
-    deadline,
-    progress,
-    notes: a.notes() || ''
-  };
-}
 function parseSheet(file){
   return new Promise((res, rej) => {
     const r = new FileReader();
     r.onload = e => {
       try{
-        const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+        const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:false, cellText:true});
         if(!wb.SheetNames || !wb.SheetNames.length) throw new Error('هیچ شیتی در فایل نیست');
         const ws = wb.Sheets[wb.SheetNames[0]];
-        // Always read with header:1 to have full control
-        const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1 });
+        // header:1 → array of arrays, rows
+        const aoa = XLSX.utils.sheet_to_json(ws, { defval:'', raw:false, header:1, blankrows:false});
         if(!aoa.length) throw new Error('فایل خالی است');
-        const headers = aoa[0];
-        const dataRows = aoa.slice(1).map(arr => {
-          const obj = {};
-          headers.forEach((h, i) => { obj[h] = arr[i] ?? ''; });
-          return obj;
-        });
+        // ردیف اول همیشه سرستون است — نادیده بگیر
+        const dataRows = aoa.slice(1);
         res(dataRows);
       }catch(err){ rej(err); }
     };
@@ -1734,6 +1676,43 @@ function parseSheet(file){
     r.readAsArrayBuffer(file);
   });
 }
+function cellStr(arr, idx){ if(!arr) return ''; const v = arr[idx]; return v === null || v === undefined ? '' : String(v).trim(); }
+function excelRowArrToRecord(arr){
+  const title = cellStr(arr, COLS.title);
+  // If title is empty or equals header, skip
+  if(!title) return null;
+  const normTitle = normalizeHeaderText(title);
+  if(normTitle === normalizeHeaderText('کنترل')) return null;
+  const statusRaw = cellStr(arr, COLS.status);
+  const deadlineRaw = ''; // not present in this layout
+  const resolveRaw = cellStr(arr, COLS.resolve_date);
+  const resolve_date = resolveRaw ? (parseJalali(resolveRaw) || resolveRaw) : '';
+  const progressRaw = cellStr(arr, COLS.progress);
+  let progress = null;
+  if(progressRaw){ const num = parseInt(toLatin(progressRaw).replace(/[^\d-]/g, ''), 10); if(!isNaN(num)) progress = Math.max(0, Math.min(100, num)); }
+  return {
+    category: cellStr(arr, COLS.category) || null,
+    level: cellStr(arr, COLS.level) || null,
+    title,
+    evidence: cellStr(arr, COLS.evidence) || '',
+    status: statusRaw ? normalizeStatus(statusRaw) : null,
+    owner_unit: cellStr(arr, COLS.owner_unit) || null,
+    actions: cellStr(arr, COLS.actions) || '',
+    resolve_date,
+    deadline: deadlineRaw,
+    progress,
+    notes: cellStr(arr, COLS.notes) || ''
+  };
+}
+function normalizeHeaderText(s){
+  s = String(s || '');
+  s = s.replace(/[\u200c\u200d\u200e\u200f\u202a-\u202e]/g, '');
+  s = s.replace(/ي/g,'ی').replace(/ك/g,'ک');
+  s = s.replace(/\s+/g,' ');
+  return s.trim();
+}
+
+/* ===== EXPORT ===== */
 function exportPeriodToExcel(periodId){
   const period = S.periods.find(p => p.id === periodId);
   if(!period) return toast('دوره یافت نشد');
@@ -1745,7 +1724,7 @@ function exportPeriodToExcel(periodId){
       'ردیف': i + 1, 'دسته': c.category || '', 'سطح پیشرفتگی': c.level || '', 'کنترل': c.title || '', 'شواهد': c.evidence || '',
       'وضعیت پیاده‌سازی': a.status ? normalizeStatus(a.status) : (c.status || ''),
       'واحد مسئول رسیدگی': a.owner_unit || c.owner_unit || '',
-      'اقدامات انجام‌شده': a.actions || '',
+      'اقدامات انجام شده': a.actions || '',
       'تاریخ رفع عدم انطباق': a.resolve_date || '',
       'درصد پیشرفت تاکنون': (a.progress !== null && a.progress !== undefined && a.progress !== '') ? Number(a.progress) : '',
       'توضیحات': a.notes || ''
@@ -1881,8 +1860,7 @@ function bindView(){
         if(!S.periods.find(x=>x.id===S.periodId)) S.periodId = S.periods[S.periods.length-1]?.id || null;
         renderPeriodSelect(); await loadAllAssessments(); await loadAssessments();
         toast('دوره حذف شد'); render();
-      }
-      catch(err){ toast('خطا: '+err.message); }
+      } catch(err){ toast('خطا: '+err.message); }
     }));
   }
   if(S.view==='users' && admin){
@@ -1928,16 +1906,15 @@ function bindView(){
       try{
         logLine('شروع خواندن فایل…');
         ipTitle.textContent = 'در حال خواندن فایل اکسل…';
-        const rows = await parseSheet(file);
-        logLine(`تعداد ${rows.length} ردیف خوانده شد.`);
-        if(!rows.length) throw new Error('فایل خالی است');
-        if(rows[0]){
-          const keys = Object.keys(rows[0]);
-          const hasTitle = findHeaderKey(keys, HEADER_ALIASES.title);
-          if(!hasTitle) throw new Error('ستون «کنترل» در فایل پیدا نشد. ستون‌های موجود: ' + keys.join(' | '));
-          logLine(`ستون‌های شناسایی‌شده: ${keys.join(' | ')}`);
+        const rowsArr = await parseSheet(file);
+        logLine(`تعداد ${rowsArr.length} ردیف خوانده شد (به‌جز ردیف سرستون).`);
+        if(!rowsArr.length) throw new Error('فایل هیچ داده‌ای ندارد.');
+        // convert each row (array) to record; skip invalid
+        const parsed = [];
+        for(let i = 0; i < rowsArr.length; i++){
+          const r = excelRowArrToRecord(rowsArr[i]);
+          if(r) parsed.push(r);
         }
-        const parsed = rows.map(excelRowToRecord).filter(r => r.title && r.title.trim() !== '' && normalizeHeaderText(r.title) !== normalizeHeaderText('کنترل'));
         logLine(`پس از پردازش: ${parsed.length} کنترل معتبر.`);
         if(!parsed.length) throw new Error('هیچ ردیف معتبری با عنوان کنترل پیدا نشد.');
         const isFirstUpload = S.periods.length === 0;
@@ -1949,48 +1926,62 @@ function bindView(){
           logLine(`دوره «${periodName}» ایجاد شد.`);
           ipTitle.textContent = `درج ${parsed.length} کنترل…`;
           setProgress(0, parsed.length, ipTitle.textContent);
+          // Bulk insert (chunk 200)
+          const CH = 200;
           if(MODE === 'local'){
-            await LocalDB.setControls(parsed.map(r => ({ category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit })));
-            setProgress(parsed.length, parsed.length);
+            for(let i = 0; i < parsed.length; i += CH){
+              const part = parsed.slice(i, i+CH).map(r => ({ category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit }));
+              await LocalDB.addControlsBulk(part);
+              setProgress(Math.min(i+CH, parsed.length), parsed.length, `درج کنترل‌ها: ${Math.min(i+CH, parsed.length)} از ${parsed.length}`);
+            }
           } else {
-            const del = await sb.from('controls').delete().not('id','is',null);
-            if(del.error) throw del.error;
-            const CH = 100;
             for(let i = 0; i < parsed.length; i += CH){
               const part = parsed.slice(i, i+CH).map((r,idx) => ({ row_no: i+idx+1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit }));
-              const { error } = await sb.from('controls').insert(part);
-              if(error) throw error;
+              await apiAddControlsBulk(part);
               setProgress(Math.min(i+CH, parsed.length), parsed.length, `درج کنترل‌ها: ${Math.min(i+CH, parsed.length)} از ${parsed.length}`);
             }
           }
           await loadPeriods(); await loadControls();
           S.periodId = period.id; renderPeriodSelect();
           ipTitle.textContent = 'ثبت ارزیابی دوره پایه…';
-          let savedCount = 0, failedCount = 0;
           ipTotal.textContent = parsed.length;
           setProgress(0, parsed.length, ipTitle.textContent);
           const titleMap = new Map();
           S.allControls.forEach(ctrl => titleMap.set((ctrl.title||'').trim(), ctrl));
+          // prepare items for bulk save
+          const bulkItems = [];
           for(let i = 0; i < parsed.length; i++){
             const r = parsed[i];
             const ctrl = titleMap.get((r.title||'').trim());
             if(!ctrl){ setProgress(i+1, parsed.length); continue; }
             const baseStatus = r.status || 'عدم پیاده‌سازی';
             const computedProgress = r.progress !== null ? r.progress : progressFromStatusValue(baseStatus);
+            bulkItems.push({
+              control_id: ctrl.id,
+              status: baseStatus, progress: computedProgress,
+              actions: r.actions, deadline: r.deadline, resolve_date: r.resolve_date, notes: r.notes,
+              owner_unit: r.owner_unit || ctrl.owner_unit,
+              updated_by: S.user?.username || '',
+              updated_at: new Date().toISOString()
+            });
+            if(i % 20 === 0) setProgress(i+1, parsed.length, `آماده‌سازی: ${i+1} از ${parsed.length}`);
+          }
+          ipOk.textContent = '0';
+          const CH2 = 100;
+          for(let i = 0; i < bulkItems.length; i += CH2){
+            const part = bulkItems.slice(i, i+CH2);
             try{
-              await apiSaveAssessmentFor(period.id, ctrl.id, {
-                status: baseStatus, progress: computedProgress, actions: r.actions, deadline: r.deadline, resolve_date: r.resolve_date, notes: r.notes,
-                owner_unit: r.owner_unit || ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString()
-              });
-              savedCount++; ipOk.textContent = String(savedCount);
-            }catch(e){ failedCount++; ipErr.textContent = String(failedCount); }
-            setProgress(i+1, parsed.length, `ثبت ارزیابی: ${i+1} از ${parsed.length}`);
-            if(i % 10 === 0) await new Promise(r2 => setTimeout(r2, 0));
+              await apiSaveAssessmentsBulk(period.id, part);
+              ipOk.textContent = String(Number(ipOk.textContent) + part.length);
+            }catch(e){ ipErr.textContent = String(Number(ipErr.textContent) + part.length); logLine('خطا در بلوک ارزیابی: '+e.message); }
+            setProgress(Math.min(i+CH2, bulkItems.length), bulkItems.length, `ثبت ارزیابی: ${Math.min(i+CH2, bulkItems.length)} از ${bulkItems.length}`);
+            await new Promise(r2 => setTimeout(r2, 0));
           }
           await loadAllAssessments(); await loadAssessments();
+          const savedCount = Number(ipOk.textContent);
           ipTitle.textContent = `✔ دوره پایه با ${savedCount} ارزیابی ایجاد شد`;
           ipPct.textContent = '100%'; ipBar.style.width = '100%';
-          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره پایه با ${fa(savedCount)} ارزیابی${failedCount>0?` — ${fa(failedCount)} ناموفق`:''} ایجاد شد.</span>`;
+          log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ دوره پایه با ${fa(savedCount)} ارزیابی ایجاد شد.</span>`;
           toast('دوره پایه ایجاد شد');
         } else {
           const targetPid = $('#importPeriod').value;
@@ -2003,44 +1994,72 @@ function bindView(){
           logLine(`${excelMap.size} عنوان یکتا در اکسل.`);
           let createdCount = 0;
           const existingTitles = new Set(S.allControls.map(c => (c.title||'').trim()));
+          const newControlsToAdd = [];
           for(const [title, r] of excelMap){
             if(!existingTitles.has(title)){
-              await apiAddControl({ row_no: S.allControls.length + 1, category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit });
-              createdCount++; existingTitles.add(title);
+              newControlsToAdd.push({ category: r.category, level: r.level, title: r.title, evidence: r.evidence, status: r.status || 'عدم پیاده‌سازی', owner_unit: r.owner_unit });
+              existingTitles.add(title);
             }
           }
-          if(createdCount > 0) await loadControls();
+          if(newControlsToAdd.length){
+            ipTitle.textContent = `افزودن ${newControlsToAdd.length} کنترل جدید…`;
+            const CH = 200;
+            for(let i = 0; i < newControlsToAdd.length; i += CH){
+              const part = newControlsToAdd.slice(i, i+CH).map((r,idx) => ({ ...r, row_no: S.allControls.length + i + idx + 1 }));
+              await apiAddControlsBulk(part);
+              setProgress(Math.min(i+CH, newControlsToAdd.length), newControlsToAdd.length);
+            }
+            createdCount = newControlsToAdd.length;
+            await loadControls();
+            logLine(`${createdCount} کنترل جدید اضافه شد.`);
+          }
           const allControls = S.allControls; const total = allControls.length;
-          let savedCount = 0, failedCount = 0, emptyFromExcel = 0;
-          const failedTitles = [];
           ipTotal.textContent = total;
-          setProgress(0, total, `ثبت ${total} کنترل…`);
+          setProgress(0, total, `آماده‌سازی ${total} ارزیابی…`);
+          let emptyFromExcel = 0;
           const titleMap = new Map();
           allControls.forEach(ctrl => titleMap.set((ctrl.title||'').trim(), ctrl));
-          for(let i = 0; i < total; i++){
+          const bulkItems = [];
+          for(let i = 0; i < allControls.length; i++){
             const ctrl = allControls[i];
             const key = (ctrl.title || '').trim();
             const r = excelMap.get(key);
             if(!r) emptyFromExcel++;
             const baseStatus = r ? r.status : null;
             const computedProgress = r ? (r.progress !== null ? r.progress : (baseStatus ? progressFromStatusValue(baseStatus) : null)) : null;
-            const payload = { status: baseStatus, progress: computedProgress, actions: r ? (r.actions || '') : '', deadline: r ? (r.deadline || '') : '', resolve_date: r ? (r.resolve_date || '') : '', notes: r ? (r.notes || '') : '', owner_unit: r ? (r.owner_unit || ctrl.owner_unit) : ctrl.owner_unit, updated_by: S.user?.username || '', updated_at: new Date().toISOString() };
-            try{ await apiSaveAssessmentFor(targetPid, ctrl.id, payload); savedCount++; ipOk.textContent = String(savedCount); }
-            catch(e){ failedCount++; failedTitles.push(ctrl.title); ipErr.textContent = String(failedCount); }
-            ipEmpty.textContent = String(emptyFromExcel);
-            setProgress(i+1, total, `ثبت: ${i+1} از ${total} — موفق: ${savedCount}`);
-            if(i % 10 === 0) await new Promise(r2 => setTimeout(r2, 0));
+            bulkItems.push({
+              control_id: ctrl.id,
+              status: baseStatus, progress: computedProgress,
+              actions: r ? (r.actions || '') : '',
+              deadline: r ? (r.deadline || '') : '',
+              resolve_date: r ? (r.resolve_date || '') : '',
+              notes: r ? (r.notes || '') : '',
+              owner_unit: r ? (r.owner_unit || ctrl.owner_unit) : ctrl.owner_unit,
+              updated_by: S.user?.username || '',
+              updated_at: new Date().toISOString()
+            });
+            if(i % 30 === 0) setProgress(i+1, total, `آماده‌سازی: ${i+1} از ${total}`);
           }
-          ipTitle.textContent = `✔ بارگذاری کامل شد — ${savedCount} از ${total} ثبت`;
+          ipEmpty.textContent = String(emptyFromExcel);
+          ipOk.textContent = '0'; ipErr.textContent = '0';
+          const CH2 = 100;
+          for(let i = 0; i < bulkItems.length; i += CH2){
+            const part = bulkItems.slice(i, i+CH2);
+            try{
+              await apiSaveAssessmentsBulk(targetPid, part);
+              ipOk.textContent = String(Number(ipOk.textContent) + part.length);
+            }catch(e){ ipErr.textContent = String(Number(ipErr.textContent) + part.length); logLine('خطا در بلوک ارزیابی: '+e.message); }
+            setProgress(Math.min(i+CH2, bulkItems.length), bulkItems.length, `ثبت ارزیابی: ${Math.min(i+CH2, bulkItems.length)} از ${bulkItems.length}`);
+            await new Promise(r2 => setTimeout(r2, 0));
+          }
+          ipTitle.textContent = `✔ بارگذاری کامل شد — ${ipOk.textContent} از ${total} ثبت`;
           ipPct.textContent = '100%'; ipBar.style.width = '100%';
           S.periodId = targetPid; renderPeriodSelect();
           await loadAllAssessments(); await loadAssessments();
-          const parts = [`${fa(savedCount)} از ${fa(total)} کنترل ثبت شد`];
+          const parts = [`${fa(ipOk.textContent)} از ${fa(total)} کنترل ثبت شد`];
           if(createdCount > 0) parts.push(`${fa(createdCount)} کنترل جدید`);
           if(emptyFromExcel > 0) parts.push(`${fa(emptyFromExcel)} بدون داده`);
-          if(failedCount > 0) parts.push(`${fa(failedCount)} ناموفق`);
           log.innerHTML = `<span style="color:var(--txt);font-weight:600">✔ ${parts.join(' — ')} در دوره «${esc(targetPeriod.name)}».</span>`;
-          logLine(`پایان: ${savedCount} موفق، ${failedCount} ناموفق.`);
           toast('بارگذاری کامل شد');
         }
         render();
@@ -2076,8 +2095,8 @@ function openAddControlModal(){
     if(!title) return toast('متن کنترل الزامی است');
     try{
       const row = { category: $('#mCat').value.trim() || null, level: $('#mLevel').value || null, title, evidence: $('#mEvidence').value.trim() || '', status: normalizeStatus($('#mStatus').value), owner_unit: $('#mUnit').value.trim() || null };
-      if(MODE==='local'){ await LocalDB.addControl(row); }
-      else { const maxRow = S.allControls.reduce((m,c)=>Math.max(m, Number(c.row_no)||0), 0); const { error } = await sb.from('controls').insert({ row_no: maxRow+1, ...row }); if(error) throw error; }
+      const rowsToAdd = [{ row_no: S.allControls.reduce((m,c)=>Math.max(m, Number(c.row_no)||0), 0) + 1, ...row }];
+      await apiAddControlsBulk(rowsToAdd);
       await loadControls(); toast('کنترل اضافه شد'); close(); render();
     }catch(err){ toast('خطا: '+err.message); }
   });
